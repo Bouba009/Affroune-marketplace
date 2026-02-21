@@ -1,4 +1,4 @@
-v class="swiper <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -13,8 +13,8 @@ v class="swiper <!DOCTYPE html>
 
     <style>
         :root {
-            --primary: #f26522; /* Ouedkniss Orange */
-            --secondary: #2c3e50; /* Dark Blue */
+            --primary: #f26522; 
+            --secondary: #2c3e50;
             --bg: #f4f6f9;
             --white: #ffffff;
             --gold: #ffc107;
@@ -25,18 +25,15 @@ v class="swiper <!DOCTYPE html>
             --transition: all 0.3s ease;
         }
 
-        /* LTR Overrides */
         html[dir="ltr"] { font-family: 'Roboto', sans-serif; }
         html[dir="ltr"] .sidebar { right: auto; left: -280px; }
         html[dir="ltr"] .sidebar.active { left: 0; }
         html[dir="ltr"] .fab-zone { left: auto; right: 20px; }
         html[dir="ltr"] .cat-card { margin-left: 0; margin-right: 15px; }
-        html[dir="ltr"] .ad-meta { flex-direction: row-reverse; }
-
+        
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg); color: #333; padding-bottom: 90px; overflow-x: hidden; }
 
-        /* Helpers */
         .hidden { display: none !important; }
         .flex { display: flex; align-items: center; }
         .center { display: flex; justify-content: center; align-items: center; }
@@ -48,7 +45,6 @@ v class="swiper <!DOCTYPE html>
         .btn-success { background: #28a745; color: white; }
         .w-100 { width: 100%; }
         
-        /* Header */
         header { background: var(--white); height: 60px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.3rem; font-weight: 800; color: var(--secondary); }
         .logo span { color: var(--primary); }
@@ -58,19 +54,15 @@ v class="swiper <!DOCTYPE html>
         .badge.show { display: block; }
         .lang-switch { font-size: 0.8rem; font-weight: bold; border: 1px solid #ddd; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
 
-        /* Sidebar */
         .sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: white; z-index: 1200; transition: var(--transition); box-shadow: 0 0 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; padding: 20px; }
         .sidebar.active { right: 0; }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1100; display: none; backdrop-filter: blur(2px); }
         .overlay.active { display: block; }
         .menu-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .menu-item:hover { color: var(--primary); background: #fffcf9; }
-
-        /* Main Content */
+        
         .swiper { width: 100%; height: 200px; margin-bottom: 15px; border-radius: 0 0 15px 15px; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Categories */
         .cats-scroll { overflow-x: auto; padding: 10px 15px; white-space: nowrap; scrollbar-width: none; background: white; margin-bottom: 15px; }
         .cats-scroll::-webkit-scrollbar { display: none; }
         .cat-card { display: inline-flex; flex-direction: column; align-items: center; margin-left: 15px; width: 80px; cursor: pointer; }
@@ -78,7 +70,6 @@ v class="swiper <!DOCTYPE html>
         .cat-card:hover .cat-img { border-color: var(--primary); transform: scale(1.05); }
         .cat-name { font-size: 0.7rem; font-weight: 700; color: var(--secondary); text-align: center; white-space: normal; line-height: 1.2; }
 
-        /* Ads Grid */
         .section-title { padding: 0 15px; margin: 20px 0 10px; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 1.1rem; }
         .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 0 10px; max-width: 1200px; margin: 0 auto; }
         
@@ -94,14 +85,12 @@ v class="swiper <!DOCTYPE html>
         .ad-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 5px 0; }
         .ad-meta { font-size: 0.7rem; color: #888; display: flex; justify-content: space-between; }
 
-        /* Floating Buttons */
         .fab-zone { position: fixed; bottom: 25px; left: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
         .fab { width: 55px; height: 55px; border-radius: 50%; border: none; color: white; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; opacity: 0.6; transition: 0.3s; }
         .fab:hover, .fab:active { opacity: 1; transform: scale(1.1); }
         .fab-main { background: var(--primary); font-size: 1.5rem; }
         .fab-sec { background: var(--secondary); }
 
-        /* Modals */
         .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-wrap.active { display: flex; }
         .modal-content { background: white; width: 90%; max-width: 450px; border-radius: 12px; padding: 20px; max-height: 85vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
@@ -109,21 +98,16 @@ v class="swiper <!DOCTYPE html>
         html[dir="ltr"] .close-modal { left: auto; right: 15px; }
         @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
 
-        .form-group { margin-bottom: 15px; }
-        .form-input, .form-select, .form-area { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; }
-        .form-input:focus { border-color: var(--primary); }
-        .file-input { width: 100%; padding: 10px; background: #f9f9f9; border: 1px dashed #ccc; border-radius: 6px; }
+        .form-input, .form-select, .form-area { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; margin-bottom: 10px; }
+        .file-input { width: 100%; padding: 10px; background: #f9f9f9; border: 1px dashed #ccc; border-radius: 6px; margin-bottom: 10px; }
 
-        /* Full Page Overlay */
         .full-page { position: fixed; inset: 0; background: white; z-index: 1500; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; }
         .full-page.active { transform: translateY(0); }
         
         .page-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; background: white; z-index: 10; }
         .page-back { font-size: 1.2rem; cursor: pointer; }
         
-        /* Chat */
         .chat-list-item { padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 15px; cursor: pointer; }
-        .chat-list-item:hover { background: #f9f9f9; }
         .chat-list-item.unread { background: #eef7ff; font-weight: bold; border-right: 4px solid var(--primary); }
 
         .chat-room { flex: 1; background: #e5ddd5; display: flex; flex-direction: column; }
@@ -133,7 +117,6 @@ v class="swiper <!DOCTYPE html>
         .msg-recv { align-self: flex-start; background: var(--chat-recv); border-bottom-right-radius: 0; }
         .chat-input { padding: 10px; background: white; display: flex; gap: 10px; border-top: 1px solid #ddd; }
 
-        /* Admin */
         #admin-panel { z-index: 5000; background: #f4f6f9; }
         .admin-header { background: var(--secondary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .admin-tabs { display: flex; gap: 10px; overflow-x: auto; padding: 10px; background: white; }
@@ -185,7 +168,9 @@ v class="swiper <!DOCTYPE html>
     <!-- Slider -->
     <div class="swiper mySwiper">
         <div class="swiper-wrapper" id="main-banner">
-            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80"></div>
+            <div class="swiper-slide" id="banner-slide-content">
+                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80">
+            </div>
         </div>
         <div class="swiper-pagination"></div>
     </div>
@@ -221,11 +206,11 @@ v class="swiper <!DOCTYPE html>
         <span class="close-modal" onclick="closeModal('auth-modal')">&times;</span>
         <h2 style="text-align:center; margin-bottom:15px" data-tr="login">دخول</h2>
         <form id="auth-form">
-            <input type="email" id="log-email" class="form-input" style="margin-bottom:10px" placeholder="Email" required>
-            <input type="password" id="log-pass" class="form-input" style="margin-bottom:10px" placeholder="Password" required>
+            <input type="email" id="log-email" class="form-input" data-ph="ph_email" placeholder="البريد الإلكتروني" required>
+            <input type="password" id="log-pass" class="form-input" data-ph="ph_pass" placeholder="كلمة المرور" required>
             <div id="reg-fields" class="hidden">
-                <input type="text" id="reg-name" class="form-input" style="margin-bottom:10px" placeholder="الاسم">
-                <input type="tel" id="reg-phone" class="form-input" style="margin-bottom:10px" placeholder="الهاتف">
+                <input type="text" id="reg-name" class="form-input" data-ph="ph_name" placeholder="الاسم">
+                <input type="tel" id="reg-phone" class="form-input" data-ph="ph_phone" placeholder="الهاتف">
             </div>
             <button type="submit" class="btn btn-primary w-100" data-tr="submit">دخول</button>
             <p style="text-align:center; margin-top:15px; color:var(--primary); cursor:pointer" onclick="toggleReg()">حساب جديد / دخول</p>
@@ -239,14 +224,14 @@ v class="swiper <!DOCTYPE html>
         <span class="close-modal" onclick="closeModal('pub-modal')">&times;</span>
         <h3 style="margin-bottom:15px" data-tr="pub_title">نشر إعلان</h3>
         <form id="pub-form">
-            <input type="text" id="p-title" class="form-input" style="margin-bottom:10px" placeholder="العنوان" required>
-            <select id="p-cat" class="form-select" style="margin-bottom:10px" required></select>
-            <div class="flex" style="gap:10px; margin-bottom:10px">
-                <input type="number" id="p-price" class="form-input" placeholder="السعر (DA)" required>
+            <input type="text" id="p-title" class="form-input" data-ph="ph_title" placeholder="العنوان" required>
+            <select id="p-cat" class="form-select" required></select>
+            <div class="flex" style="gap:10px;">
+                <input type="number" id="p-price" class="form-input" data-ph="ph_price" placeholder="السعر" required>
                 <select id="p-city" class="form-select" required></select>
             </div>
-            <input type="tel" id="p-phone" class="form-input" style="margin-bottom:10px" placeholder="رقم الهاتف" required>
-            <textarea id="p-desc" class="form-area" rows="3" style="margin-bottom:10px" placeholder="الوصف..."></textarea>
+            <input type="tel" id="p-phone" class="form-input" data-ph="ph_phone" placeholder="رقم الهاتف" required>
+            <textarea id="p-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف..."></textarea>
             
             <label style="font-weight:bold; font-size:0.9rem" data-tr="img_upload">صورة المنتج</label>
             <input type="file" id="p-file" class="file-input" accept="image/*" required>
@@ -261,9 +246,13 @@ v class="swiper <!DOCTYPE html>
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal('filter-modal')">&times;</span>
         <h3 data-tr="filter">فلترة</h3><br>
-        <input type="text" id="f-search" class="form-input" style="margin-bottom:10px" placeholder="بحث...">
-        <select id="f-cat" class="form-select" style="margin-bottom:10px"><option value="">الكل</option></select>
-        <select id="f-city" class="form-select" style="margin-bottom:10px"><option value="">الكل</option></select>
+        <input type="text" id="f-search" class="form-input" data-ph="ph_search" placeholder="بحث...">
+        <select id="f-cat" class="form-select"><option value="" data-tr="all_cats">كل الفئات</option></select>
+        <select id="f-city" class="form-select"><option value="" data-tr="all_cities">كل المدن</option></select>
+        <div class="flex" style="gap:10px">
+            <input type="number" id="f-min" class="form-input" data-ph="ph_min_price" placeholder="أدنى سعر">
+            <input type="number" id="f-max" class="form-input" data-ph="ph_max_price" placeholder="أقصى سعر">
+        </div>
         <button onclick="doSearch()" class="btn btn-secondary w-100" data-tr="search">بحث</button>
     </div>
 </div>
@@ -273,8 +262,8 @@ v class="swiper <!DOCTYPE html>
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal('report-modal')">&times;</span>
         <h3 data-tr="report">إبلاغ</h3><br>
-        <input type="text" id="r-name" class="form-input" style="margin-bottom:10px" placeholder="الاسم">
-        <textarea id="r-desc" class="form-area" rows="3" placeholder="الوصف"></textarea>
+        <input type="text" id="r-name" class="form-input" data-ph="ph_name" placeholder="الاسم">
+        <textarea id="r-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف"></textarea>
         <button onclick="sendReport()" class="btn btn-danger w-100" style="margin-top:10px" data-tr="send">إرسال</button>
     </div>
 </div>
@@ -338,7 +327,7 @@ v class="swiper <!DOCTYPE html>
     <div class="chat-room">
         <div class="msgs-container" id="msgs-box"></div>
         <form class="chat-input" onsubmit="sendMsg(event)">
-            <input type="text" id="msg-input" class="form-input" style="border:none" placeholder="..." required>
+            <input type="text" id="msg-input" class="form-input" style="border:none; margin:0" placeholder="..." required>
             <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
         </form>
     </div>
@@ -359,7 +348,11 @@ v class="swiper <!DOCTYPE html>
     
     <!-- Admin Content -->
     <div id="adm-dash" class="admin-view active">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px">
+            <div class="stat-card"><h3>زيارات اليوم</h3><b id="st-day">0</b></div>
+            <div class="stat-card"><h3>زيارات الشهر</h3><b id="st-month">0</b></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px">
             <div class="stat-card"><h3>الإعلانات</h3><b id="st-ads">0</b></div>
             <div class="stat-card"><h3>المستخدمين</h3><b id="st-users">0</b></div>
             <div class="stat-card"><h3>البلاغات</h3><b id="st-reps">0</b></div>
@@ -380,19 +373,21 @@ v class="swiper <!DOCTYPE html>
 
     <div id="adm-settings" class="admin-view">
         <div class="stat-card" style="text-align:right">
-            <label>اسم الموقع (Logo)</label>
-            <input type="text" id="set-logo" class="form-input">
-            <button class="btn btn-secondary" onclick="saveConf('logo')">حفظ</button>
+            <label>شعار الموقع (رفع صورة)</label>
+            <input type="file" id="adm-logo-file" class="file-input">
+            <button class="btn btn-secondary" onclick="saveAdmLogo()">حفظ اللوغو</button>
         </div>
         <div class="stat-card" style="text-align:right">
-            <label>رابط البانر</label>
-            <input type="text" id="set-banner" class="form-input">
-            <button class="btn btn-secondary" onclick="saveConf('banner')">حفظ</button>
+            <label>صورة البانر (رفع صورة)</label>
+            <input type="file" id="adm-banner-file" class="file-input">
+            <label>رابط التحويل عند الضغط (اختياري)</label>
+            <input type="text" id="adm-banner-link" class="form-input" placeholder="https://...">
+            <button class="btn btn-secondary" onclick="saveAdmBanner()">حفظ البانر</button>
         </div>
         <div class="stat-card" style="text-align:right">
             <label>نص "من نحن"</label>
             <textarea id="set-about" class="form-area"></textarea>
-            <button class="btn btn-secondary" onclick="saveConf('about')">حفظ</button>
+            <button class="btn btn-secondary" onclick="saveConf('about')">حفظ النص</button>
         </div>
     </div>
 </div>
@@ -407,7 +402,7 @@ v class="swiper <!DOCTYPE html>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, orderBy, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, orderBy, getDoc, setDoc, onSnapshot, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     // CONFIG
     const firebaseConfig = {
@@ -429,12 +424,22 @@ v class="swiper <!DOCTYPE html>
         ar: {
             menu: "القائمة", home: "الرئيسية", msgs: "الرسائل", about: "من نحن", contact: "اتصل بنا", report: "إبلاغ", logout: "خروج",
             featured: "⭐ مميزة", latest: "📦 أحدث الإعلانات", login: "دخول", submit: "دخول", pub_title: "نشر إعلان",
-            img_upload: "صورة المنتج", publish: "نشر", filter: "فلترة", search: "بحث", send: "إرسال", call: "اتصال", chat: "رسالة", owner: "المعلن", details: "التفاصيل"
+            img_upload: "صورة المنتج", publish: "نشر", filter: "فلترة", search: "بحث", send: "إرسال", call: "اتصال", chat: "رسالة", owner: "المعلن", details: "التفاصيل",
+            all_cats: "كل الفئات", all_cities: "كل المدن",
+            // Placeholders
+            ph_email: "البريد الإلكتروني", ph_pass: "كلمة المرور", ph_name: "الاسم", ph_phone: "الهاتف",
+            ph_title: "العنوان", ph_price: "السعر", ph_desc: "الوصف",
+            ph_search: "بحث...", ph_min_price: "أدنى سعر", ph_max_price: "أقصى سعر"
         },
         fr: {
             menu: "Menu", home: "Accueil", msgs: "Messages", about: "À propos", contact: "Contact", report: "Signaler", logout: "Déconnexion",
             featured: "⭐ En Vedette", latest: "📦 Dernières Annonces", login: "Connexion", submit: "Entrer", pub_title: "Publier",
-            img_upload: "Image du produit", publish: "Publier", filter: "Filtrer", search: "Rechercher", send: "Envoyer", call: "Appeler", chat: "Message", owner: "Vendeur", details: "Détails"
+            img_upload: "Image du produit", publish: "Publier", filter: "Filtrer", search: "Rechercher", send: "Envoyer", call: "Appeler", chat: "Message", owner: "Vendeur", details: "Détails",
+            all_cats: "Toutes Catégories", all_cities: "Toutes Villes",
+            // Placeholders
+            ph_email: "Email", ph_pass: "Mot de passe", ph_name: "Nom", ph_phone: "Téléphone",
+            ph_title: "Titre", ph_price: "Prix", ph_desc: "Description",
+            ph_search: "Recherche...", ph_min_price: "Prix Min", ph_max_price: "Prix Max"
         }
     };
     let curLang = "ar";
@@ -443,8 +448,13 @@ v class="swiper <!DOCTYPE html>
         curLang = curLang === "ar" ? "fr" : "ar";
         document.documentElement.dir = curLang === "ar" ? "rtl" : "ltr";
         document.getElementById('lang-txt').innerText = curLang.toUpperCase();
+        // Translate Text
         document.querySelectorAll('[data-tr]').forEach(el => {
             el.innerText = tr[curLang][el.getAttribute('data-tr')];
+        });
+        // Translate Placeholders
+        document.querySelectorAll('[data-ph]').forEach(el => {
+            el.placeholder = tr[curLang][el.getAttribute('data-ph')];
         });
         document.querySelectorAll('.page-back').forEach(el => {
             el.style.transform = curLang === "ar" ? "rotate(0deg)" : "rotate(180deg)";
@@ -458,7 +468,7 @@ v class="swiper <!DOCTYPE html>
         {name: "كهرومنزلية", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=100"},
         {name: "ملابس نساء", img: "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=100"},
         {name: "ملابس رجال", img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=100"},
-        {name: "ملابس أطفال", img: "https://images.unsplash.com/photo-1519278409-1f56fdda7fba?w=100"},
+        {name: "ملابس أطفال", img: "https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=100"}, // Fixed Kids Image
         {name: "خدمات", img: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=100"},
         {name: "خياطة", img: "https://images.unsplash.com/photo-1528578577235-b963df6db908?w=100"},
         {name: "حلويات", img: "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=100"},
@@ -497,7 +507,25 @@ v class="swiper <!DOCTYPE html>
 
         loadAds();
         loadConfig();
+        trackVisits();
     });
+
+    // --- VISITS TRACKING ---
+    async function trackVisits() {
+        const today = new Date().toISOString().split('T')[0];
+        const month = today.slice(0, 7);
+        const lastVisit = localStorage.getItem('last_visit');
+        
+        if (lastVisit !== today) {
+            localStorage.setItem('last_visit', today);
+            // Increment Firestore counters
+            const statsRef = doc(db, "stats", "visits");
+            await setDoc(statsRef, {
+                [today]: increment(1),
+                [month]: increment(1)
+            }, { merge: true });
+        }
+    }
 
     // --- AUTH ---
     onAuthStateChanged(auth, async(u) => {
@@ -541,7 +569,7 @@ v class="swiper <!DOCTYPE html>
     window.logout = () => { signOut(auth); window.location.reload(); };
     window.checkAuth = () => user ? Swal.fire('حسابي', user.email, 'info') : openModal('auth-modal');
 
-    // --- ADS ---
+    // --- IMAGE COMPRESSION ---
     const compressImg = (file) => {
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -561,6 +589,7 @@ v class="swiper <!DOCTYPE html>
         });
     }
 
+    // --- ADS PUBLISH ---
     document.getElementById('pub-form').addEventListener('submit', async(e) => {
         e.preventDefault();
         if(!user) return openModal('auth-modal');
@@ -571,7 +600,7 @@ v class="swiper <!DOCTYPE html>
             await addDoc(collection(db, "ads"), {
                 title: document.getElementById('p-title').value,
                 category: document.getElementById('p-cat').value,
-                price: document.getElementById('p-price').value,
+                price: Number(document.getElementById('p-price').value),
                 city: document.getElementById('p-city').value,
                 phone: document.getElementById('p-phone').value,
                 desc: document.getElementById('p-desc').value,
@@ -590,6 +619,7 @@ v class="swiper <!DOCTYPE html>
 
     window.startPublish = () => user ? openModal('pub-modal') : openModal('auth-modal');
 
+    // --- ADS LOAD & FILTER ---
     window.loadAds = async (filter={}) => {
         const q = query(collection(db, "ads"), orderBy("timestamp", "desc"));
         const snap = await getDocs(q);
@@ -600,6 +630,8 @@ v class="swiper <!DOCTYPE html>
         if(filter.search) res = res.filter(a => a.title.includes(filter.search));
         if(filter.cat) res = res.filter(a => a.category === filter.cat);
         if(filter.city) res = res.filter(a => a.city === filter.city);
+        if(filter.min) res = res.filter(a => a.price >= filter.min);
+        if(filter.max) res = res.filter(a => a.price <= filter.max);
         
         renderAds(res);
     }
@@ -653,14 +685,14 @@ v class="swiper <!DOCTYPE html>
     
     window.callOwner = () => Swal.fire('رقم الهاتف', currentAd.phone, 'info');
 
-    // --- CHAT ---
+    // --- CHAT SYSTEM (UPDATED) ---
     function msgListener() {
-        const q = query(collection(db, "chats"), where("users", "array-contains", user.uid));
+        // Badge shows only if my ID is in 'unreadFor' array
+        const q = query(collection(db, "chats"), where("unreadFor", "array-contains", user.uid));
         onSnapshot(q, (s) => {
-            let unread = 0;
-            s.forEach(d => { if(d.data().lastSender !== user.uid) unread++; });
             const b = document.getElementById('msg-badge');
-            if(unread > 0) { b.innerText = unread; b.classList.add('show'); } else b.classList.remove('show');
+            if(s.size > 0) { b.innerText = s.size; b.classList.add('show'); } 
+            else b.classList.remove('show');
         });
     }
 
@@ -670,16 +702,20 @@ v class="swiper <!DOCTYPE html>
         
         const ids = [user.uid, currentAd.ownerId].sort();
         activeChatId = ids.join("_");
+        
+        // Add current user to unreadFor to ensure logic consistency if needed, but primarily mark receiver
         await setDoc(doc(db, "chats", activeChatId), {
-            users: ids, lastMsg: "Start", lastSender: user.uid, ts: new Date().toISOString()
+            users: ids, 
+            lastMsg: "Start", 
+            ts: new Date().toISOString()
         }, {merge:true});
+        
         openChatRoom(activeChatId, currentAd.ownerName || "المعلن");
     }
 
     window.openMyChats = async() => {
         if(!user) return openModal('auth-modal');
         document.getElementById('chat-list-page').classList.add('active');
-        document.getElementById('msg-badge').classList.remove('show');
         
         const q = query(collection(db, "chats"), where("users", "array-contains", user.uid));
         const s = await getDocs(q);
@@ -687,19 +723,23 @@ v class="swiper <!DOCTYPE html>
         c.innerHTML = '';
         s.forEach(d => {
             const dd = d.data();
+            const isUnread = dd.unreadFor && dd.unreadFor.includes(user.uid);
             c.innerHTML += `
-            <div class="chat-list-item" onclick="openChatRoom('${d.id}', 'محادثة')">
+            <div class="chat-list-item ${isUnread?'unread':''}" onclick="openChatRoom('${d.id}', 'محادثة')">
                 <div style="font-size:2rem"><i class="fas fa-user-circle"></i></div>
                 <div><div style="font-weight:bold">مستخدم</div><div style="font-size:0.8rem;color:#777">${dd.lastMsg}</div></div>
             </div>`;
         });
     }
 
-    window.openChatRoom = (cid, title) => {
+    window.openChatRoom = async (cid, title) => {
         activeChatId = cid;
         document.getElementById('chat-header-title').innerText = title;
         document.getElementById('chat-room-page').classList.add('active');
         
+        // Mark as read by removing my ID from unreadFor
+        await updateDoc(doc(db, "chats", cid), { unreadFor: arrayRemove(user.uid) });
+
         const q = query(collection(db, "chats", cid, "msgs"), orderBy("ts", "asc"));
         onSnapshot(q, (s) => {
             const b = document.getElementById('msgs-box');
@@ -717,8 +757,19 @@ v class="swiper <!DOCTYPE html>
         e.preventDefault();
         const i = document.getElementById('msg-input');
         if(!i.value.trim()) return;
+        
+        const chatRef = doc(db, "chats", activeChatId);
+        const chatDoc = await getDoc(chatRef);
+        const otherUser = chatDoc.data().users.find(u => u !== user.uid);
+
         await addDoc(collection(db, "chats", activeChatId, "msgs"), { txt: i.value, uid: user.uid, ts: new Date().toISOString() });
-        await updateDoc(doc(db, "chats", activeChatId), { lastMsg: i.value, lastSender: user.uid, ts: new Date().toISOString() });
+        
+        // Update chat metadata and mark unread for the RECIPIENT
+        await updateDoc(chatRef, { 
+            lastMsg: i.value, 
+            ts: new Date().toISOString(),
+            unreadFor: arrayUnion(otherUser) 
+        });
         i.value = '';
     }
 
@@ -736,6 +787,16 @@ v class="swiper <!DOCTYPE html>
         document.getElementById('st-users').innerText = u.size;
         const r = await getDocs(collection(db, "reports"));
         document.getElementById('st-reps').innerText = r.size;
+
+        // Fetch Visits Stats
+        const sDoc = await getDoc(doc(db, "stats", "visits"));
+        if(sDoc.exists()) {
+            const d = sDoc.data();
+            const today = new Date().toISOString().split('T')[0];
+            const month = today.slice(0, 7);
+            document.getElementById('st-day').innerText = d[today] || 0;
+            document.getElementById('st-month').innerText = d[month] || 0;
+        }
 
         const l = document.getElementById('adm-ads-list');
         l.innerHTML = allAds.map(a => `
@@ -766,6 +827,24 @@ v class="swiper <!DOCTYPE html>
     window.admFeat = async(id, s) => { await updateDoc(doc(db,"ads",id), {isFeatured:!s}); loadAds(); initAdm(); };
     window.admBan = async(id, s) => { await updateDoc(doc(db,"users",id), {isBanned:!s}); initAdm(); };
 
+    // Admin Uploads
+    window.saveAdmLogo = async() => {
+        const file = document.getElementById('adm-logo-file').files[0];
+        if(!file) return;
+        const b64 = await compressImg(file);
+        await setDoc(doc(db, "settings", "config"), { logoBlob: b64 }, {merge:true});
+        Swal.fire('تم', 'تم تحديث اللوغو', 'success');
+    }
+
+    window.saveAdmBanner = async() => {
+        const file = document.getElementById('adm-banner-file').files[0];
+        const link = document.getElementById('adm-banner-link').value;
+        if(!file) return;
+        const b64 = await compressImg(file);
+        await setDoc(doc(db, "settings", "config"), { bannerBlob: b64, bannerLink: link }, {merge:true});
+        Swal.fire('تم', 'تم تحديث البانر', 'success');
+    }
+
     window.saveConf = async(k) => {
         await setDoc(doc(db, "settings", "config"), { [k]: document.getElementById('set-'+k).value }, {merge:true});
         Swal.fire('حفظ', '', 'success');
@@ -775,8 +854,14 @@ v class="swiper <!DOCTYPE html>
         const s = await getDoc(doc(db, "settings", "config"));
         if(s.exists()) {
             const d = s.data();
-            if(d.logo) document.getElementById('app-logo').innerText = d.logo;
-            if(d.banner) document.getElementById('main-banner').innerHTML = `<div class="swiper-slide"><img src="${d.banner}"></div>`;
+            if(d.logoBlob) {
+                 // Create an image tag or set text. If it was text before, replacing with img:
+                 document.getElementById('app-logo').innerHTML = `<img src="${d.logoBlob}" style="height:40px; vertical-align:middle">`;
+            }
+            if(d.bannerBlob) {
+                const bannerHtml = `<img src="${d.bannerBlob}" onclick="window.open('${d.bannerLink||'#'}')">`;
+                document.getElementById('banner-slide-content').innerHTML = bannerHtml;
+            }
             localStorage.setItem('txt_about', d.about || "");
         }
     }
@@ -792,7 +877,13 @@ v class="swiper <!DOCTYPE html>
         Swal.fire('شكراً', '', 'success'); closeModal('report-modal');
     }
     window.doSearch = () => {
-        loadAds({search:document.getElementById('f-search').value, cat:document.getElementById('f-cat').value, city:document.getElementById('f-city').value});
+        loadAds({
+            search: document.getElementById('f-search').value,
+            cat: document.getElementById('f-cat').value,
+            city: document.getElementById('f-city').value,
+            min: document.getElementById('f-min').value,
+            max: document.getElementById('f-max').value
+        });
         closeModal('filter-modal');
     }
     window.filterCat = (c) => loadAds({cat:c});

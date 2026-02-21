@@ -1,137 +1,150 @@
-<!DOCTYPE html>
+v class="swiper <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>El Affroun Online</title>
     
-    <!-- خطوط وأيقونات -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- مكتبات خارجية -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
-            --primary: #f26522; 
-            --secondary: #2c3e50;
-            --bg: #f4f6f8;
+            --primary: #f26522; /* Ouedkniss Orange */
+            --secondary: #2c3e50; /* Dark Blue */
+            --bg: #f4f6f9;
             --white: #ffffff;
             --gold: #ffc107;
             --chat-sent: #dcf8c6;
             --chat-recv: #ffffff;
-            --radius: 12px;
-            --shadow: 0 4px 12px rgba(0,0,0,0.08);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --radius: 10px;
+            --shadow: 0 4px 10px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
         }
+
+        /* LTR Overrides */
+        html[dir="ltr"] { font-family: 'Roboto', sans-serif; }
+        html[dir="ltr"] .sidebar { right: auto; left: -280px; }
+        html[dir="ltr"] .sidebar.active { left: 0; }
+        html[dir="ltr"] .fab-zone { left: auto; right: 20px; }
+        html[dir="ltr"] .cat-card { margin-left: 0; margin-right: 15px; }
+        html[dir="ltr"] .ad-meta { flex-direction: row-reverse; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg); color: #333; padding-bottom: 90px; overflow-x: hidden; }
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-        
-        /* Utility */
+
+        /* Helpers */
         .hidden { display: none !important; }
         .flex { display: flex; align-items: center; }
         .center { display: flex; justify-content: center; align-items: center; }
-        .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; }
-        .btn:active { transform: scale(0.96); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(242, 101, 34, 0.3); }
+        .btn { padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--secondary); color: white; }
+        .btn-danger { background: #dc3545; color: white; }
         .btn-success { background: #28a745; color: white; }
         .w-100 { width: 100%; }
-
+        
         /* Header */
-        header { background: var(--white); height: 65px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 0 15px; display: flex; align-items: center; justify-content: space-between; }
-        .logo { font-size: 1.4rem; font-weight: 800; color: var(--secondary); }
+        header { background: var(--white); height: 60px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.3rem; font-weight: 800; color: var(--secondary); }
         .logo span { color: var(--primary); }
-        .nav-icon { font-size: 1.4rem; color: var(--secondary); margin-right: 15px; cursor: pointer; position: relative; }
-        .badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 50%; }
+        .nav-icons { display: flex; gap: 15px; align-items: center; }
+        .nav-icon { font-size: 1.4rem; color: var(--secondary); cursor: pointer; position: relative; }
+        .badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 50%; display: none; }
+        .badge.show { display: block; }
+        .lang-switch { font-size: 0.8rem; font-weight: bold; border: 1px solid #ddd; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
 
         /* Sidebar */
-        .sidebar { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: white; z-index: 1200; transition: var(--transition); padding: 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        .sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: white; z-index: 1200; transition: var(--transition); box-shadow: 0 0 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; padding: 20px; }
         .sidebar.active { right: 0; }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1100; display: none; backdrop-filter: blur(2px); }
         .overlay.active { display: block; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-        .menu-item:hover { background: #f9f9f9; color: var(--primary); }
+        .menu-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .menu-item:hover { color: var(--primary); background: #fffcf9; }
 
-        /* Banner */
-        .swiper { width: 100%; height: 200px; margin-bottom: 20px; border-radius: 0 0 15px 15px; overflow: hidden; }
+        /* Main Content */
+        .swiper { width: 100%; height: 200px; margin-bottom: 15px; border-radius: 0 0 15px 15px; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
 
         /* Categories */
-        .cats-wrapper { overflow-x: auto; padding: 10px 15px; white-space: nowrap; scrollbar-width: none; background: white; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .cats-wrapper::-webkit-scrollbar { display: none; }
+        .cats-scroll { overflow-x: auto; padding: 10px 15px; white-space: nowrap; scrollbar-width: none; background: white; margin-bottom: 15px; }
+        .cats-scroll::-webkit-scrollbar { display: none; }
         .cat-card { display: inline-flex; flex-direction: column; align-items: center; margin-left: 15px; width: 80px; cursor: pointer; }
-        .cat-img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; margin-bottom: 5px; transition: var(--transition); }
+        .cat-img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; margin-bottom: 5px; transition: var(--transition); }
         .cat-card:hover .cat-img { border-color: var(--primary); transform: scale(1.05); }
-        .cat-name { font-size: 0.75rem; font-weight: 700; color: var(--secondary); text-align: center; white-space: normal; line-height: 1.2; }
+        .cat-name { font-size: 0.7rem; font-weight: 700; color: var(--secondary); text-align: center; white-space: normal; line-height: 1.2; }
 
         /* Ads Grid */
-        .section-title { font-size: 1.2rem; font-weight: 800; padding: 0 15px; margin: 20px 0 10px; display: flex; justify-content: space-between; align-items: center; }
-        .ads-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 0 10px; max-width: 1200px; margin: 0 auto; }
+        .section-title { padding: 0 15px; margin: 20px 0 10px; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 1.1rem; }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 0 10px; max-width: 1200px; margin: 0 auto; }
         
-        .ad-item { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative; transition: transform 0.2s; cursor: pointer; }
-        .ad-item:active { transform: scale(0.98); }
-        .ad-item.featured { border: 2px solid var(--gold); }
-        .feat-badge { position: absolute; top: 8px; right: 8px; background: var(--gold); color: #000; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .ad-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative; cursor: pointer; transition: transform 0.2s; }
+        .ad-card:active { transform: scale(0.98); }
+        .ad-card.featured { border: 2px solid var(--gold); }
+        .feat-badge { position: absolute; top: 8px; right: 8px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 2; }
         
-        .ad-img-c { height: 150px; background: #eee; }
-        .ad-img-c img { width: 100%; height: 100%; object-fit: cover; }
-        .ad-body { padding: 10px; }
+        .ad-img-box { height: 140px; background: #eee; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .ad-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .ad-content { padding: 10px; }
         .ad-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; }
-        .ad-text { font-size: 0.9rem; margin: 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
-        .ad-meta { font-size: 0.75rem; color: #888; display: flex; justify-content: space-between; }
+        .ad-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 5px 0; }
+        .ad-meta { font-size: 0.7rem; color: #888; display: flex; justify-content: space-between; }
 
         /* Floating Buttons */
         .fab-zone { position: fixed; bottom: 25px; left: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
-        .fab { width: 55px; height: 55px; border-radius: 50%; border: none; color: white; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; opacity: 0.8; transition: 0.3s; }
+        .fab { width: 55px; height: 55px; border-radius: 50%; border: none; color: white; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; opacity: 0.6; transition: 0.3s; }
         .fab:hover, .fab:active { opacity: 1; transform: scale(1.1); }
-        .fab-main { background: var(--primary); font-size: 1.6rem; }
+        .fab-main { background: var(--primary); font-size: 1.5rem; }
         .fab-sec { background: var(--secondary); }
 
         /* Modals */
-        .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal-wrap.active { display: flex; }
-        .modal-box { background: white; width: 90%; max-width: 450px; border-radius: 15px; padding: 25px; max-height: 85vh; overflow-y: auto; animation: popUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; }
-        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; color: #999; }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-content { background: white; width: 90%; max-width: 450px; border-radius: 12px; padding: 20px; max-height: 85vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
+        .close-modal { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; color: #999; }
+        html[dir="ltr"] .close-modal { left: auto; right: 15px; }
+        @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
 
-        .inp-group { margin-bottom: 15px; }
-        .inp-label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-        .inp-field { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: 0.3s; }
-        .inp-field:focus { border-color: var(--primary); }
+        .form-group { margin-bottom: 15px; }
+        .form-input, .form-select, .form-area { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; }
+        .form-input:focus { border-color: var(--primary); }
+        .file-input { width: 100%; padding: 10px; background: #f9f9f9; border: 1px dashed #ccc; border-radius: 6px; }
 
-        /* Product View */
-        .full-page { position: fixed; inset: 0; background: white; z-index: 1500; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; }
+        /* Full Page Overlay */
+        .full-page { position: fixed; inset: 0; background: white; z-index: 1500; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; }
         .full-page.active { transform: translateY(0); }
-        .page-head { position: absolute; top: 15px; right: 15px; z-index: 10; width: 40px; height: 40px; background: rgba(0,0,0,0.4); border-radius: 50%; color: white; cursor: pointer; display: flex; justify-content: center; align-items: center; }
         
-        .prod-slider { height: 350px; background: #000; }
-        .prod-content { padding: 20px; padding-bottom: 80px; }
-        .prod-actions { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); display: flex; gap: 10px; z-index: 1501; }
-
-        /* Chat System */
-        .chat-list-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .page-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; position: sticky; top: 0; background: white; z-index: 10; }
+        .page-back { font-size: 1.2rem; cursor: pointer; }
+        
+        /* Chat */
+        .chat-list-item { padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 15px; cursor: pointer; }
         .chat-list-item:hover { background: #f9f9f9; }
-        .chat-window { display: flex; flex-direction: column; height: 100%; }
-        .chat-header { padding: 15px; background: var(--secondary); color: white; display: flex; align-items: center; gap: 10px; }
-        .chat-msgs { flex: 1; overflow-y: auto; padding: 15px; background: #e5ddd5; display: flex; flex-direction: column; gap: 10px; }
-        .msg-bubble { max-width: 75%; padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; position: relative; }
+        .chat-list-item.unread { background: #eef7ff; font-weight: bold; border-right: 4px solid var(--primary); }
+
+        .chat-room { flex: 1; background: #e5ddd5; display: flex; flex-direction: column; }
+        .msgs-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg-bubble { max-width: 75%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; position: relative; word-wrap: break-word; }
         .msg-sent { align-self: flex-end; background: var(--chat-sent); border-bottom-left-radius: 0; }
         .msg-recv { align-self: flex-start; background: var(--chat-recv); border-bottom-right-radius: 0; }
-        .chat-input-area { padding: 10px; background: white; display: flex; gap: 10px; border-top: 1px solid #ddd; }
+        .chat-input { padding: 10px; background: white; display: flex; gap: 10px; border-top: 1px solid #ddd; }
 
-        /* Admin Dashboard Styles */
-        .admin-stat { background: #fff; padding: 20px; border-radius: 10px; text-align: center; box-shadow: var(--shadow); }
-        .admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; background: white; }
+        /* Admin */
+        #admin-panel { z-index: 5000; background: #f4f6f9; }
+        .admin-header { background: var(--secondary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .admin-tabs { display: flex; gap: 10px; overflow-x: auto; padding: 10px; background: white; }
+        .tab-btn { padding: 6px 15px; background: #eee; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.85rem; }
+        .tab-btn.active { background: var(--secondary); color: white; }
+        .admin-view { padding: 15px; display: none; }
+        .admin-view.active { display: block; }
+        .stat-card { background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: var(--shadow); margin-bottom: 10px; }
+        .admin-item { background: white; padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Toast Container (SweetAlert handles this, but custom toast pos) */
-        .swal2-container { z-index: 10000 !important; }
-
+        footer { text-align: center; padding: 30px; color: #999; margin-top: 20px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -140,11 +153,14 @@
 <header>
     <div class="flex">
         <i class="fas fa-bars nav-icon" onclick="toggleSidebar()"></i>
-        <div class="logo">El Affroun <span>Online</span></div>
+        <div class="logo" id="app-logo">El Affroun <span>Online</span></div>
     </div>
-    <div class="flex">
+    <div class="nav-icons">
+        <div class="lang-switch" onclick="toggleLang()" id="lang-txt">FR</div>
         <i class="fas fa-search nav-icon" onclick="openModal('filter-modal')"></i>
-        <i class="fas fa-envelope nav-icon" onclick="openMyChats()"></i>
+        <i class="fas fa-envelope nav-icon" onclick="openMyChats()">
+            <span class="badge" id="msg-badge">0</span>
+        </i>
         <i class="fas fa-user-circle nav-icon" onclick="checkAuth()"></i>
     </div>
 </header>
@@ -152,47 +168,46 @@
 <!-- SIDEBAR -->
 <div class="overlay" onclick="closeAll()"></div>
 <div class="sidebar" id="sidebar">
-    <div class="flex" style="justify-content:space-between; margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid #eee;">
-        <h3 class="logo" style="font-size:1.1rem">القائمة</h3>
-        <i class="fas fa-times" style="cursor:pointer; font-size:1.5rem" onclick="toggleSidebar()"></i>
+    <div class="flex" style="justify-content:space-between; margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:10px">
+        <h3 class="logo" data-tr="menu">القائمة</h3>
+        <i class="fas fa-times" style="font-size:1.5rem; cursor:pointer" onclick="toggleSidebar()"></i>
     </div>
-    <div class="menu-item" onclick="window.location.reload()"><i class="fas fa-home"></i> الرئيسية</div>
-    <div class="menu-item" onclick="openMyChats()"><i class="fas fa-comments"></i> الرسائل</div>
-    <div class="menu-item" onclick="showStatic('about')"><i class="fas fa-info-circle"></i> من نحن</div>
-    <div class="menu-item" onclick="showStatic('contact')"><i class="fas fa-phone"></i> اتصل بنا</div>
-    <div class="menu-item" onclick="showStatic('privacy')"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</div>
-    <div class="menu-item" onclick="openModal('report-modal')"><i class="fas fa-bug"></i> الإبلاغ عن مشكلة</div>
-    <div class="menu-item hidden" id="logout-btn" onclick="logout()" style="color:red; margin-top:auto"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</div>
+    <div class="menu-item" onclick="window.location.reload()"><i class="fas fa-home"></i> <span data-tr="home">الرئيسية</span></div>
+    <div class="menu-item" onclick="openMyChats()"><i class="fas fa-comments"></i> <span data-tr="msgs">الرسائل</span></div>
+    <div class="menu-item" onclick="showStatic('about')"><i class="fas fa-info-circle"></i> <span data-tr="about">من نحن</span></div>
+    <div class="menu-item" onclick="showStatic('contact')"><i class="fas fa-phone"></i> <span data-tr="contact">اتصل بنا</span></div>
+    <div class="menu-item" onclick="openModal('report-modal')"><i class="fas fa-bug"></i> <span data-tr="report">إبلاغ</span></div>
+    <div class="menu-item hidden" id="logout-btn" onclick="logout()" style="color:var(--primary); margin-top:auto"><i class="fas fa-sign-out-alt"></i> <span data-tr="logout">خروج</span></div>
 </div>
 
 <!-- MAIN -->
 <main>
     <!-- Slider -->
     <div class="swiper mySwiper">
-        <div class="swiper-wrapper">
+        <div class="swiper-wrapper" id="main-banner">
             <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80"></div>
-            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80"></div>
         </div>
         <div class="swiper-pagination"></div>
     </div>
 
     <!-- Categories -->
-    <div class="cats-wrapper" id="cats-list"></div>
+    <div class="cats-scroll" id="cats-container"></div>
 
-    <!-- Ads Sections -->
-    <div id="feat-container" class="hidden">
-        <div class="section-title"><span style="color:var(--gold)">⭐ مميزة</span></div>
-        <div class="ads-container" id="ads-feat"></div>
+    <!-- Featured -->
+    <div id="feat-section" class="hidden">
+        <div class="section-title"><span style="color:var(--gold)" data-tr="featured">⭐ مميزة</span></div>
+        <div class="ads-grid" id="featured-ads"></div>
     </div>
 
+    <!-- All Ads -->
     <div class="section-title">
-        <span>📦 أحدث الإعلانات</span>
-        <small style="color:var(--primary); font-size:0.8rem; cursor:pointer" onclick="openModal('filter-modal')">تصفية <i class="fas fa-filter"></i></small>
+        <span data-tr="latest">📦 أحدث الإعلانات</span>
+        <small style="color:var(--primary); cursor:pointer" onclick="openModal('filter-modal')"><i class="fas fa-filter"></i></small>
     </div>
-    <div class="ads-container" id="ads-all"></div>
+    <div class="ads-grid" id="all-ads"></div>
 </main>
 
-<!-- Floating Buttons -->
+<!-- FLOATING BUTTONS -->
 <div class="fab-zone">
     <button class="fab fab-sec center" onclick="openModal('filter-modal')"><i class="fas fa-sliders-h"></i></button>
     <button class="fab fab-main center" onclick="startPublish()"><i class="fas fa-plus"></i></button>
@@ -200,110 +215,76 @@
 
 <!-- === MODALS === -->
 
-<!-- Auth -->
+<!-- Login -->
 <div class="modal-wrap" id="auth-modal">
-    <div class="modal-box">
-        <span class="close-btn" onclick="closeModal('auth-modal')">&times;</span>
-        <h2 style="text-align:center; margin-bottom:20px">تسجيل الدخول</h2>
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('auth-modal')">&times;</span>
+        <h2 style="text-align:center; margin-bottom:15px" data-tr="login">دخول</h2>
         <form id="auth-form">
-            <div class="inp-group">
-                <label class="inp-label">البريد الإلكتروني</label>
-                <input type="email" id="log-email" class="inp-field" required>
+            <input type="email" id="log-email" class="form-input" style="margin-bottom:10px" placeholder="Email" required>
+            <input type="password" id="log-pass" class="form-input" style="margin-bottom:10px" placeholder="Password" required>
+            <div id="reg-fields" class="hidden">
+                <input type="text" id="reg-name" class="form-input" style="margin-bottom:10px" placeholder="الاسم">
+                <input type="tel" id="reg-phone" class="form-input" style="margin-bottom:10px" placeholder="الهاتف">
             </div>
-            <div class="inp-group">
-                <label class="inp-label">كلمة المرور</label>
-                <input type="password" id="log-pass" class="inp-field" required>
-            </div>
-            
-            <div id="signup-fields" class="hidden">
-                <div class="inp-group">
-                    <label class="inp-label">الاسم الكامل</label>
-                    <input type="text" id="reg-name" class="inp-field">
-                </div>
-                <div class="inp-group">
-                    <label class="inp-label">رقم الهاتف</label>
-                    <input type="tel" id="reg-phone" class="inp-field">
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">متابعة</button>
-            <p style="text-align:center; margin-top:15px; color:var(--primary); cursor:pointer" onclick="toggleRegMode()" id="auth-toggle-txt">ليس لديك حساب؟ إنشاء حساب جديد</p>
+            <button type="submit" class="btn btn-primary w-100" data-tr="submit">دخول</button>
+            <p style="text-align:center; margin-top:15px; color:var(--primary); cursor:pointer" onclick="toggleReg()">حساب جديد / دخول</p>
         </form>
     </div>
 </div>
 
 <!-- Publish Ad -->
 <div class="modal-wrap" id="pub-modal">
-    <div class="modal-box">
-        <span class="close-btn" onclick="closeModal('pub-modal')">&times;</span>
-        <h2 style="margin-bottom:15px">نشر إعلان</h2>
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('pub-modal')">&times;</span>
+        <h3 style="margin-bottom:15px" data-tr="pub_title">نشر إعلان</h3>
         <form id="pub-form">
-            <input type="text" id="p-title" class="inp-field" placeholder="اسم المنتج/الخدمة" style="margin-bottom:10px" required>
-            <select id="p-cat" class="inp-field" style="margin-bottom:10px" required></select>
+            <input type="text" id="p-title" class="form-input" style="margin-bottom:10px" placeholder="العنوان" required>
+            <select id="p-cat" class="form-select" style="margin-bottom:10px" required></select>
             <div class="flex" style="gap:10px; margin-bottom:10px">
-                <input type="number" id="p-price" class="inp-field" placeholder="السعر (دج)" required>
-                <select id="p-cond" class="inp-field">
-                    <option value="جديدة">جديدة</option>
-                    <option value="مستعملة">مستعملة</option>
-                </select>
+                <input type="number" id="p-price" class="form-input" placeholder="السعر (DA)" required>
+                <select id="p-city" class="form-select" required></select>
             </div>
-            <select id="p-city" class="inp-field" style="margin-bottom:10px" required>
-                <option value="العفرون">العفرون</option>
-                <option value="موزاية">موزاية</option>
-                <option value="شفة">شفة</option>
-                <option value="احمر العين">احمر العين</option>
-                <option value="واد جر">واد جر</option>
-                <option value="حطاطبة">حطاطبة</option>
-            </select>
-            <label class="inp-label">رقم الهاتف للتواصل</label>
-            <input type="tel" id="p-phone" class="inp-field" placeholder="0550..." style="margin-bottom:10px" required>
+            <input type="tel" id="p-phone" class="form-input" style="margin-bottom:10px" placeholder="رقم الهاتف" required>
+            <textarea id="p-desc" class="form-area" rows="3" style="margin-bottom:10px" placeholder="الوصف..."></textarea>
             
-            <textarea id="p-desc" class="inp-field" rows="4" placeholder="الوصف..." style="margin-bottom:10px"></textarea>
+            <label style="font-weight:bold; font-size:0.9rem" data-tr="img_upload">صورة المنتج</label>
+            <input type="file" id="p-file" class="file-input" accept="image/*" required>
             
-            <label class="inp-label">روابط الصور (رابط واحد على الأقل)</label>
-            <input type="url" class="inp-field" id="p-img1" placeholder="رابط الصورة 1" required style="margin-bottom:5px">
-            <input type="url" class="inp-field" id="p-img2" placeholder="رابط الصورة 2 (اختياري)">
-
-            <button type="submit" class="btn btn-primary w-100" style="margin-top:10px">نشر الآن</button>
+            <button type="submit" class="btn btn-primary w-100" style="margin-top:15px" id="pub-btn" data-tr="publish">نشر</button>
         </form>
     </div>
 </div>
 
-<!-- Filter Modal -->
+<!-- Filter -->
 <div class="modal-wrap" id="filter-modal">
-    <div class="modal-box">
-        <span class="close-btn" onclick="closeModal('filter-modal')">&times;</span>
-        <h3>فلترة البحث</h3>
-        <br>
-        <input type="text" id="f-search" class="inp-field" placeholder="بحث بالاسم..." style="margin-bottom:10px">
-        <select id="f-cat" class="inp-field" style="margin-bottom:10px"><option value="">كل الفئات</option></select>
-        <select id="f-city" class="inp-field" style="margin-bottom:10px">
-            <option value="">كل المدن</option>
-            <option value="العفرون">العفرون</option>
-            <option value="موزاية">موزاية</option>
-            <option value="شفة">شفة</option>
-            <option value="احمر العين">احمر العين</option>
-            <option value="واد جر">واد جر</option>
-            <option value="حطاطبة">حطاطبة</option>
-        </select>
-        <div class="flex" style="gap:10px">
-            <input type="number" id="f-min" class="inp-field" placeholder="من (السعر)">
-            <input type="number" id="f-max" class="inp-field" placeholder="إلى">
-        </div>
-        <button onclick="doSearch()" class="btn btn-secondary w-100" style="margin-top:15px">بحث</button>
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('filter-modal')">&times;</span>
+        <h3 data-tr="filter">فلترة</h3><br>
+        <input type="text" id="f-search" class="form-input" style="margin-bottom:10px" placeholder="بحث...">
+        <select id="f-cat" class="form-select" style="margin-bottom:10px"><option value="">الكل</option></select>
+        <select id="f-city" class="form-select" style="margin-bottom:10px"><option value="">الكل</option></select>
+        <button onclick="doSearch()" class="btn btn-secondary w-100" data-tr="search">بحث</button>
     </div>
 </div>
 
-<!-- Report Modal -->
+<!-- Report -->
 <div class="modal-wrap" id="report-modal">
-    <div class="modal-box">
-        <span class="close-btn" onclick="closeModal('report-modal')">&times;</span>
-        <h3>إبلاغ عن مشكلة</h3>
-        <form onsubmit="sendReport(event)">
-            <input type="text" id="r-name" class="inp-field" placeholder="اسمك" style="margin-bottom:10px" required>
-            <textarea id="r-desc" class="inp-field" placeholder="وصف المشكلة" required></textarea>
-            <button class="btn btn-secondary w-100" style="margin-top:10px">إرسال</button>
-        </form>
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('report-modal')">&times;</span>
+        <h3 data-tr="report">إبلاغ</h3><br>
+        <input type="text" id="r-name" class="form-input" style="margin-bottom:10px" placeholder="الاسم">
+        <textarea id="r-desc" class="form-area" rows="3" placeholder="الوصف"></textarea>
+        <button onclick="sendReport()" class="btn btn-danger w-100" style="margin-top:10px" data-tr="send">إرسال</button>
+    </div>
+</div>
+
+<!-- Static Page Modal -->
+<div class="modal-wrap" id="static-modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('static-modal')">&times;</span>
+        <h3 id="static-title"></h3>
+        <div id="static-body" style="margin-top:15px; line-height:1.6; color:#555"></div>
     </div>
 </div>
 
@@ -311,98 +292,124 @@
 
 <!-- Product View -->
 <div class="full-page" id="prod-page">
-    <div class="page-head" onclick="closePage('prod-page')"><i class="fas fa-arrow-right"></i></div>
-    
-    <div class="swiper prodSwiper">
+    <div class="page-header">
+        <i class="fas fa-arrow-right page-back" onclick="closePage('prod-page')"></i>
+        <h3 style="flex:1" data-tr="details">التفاصيل</h3>
+    </div>
+    <div class="swiper prodSwiper" style="height:300px; background:#000">
         <div class="swiper-wrapper" id="prod-slides"></div>
         <div class="swiper-pagination"></div>
     </div>
-
-    <div class="prod-content">
-        <h2 id="v-price" style="color:var(--primary); margin-bottom:5px"></h2>
-        <h3 id="v-title" style="margin-bottom:10px"></h3>
-        
-        <div style="background:#f9f9f9; padding:15px; border-radius:10px; display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px">
-            <div><i class="fas fa-tag"></i> <span id="v-cat"></span></div>
-            <div><i class="fas fa-map-marker-alt"></i> <span id="v-city"></span></div>
-            <div><i class="fas fa-box"></i> <span id="v-cond"></span></div>
-            <div><i class="far fa-clock"></i> <span id="v-date"></span></div>
+    <div style="padding:20px; padding-bottom:100px">
+        <h2 id="v-price" style="color:var(--primary); font-size:1.5rem"></h2>
+        <h3 id="v-title" style="margin:5px 0 15px 0"></h3>
+        <div class="flex" style="gap:15px; color:#666; font-size:0.9rem; margin-bottom:20px">
+            <span><i class="fas fa-map-marker-alt"></i> <span id="v-city"></span></span>
+            <span><i class="fas fa-tag"></i> <span id="v-cat"></span></span>
         </div>
-
-        <h4>الوصف:</h4>
-        <p id="v-desc" style="color:#666; line-height:1.6; white-space: pre-wrap;"></p>
-
-        <div style="margin-top:30px; border-top:1px solid #eee; padding-top:15px">
-            <small>نشر بواسطة:</small>
-            <div id="v-owner" style="font-weight:bold"></div>
+        <hr style="border:0; border-top:1px solid #eee; margin-bottom:15px">
+        <p id="v-desc" style="white-space: pre-wrap; line-height:1.6; color:#444"></p>
+        <div style="margin-top:25px; background:#f9f9f9; padding:15px; border-radius:8px">
+            <small data-tr="owner">المعلن</small>
+            <div id="v-owner" style="font-weight:bold; font-size:1.1rem"></div>
         </div>
     </div>
-
-    <div class="prod-actions">
-        <a id="btn-call" class="btn btn-success w-100" href="#"><i class="fas fa-phone"></i> اتصال</a>
-        <button id="btn-chat" class="btn btn-primary w-100" onclick="startChat()"><i class="fas fa-comment"></i> دردشة</button>
+    <div style="position:fixed; bottom:0; left:0; width:100%; padding:15px; background:white; box-shadow:0 -2px 10px rgba(0,0,0,0.1); display:flex; gap:10px">
+        <button class="btn btn-success w-100" onclick="callOwner()"><i class="fas fa-phone"></i> <span data-tr="call">اتصال</span></button>
+        <button class="btn btn-primary w-100" onclick="startChat()"><i class="fas fa-comment"></i> <span data-tr="chat">رسالة</span></button>
     </div>
 </div>
 
-<!-- Chats List -->
-<div class="full-page" id="chats-page" style="background:#fff">
-    <div class="chat-header">
-        <i class="fas fa-arrow-right" style="cursor:pointer" onclick="closePage('chats-page')"></i>
-        <h3>الرسائل</h3>
+<!-- Chat List -->
+<div class="full-page" id="chat-list-page">
+    <div class="page-header">
+        <i class="fas fa-arrow-right page-back" onclick="closePage('chat-list-page')"></i>
+        <h3 data-tr="msgs">الرسائل</h3>
     </div>
-    <div id="chats-list-container">
-        <!-- Chat items -->
-    </div>
+    <div id="chat-list-container"></div>
 </div>
 
 <!-- Chat Room -->
-<div class="full-page" id="chat-room" style="z-index:1600">
-    <div class="chat-window">
-        <div class="chat-header">
-            <i class="fas fa-arrow-right" style="cursor:pointer" onclick="closePage('chat-room')"></i>
-            <h3 id="chat-room-title">المحادثة</h3>
-        </div>
-        <div class="chat-msgs" id="msg-container"></div>
-        <form class="chat-input-area" onsubmit="sendMsg(event)">
-            <input type="text" id="msg-input" class="inp-field" placeholder="اكتب رسالة..." required>
+<div class="full-page" id="chat-room-page" style="z-index:1600">
+    <div class="page-header" style="background:var(--secondary); color:white">
+        <i class="fas fa-arrow-right page-back" onclick="closePage('chat-room-page')"></i>
+        <h3 id="chat-header-title">Chat</h3>
+    </div>
+    <div class="chat-room">
+        <div class="msgs-container" id="msgs-box"></div>
+        <form class="chat-input" onsubmit="sendMsg(event)">
+            <input type="text" id="msg-input" class="form-input" style="border:none" placeholder="..." required>
             <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
         </form>
     </div>
 </div>
 
 <!-- Admin Panel -->
-<div id="admin-view" style="display:none; position:fixed; inset:0; background:#f4f6f8; z-index:5000; overflow-y:auto">
-    <div class="chat-header" style="justify-content:space-between">
-        <h3>لوحة التحكم</h3>
-        <button class="btn btn-success" style="padding:5px 10px; font-size:0.8rem" onclick="closeAdmin()">خروج</button>
+<div class="full-page" id="admin-panel">
+    <div class="admin-header">
+        <h3>Admin Dashboard 🛡️</h3>
+        <button class="btn btn-danger" style="padding:5px 10px; font-size:0.8rem" onclick="closePage('admin-panel')">Exit</button>
     </div>
-    <div style="padding:20px">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px">
-            <div class="admin-stat"><h3>المنشورات</h3><span id="st-ads" style="font-size:1.5rem; font-weight:bold">0</span></div>
-            <div class="admin-stat"><h3>المستخدمين</h3><span id="st-users" style="font-size:1.5rem; font-weight:bold">0</span></div>
+    <div class="admin-tabs">
+        <div class="tab-btn active" onclick="switchAdmin('dash')">الرئيسية</div>
+        <div class="tab-btn" onclick="switchAdmin('ads')">الإعلانات</div>
+        <div class="tab-btn" onclick="switchAdmin('users')">المستخدمين</div>
+        <div class="tab-btn" onclick="switchAdmin('settings')">إعدادات</div>
+    </div>
+    
+    <!-- Admin Content -->
+    <div id="adm-dash" class="admin-view active">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+            <div class="stat-card"><h3>الإعلانات</h3><b id="st-ads">0</b></div>
+            <div class="stat-card"><h3>المستخدمين</h3><b id="st-users">0</b></div>
+            <div class="stat-card"><h3>البلاغات</h3><b id="st-reps">0</b></div>
         </div>
-        <h3>إدارة المنشورات</h3>
-        <div id="adm-ads" style="background:white; margin-top:10px"></div>
-        
-        <h3 style="margin-top:20px">إدارة المستخدمين</h3>
-        <div id="adm-users" style="background:white; margin-top:10px"></div>
+        <h4 style="margin:15px 0">البلاغات الأخيرة</h4>
+        <div id="adm-reps-list"></div>
+    </div>
+
+    <div id="adm-ads" class="admin-view">
+        <input type="text" class="form-input" placeholder="بحث..." onkeyup="filterAdmAds(this.value)">
+        <div id="adm-ads-list" style="margin-top:10px"></div>
+    </div>
+
+    <div id="adm-users" class="admin-view">
+        <input type="text" class="form-input" placeholder="بحث..." onkeyup="filterAdmUsers(this.value)">
+        <div id="adm-users-list" style="margin-top:10px"></div>
+    </div>
+
+    <div id="adm-settings" class="admin-view">
+        <div class="stat-card" style="text-align:right">
+            <label>اسم الموقع (Logo)</label>
+            <input type="text" id="set-logo" class="form-input">
+            <button class="btn btn-secondary" onclick="saveConf('logo')">حفظ</button>
+        </div>
+        <div class="stat-card" style="text-align:right">
+            <label>رابط البانر</label>
+            <input type="text" id="set-banner" class="form-input">
+            <button class="btn btn-secondary" onclick="saveConf('banner')">حفظ</button>
+        </div>
+        <div class="stat-card" style="text-align:right">
+            <label>نص "من نحن"</label>
+            <textarea id="set-about" class="form-area"></textarea>
+            <button class="btn btn-secondary" onclick="saveConf('about')">حفظ</button>
+        </div>
     </div>
 </div>
 
-<!-- Footer -->
-<footer style="text-align:center; padding:30px; color:#888; background:#eee; margin-top:30px">
+<footer>
     <p>&copy; 2026 El Affroun Online</p>
-    <div onclick="adminLogin()" style="opacity:0.1; cursor:pointer">🔒</div>
+    <div onclick="adminLogin()" style="opacity:0.1; width:20px; margin:0 auto; cursor:pointer">🔒</div>
 </footer>
 
-
-<!-- Scripts -->
+<!-- JAVASCRIPT -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, orderBy, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
+    // CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyDXdDA6rH50zAv5pmZKRkXnqosoFnC3GjY",
       authDomain: "filahadz-31183.firebaseapp.com",
@@ -417,22 +424,50 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- DATA & STATE ---
+    // --- TRANSLATION ---
+    const tr = {
+        ar: {
+            menu: "القائمة", home: "الرئيسية", msgs: "الرسائل", about: "من نحن", contact: "اتصل بنا", report: "إبلاغ", logout: "خروج",
+            featured: "⭐ مميزة", latest: "📦 أحدث الإعلانات", login: "دخول", submit: "دخول", pub_title: "نشر إعلان",
+            img_upload: "صورة المنتج", publish: "نشر", filter: "فلترة", search: "بحث", send: "إرسال", call: "اتصال", chat: "رسالة", owner: "المعلن", details: "التفاصيل"
+        },
+        fr: {
+            menu: "Menu", home: "Accueil", msgs: "Messages", about: "À propos", contact: "Contact", report: "Signaler", logout: "Déconnexion",
+            featured: "⭐ En Vedette", latest: "📦 Dernières Annonces", login: "Connexion", submit: "Entrer", pub_title: "Publier",
+            img_upload: "Image du produit", publish: "Publier", filter: "Filtrer", search: "Rechercher", send: "Envoyer", call: "Appeler", chat: "Message", owner: "Vendeur", details: "Détails"
+        }
+    };
+    let curLang = "ar";
+
+    window.toggleLang = () => {
+        curLang = curLang === "ar" ? "fr" : "ar";
+        document.documentElement.dir = curLang === "ar" ? "rtl" : "ltr";
+        document.getElementById('lang-txt').innerText = curLang.toUpperCase();
+        document.querySelectorAll('[data-tr]').forEach(el => {
+            el.innerText = tr[curLang][el.getAttribute('data-tr')];
+        });
+        document.querySelectorAll('.page-back').forEach(el => {
+            el.style.transform = curLang === "ar" ? "rotate(0deg)" : "rotate(180deg)";
+        });
+    }
+
+    // --- DATA ---
     const categories = [
-        {name: "مركبات و سيارات", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=150&q=80"},
-        {name: "هواتف و الكترونيات", img: "https://images.unsplash.com/photo-1598327105666-5b89351aff23?auto=format&fit=crop&w=150&q=80"},
-        {name: "كهرومنزلية", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=150&q=80"},
-        {name: "ملابس نسائية", img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=150&q=80"},
-        {name: "ملابس رجالية", img: "https://images.unsplash.com/photo-1490578474895-699cd4d2ff5f?auto=format&fit=crop&w=150&q=80"},
-        {name: "ملابس أطفال", img: "https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?auto=format&fit=crop&w=150&q=80"},
-        {name: "خدمات", img: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=150&q=80"},
-        {name: "خياطة", img: "https://images.unsplash.com/photo-1528578577235-b963df6db908?auto=format&fit=crop&w=150&q=80"},
-        {name: "حلويات", img: "https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=150&q=80"},
-        {name: "وكالة سياحية", img: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=150&q=80"},
-        {name: "عقارات", img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=150&q=80"},
-        {name: "عروض عمل", img: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=150&q=80"},
-        {name: "أخرى", img: "https://images.unsplash.com/photo-1531297461136-82lw9z42330e?auto=format&fit=crop&w=150&q=80"}
+        {name: "مركبات", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=100"},
+        {name: "هواتف", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=100"},
+        {name: "كهرومنزلية", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=100"},
+        {name: "ملابس نساء", img: "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=100"},
+        {name: "ملابس رجال", img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=100"},
+        {name: "ملابس أطفال", img: "https://images.unsplash.com/photo-1519278409-1f56fdda7fba?w=100"},
+        {name: "خدمات", img: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=100"},
+        {name: "خياطة", img: "https://images.unsplash.com/photo-1528578577235-b963df6db908?w=100"},
+        {name: "حلويات", img: "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=100"},
+        {name: "وكالة سياحية", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=100"},
+        {name: "عقارات", img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=100"},
+        {name: "عروض عمل", img: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=100"},
+        {name: "أخرى", img: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=100"}
     ];
+    const cities = ["العفرون", "موزاية", "شفة", "احمر العين", "واد جر", "حطاطبة"];
 
     let user = null;
     let allAds = [];
@@ -441,378 +476,331 @@
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-        new Swiper(".mySwiper", { autoplay: { delay: 3000 }, loop: true, pagination: { clickable: true } });
-        renderCats();
-        loadAds();
-        fillSelects();
-    });
-
-    function renderCats() {
-        const c = document.getElementById('cats-list');
-        c.innerHTML = categories.map(i => `
-            <div class="cat-card" onclick="filterByCat('${i.name}')">
-                <img src="${i.img}" class="cat-img">
-                <div class="cat-name">${i.name}</div>
+        // Init Slider
+        new Swiper(".mySwiper", {autoplay:{delay:3000}, loop:true, pagination:{clickable:true}});
+        
+        // Render Categories
+        const catHtml = categories.map(c => `
+            <div class="cat-card" onclick="filterCat('${c.name}')">
+                <img src="${c.img}" class="cat-img"><span class="cat-name">${c.name}</span>
             </div>
         `).join('');
-    }
+        document.getElementById('cats-container').innerHTML = catHtml;
 
-    function fillSelects() {
-        const s1 = document.getElementById('p-cat');
-        const s2 = document.getElementById('f-cat');
-        categories.forEach(c => {
-            s1.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-            s2.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-        });
-    }
+        // Populate Selects
+        const fill = (id, arr) => {
+            const el = document.getElementById(id);
+            arr.forEach(i => el.innerHTML += `<option value="${i.name||i}">${i.name||i}</option>`);
+        };
+        fill('p-cat', categories); fill('f-cat', categories);
+        fill('p-city', cities); fill('f-city', cities);
+
+        loadAds();
+        loadConfig();
+    });
 
     // --- AUTH ---
-    onAuthStateChanged(auth, async (u) => {
+    onAuthStateChanged(auth, async(u) => {
         user = u;
         if(u) {
             document.getElementById('logout-btn').classList.remove('hidden');
-            const d = await getDoc(doc(db, "users", u.uid));
-            if(d.exists() && d.data().isBanned) {
-                Swal.fire('تم حظر حسابك', 'تواصل مع الإدارة', 'error');
-                signOut(auth);
-            }
+            msgListener();
         } else {
             document.getElementById('logout-btn').classList.add('hidden');
+            document.getElementById('msg-badge').classList.remove('show');
         }
     });
 
-    window.checkAuth = () => {
-        if(user) Swal.fire('أهلاً بك', user.email, 'info');
-        else openModal('auth-modal');
-    };
-
-    window.toggleRegMode = () => {
-        document.getElementById('signup-fields').classList.toggle('hidden');
-        const txt = document.getElementById('auth-toggle-txt');
-        txt.innerText = txt.innerText.includes('إنشاء') ? "لديك حساب؟ تسجيل الدخول" : "ليس لديك حساب؟ إنشاء حساب جديد";
-    }
-
-    document.getElementById('auth-form').addEventListener('submit', async(e)=>{
+    window.toggleReg = () => document.getElementById('reg-fields').classList.toggle('hidden');
+    
+    document.getElementById('auth-form').addEventListener('submit', async(e) => {
         e.preventDefault();
         const email = document.getElementById('log-email').value;
         const pass = document.getElementById('log-pass').value;
-        const isReg = !document.getElementById('signup-fields').classList.contains('hidden');
-        
+        const isReg = !document.getElementById('reg-fields').classList.contains('hidden');
         try {
             if(isReg) {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
                 await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid,
-                    email, 
+                    uid: cred.user.uid, email, 
                     name: document.getElementById('reg-name').value,
                     phone: document.getElementById('reg-phone').value,
-                    role: 'user',
-                    isBanned: false
+                    role: 'user', isBanned: false
                 });
-                Swal.fire({icon:'success', title:'تم إنشاء الحساب', timer:1500, showConfirmButton:false});
+                Swal.fire({icon:'success', title:'تم التسجيل', timer:1500, showConfirmButton:false});
             } else {
                 await signInWithEmailAndPassword(auth, email, pass);
-                Swal.fire({icon:'success', title:'مرحباً بعودتك', timer:1500, showConfirmButton:false});
+                const uDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+                if(uDoc.exists() && uDoc.data().isBanned) { signOut(auth); throw new Error("محظور"); }
+                Swal.fire({icon:'success', title:'مرحباً', timer:1500, showConfirmButton:false});
             }
             closeModal('auth-modal');
-        } catch(err) {
-            Swal.fire('خطأ', err.message, 'error');
-        }
+        } catch(err) { Swal.fire('خطأ', err.message, 'error'); }
     });
 
-    window.logout = () => {
-        signOut(auth);
-        window.location.reload();
+    window.logout = () => { signOut(auth); window.location.reload(); };
+    window.checkAuth = () => user ? Swal.fire('حسابي', user.email, 'info') : openModal('auth-modal');
+
+    // --- ADS ---
+    const compressImg = (file) => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const scale = 600 / img.width;
+                    canvas.width = 600;
+                    canvas.height = img.height * scale;
+                    canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.7));
+                }
+            }
+        });
     }
 
-    // --- ADS LOGIC ---
-    window.loadAds = async (filters = {}) => {
+    document.getElementById('pub-form').addEventListener('submit', async(e) => {
+        e.preventDefault();
+        if(!user) return openModal('auth-modal');
+        const btn = document.getElementById('pub-btn');
+        btn.innerText = "جاري الرفع..."; btn.disabled = true;
+        try {
+            const imgData = await compressImg(document.getElementById('p-file').files[0]);
+            await addDoc(collection(db, "ads"), {
+                title: document.getElementById('p-title').value,
+                category: document.getElementById('p-cat').value,
+                price: document.getElementById('p-price').value,
+                city: document.getElementById('p-city').value,
+                phone: document.getElementById('p-phone').value,
+                desc: document.getElementById('p-desc').value,
+                img: imgData,
+                ownerId: user.uid,
+                ownerName: user.displayName || 'User',
+                timestamp: new Date().toISOString(),
+                isFeatured: false
+            });
+            Swal.fire('تم', 'تم النشر بنجاح', 'success');
+            closeModal('pub-modal');
+            loadAds();
+        } catch(err) { Swal.fire('خطأ', 'فشل الرفع', 'error'); }
+        btn.innerText = "نشر"; btn.disabled = false;
+    });
+
+    window.startPublish = () => user ? openModal('pub-modal') : openModal('auth-modal');
+
+    window.loadAds = async (filter={}) => {
         const q = query(collection(db, "ads"), orderBy("timestamp", "desc"));
         const snap = await getDocs(q);
         allAds = [];
         snap.forEach(d => allAds.push({id: d.id, ...d.data()}));
         
-        // Filter in memory (Fixing filter issue)
         let res = allAds;
-        if(filters.search) res = res.filter(a => a.title.includes(filters.search));
-        if(filters.cat) res = res.filter(a => a.category == filters.cat);
-        if(filters.city) res = res.filter(a => a.city == filters.city);
-        if(filters.min) res = res.filter(a => Number(a.price) >= Number(filters.min));
-        if(filters.max) res = res.filter(a => Number(a.price) <= Number(filters.max));
-
+        if(filter.search) res = res.filter(a => a.title.includes(filter.search));
+        if(filter.cat) res = res.filter(a => a.category === filter.cat);
+        if(filter.city) res = res.filter(a => a.city === filter.city);
+        
         renderAds(res);
-    };
+    }
 
     function renderAds(list) {
-        const feat = document.getElementById('ads-feat');
-        const all = document.getElementById('ads-all');
-        const fCont = document.getElementById('feat-container');
+        const feat = document.getElementById('featured-ads');
+        const all = document.getElementById('all-ads');
         feat.innerHTML = ''; all.innerHTML = '';
-
+        
         const fList = list.filter(a => a.isFeatured);
         if(fList.length) {
-            fCont.classList.remove('hidden');
-            fList.forEach(a => feat.innerHTML += getAdHtml(a));
-        } else fCont.classList.add('hidden');
-
-        list.filter(a => !a.isFeatured).forEach(a => all.innerHTML += getAdHtml(a));
+            document.getElementById('feat-section').classList.remove('hidden');
+            fList.forEach(a => feat.innerHTML += mkAd(a));
+        } else document.getElementById('feat-section').classList.add('hidden');
+        
+        list.filter(a => !a.isFeatured).forEach(a => all.innerHTML += mkAd(a));
     }
 
-    function getAdHtml(a) {
+    function mkAd(a) {
         return `
-            <div class="ad-item ${a.isFeatured?'featured':''}" onclick="showProd('${a.id}')">
-                ${a.isFeatured ? '<div class="feat-badge">★ مميز</div>' : ''}
-                <div class="ad-img-c"><img src="${a.images[0]}" loading="lazy"></div>
-                <div class="ad-body">
-                    <div class="ad-price">${Number(a.price).toLocaleString()} دج</div>
-                    <div class="ad-text">${a.title}</div>
-                    <div class="ad-meta">
-                        <span><i class="fas fa-map-marker-alt"></i> ${a.city}</span>
-                        <span>${a.category}</span>
-                    </div>
-                </div>
+        <div class="ad-card ${a.isFeatured?'featured':''}" onclick="openProd('${a.id}')">
+            ${a.isFeatured ? '<div class="feat-badge">★</div>' : ''}
+            <div class="ad-img-box"><img src="${a.img}" loading="lazy"></div>
+            <div class="ad-content">
+                <div class="ad-price">${Number(a.price).toLocaleString()} DA</div>
+                <div class="ad-title">${a.title}</div>
+                <div class="ad-meta"><span>${a.city}</span><span>${a.category}</span></div>
             </div>
-        `;
+        </div>`;
     }
-
-    // --- PUBLISH ---
-    window.startPublish = () => {
-        if(!user) return Swal.fire('يجب تسجيل الدخول', 'سجل دخولك لنشر إعلان', 'warning').then(()=>openModal('auth-modal'));
-        openModal('pub-modal');
-        // Pre-fill phone if available
-        getDoc(doc(db, "users", user.uid)).then(s => {
-            if(s.exists() && s.data().phone) document.getElementById('p-phone').value = s.data().phone;
-        });
-    }
-
-    document.getElementById('pub-form').addEventListener('submit', async(e)=>{
-        e.preventDefault();
-        const imgs = [document.getElementById('p-img1').value];
-        if(document.getElementById('p-img2').value) imgs.push(document.getElementById('p-img2').value);
-
-        const d = {
-            title: document.getElementById('p-title').value,
-            category: document.getElementById('p-cat').value,
-            price: document.getElementById('p-price').value,
-            city: document.getElementById('p-city').value,
-            condition: document.getElementById('p-cond').value,
-            phone: document.getElementById('p-phone').value,
-            desc: document.getElementById('p-desc').value,
-            images: imgs,
-            ownerId: user.uid,
-            ownerName: user.displayName || 'مستخدم',
-            timestamp: new Date().toISOString(),
-            isFeatured: false
-        };
-
-        await addDoc(collection(db, "ads"), d);
-        Swal.fire({icon:'success', title:'تم النشر بنجاح!', timer:1500, showConfirmButton:false});
-        closeModal('pub-modal');
-        loadAds();
-    });
 
     // --- PRODUCT VIEW ---
-    window.showProd = async (id) => {
-        currentAd = allAds.find(a => a.id === id);
-        if(!currentAd) return;
-
-        // Slider
-        const sw = document.getElementById('prod-slides');
-        sw.innerHTML = currentAd.images.map(src => `<div class="swiper-slide"><img src="${src}" style="width:100%;height:100%;object-fit:contain;background:black"></div>`).join('');
-        new Swiper(".prodSwiper", { pagination: {clickable:true} });
-
-        document.getElementById('v-price').innerText = Number(currentAd.price).toLocaleString() + ' دج';
-        document.getElementById('v-title').innerText = currentAd.title;
-        document.getElementById('v-cat').innerText = currentAd.category;
-        document.getElementById('v-city').innerText = currentAd.city;
-        document.getElementById('v-cond').innerText = currentAd.condition;
-        document.getElementById('v-date').innerText = currentAd.timestamp.split('T')[0];
-        document.getElementById('v-desc').innerText = currentAd.desc;
+    window.openProd = async(id) => {
+        const ad = allAds.find(a => a.id === id);
+        currentAd = ad;
         
-        // Owner Info
-        const oSnap = await getDoc(doc(db, "users", currentAd.ownerId));
-        const oName = oSnap.exists() ? (oSnap.data().name || "مستخدم") : "مجهول";
-        document.getElementById('v-owner').innerText = oName;
+        document.getElementById('prod-slides').innerHTML = `<div class="swiper-slide"><img src="${ad.img}" style="width:100%;height:100%;object-fit:contain"></div>`;
+        new Swiper(".prodSwiper", {pagination:{clickable:true}});
 
-        // Phone Button logic
-        const btnCall = document.getElementById('btn-call');
-        btnCall.href = `tel:${currentAd.phone}`;
-        btnCall.onclick = () => Swal.fire('رقم الهاتف', currentAd.phone, 'info');
-
+        document.getElementById('v-price').innerText = Number(ad.price).toLocaleString() + " DA";
+        document.getElementById('v-title').innerText = ad.title;
+        document.getElementById('v-cat').innerText = ad.category;
+        document.getElementById('v-city').innerText = ad.city;
+        document.getElementById('v-desc').innerText = ad.desc;
+        
+        const oDoc = await getDoc(doc(db, "users", ad.ownerId));
+        document.getElementById('v-owner').innerText = oDoc.exists() ? (oDoc.data().name || "مستخدم") : "مجهول";
+        
         document.getElementById('prod-page').classList.add('active');
-    };
-
-    // --- CHAT SYSTEM (REAL-TIME) ---
-    window.startChat = () => {
-        if(!user) return Swal.fire('تنبيه', 'يجب تسجيل الدخول للمراسلة', 'warning');
-        if(user.uid === currentAd.ownerId) return Swal.fire('خطأ', 'لا يمكنك مراسلة نفسك', 'error');
-
-        // Create unique chat ID (uid1_uid2 sorted)
-        const uids = [user.uid, currentAd.ownerId].sort();
-        activeChatId = uids.join('_');
-        
-        // Check if chat exists or create
-        const chatRef = doc(db, "chats", activeChatId);
-        setDoc(chatRef, { 
-            users: uids, 
-            lastMsg: "", 
-            updatedAt: new Date().toISOString() 
-        }, { merge: true });
-
-        openChatRoom(activeChatId, currentAd.ownerName || "المعلن");
-    };
-
-    window.openMyChats = async () => {
-        if(!user) return Swal.fire('تنبيه', 'سجل دخولك لرؤية الرسائل', 'warning');
-        
-        document.getElementById('chats-page').classList.add('active');
-        const list = document.getElementById('chats-list-container');
-        list.innerHTML = '<div class="center" style="padding:20px">جاري التحميل...</div>';
-
-        const q = query(collection(db, "chats"), where("users", "array-contains", user.uid));
-        const snap = await getDocs(q);
-        
-        list.innerHTML = "";
-        if(snap.empty) {
-            list.innerHTML = '<div class="center" style="padding:20px">لا توجد محادثات</div>';
-            return;
-        }
-
-        snap.forEach(d => {
-            const data = d.data();
-            list.innerHTML += `
-                <div class="chat-list-item" onclick="openChatRoom('${d.id}', 'محادثة')">
-                    <div style="font-size:2rem; margin-left:10px"><i class="fas fa-user-circle"></i></div>
-                    <div>
-                        <div style="font-weight:bold">مستخدم</div>
-                        <div style="font-size:0.8rem; color:#777">${data.lastMsg || '...'}</div>
-                    </div>
-                </div>
-            `;
-        });
-    };
-
-    window.openChatRoom = (chatId, title) => {
-        activeChatId = chatId;
-        document.getElementById('chat-room-title').innerText = title;
-        document.getElementById('chat-room').classList.add('active');
-        document.getElementById('msg-container').innerHTML = '';
-
-        // Realtime Listener
-        const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
-        onSnapshot(q, (snap) => {
-            const cont = document.getElementById('msg-container');
-            cont.innerHTML = "";
-            snap.forEach(d => {
-                const m = d.data();
-                const cls = m.senderId === user.uid ? 'msg-sent' : 'msg-recv';
-                cont.innerHTML += `<div class="msg-bubble ${cls}">${m.text}</div>`;
-            });
-            cont.scrollTop = cont.scrollHeight;
-        });
-    };
-
-    window.sendMsg = async (e) => {
-        e.preventDefault();
-        const inp = document.getElementById('msg-input');
-        const txt = inp.value;
-        if(!txt.trim()) return;
-
-        await addDoc(collection(db, "chats", activeChatId, "messages"), {
-            text: txt,
-            senderId: user.uid,
-            timestamp: new Date().toISOString()
-        });
-        
-        await updateDoc(doc(db, "chats", activeChatId), {
-            lastMsg: txt,
-            updatedAt: new Date().toISOString()
-        });
-
-        inp.value = "";
-    };
-
-    // --- FILTER ---
-    window.doSearch = () => {
-        const filters = {
-            search: document.getElementById('f-search').value,
-            cat: document.getElementById('f-cat').value,
-            city: document.getElementById('f-city').value,
-            min: document.getElementById('f-min').value,
-            max: document.getElementById('f-max').value
-        };
-        loadAds(filters);
-        closeModal('filter-modal');
-    };
+    }
     
-    window.filterByCat = (c) => loadAds({cat: c});
+    window.callOwner = () => Swal.fire('رقم الهاتف', currentAd.phone, 'info');
+
+    // --- CHAT ---
+    function msgListener() {
+        const q = query(collection(db, "chats"), where("users", "array-contains", user.uid));
+        onSnapshot(q, (s) => {
+            let unread = 0;
+            s.forEach(d => { if(d.data().lastSender !== user.uid) unread++; });
+            const b = document.getElementById('msg-badge');
+            if(unread > 0) { b.innerText = unread; b.classList.add('show'); } else b.classList.remove('show');
+        });
+    }
+
+    window.startChat = async() => {
+        if(!user) return openModal('auth-modal');
+        if(user.uid === currentAd.ownerId) return Swal.fire('!', 'لا يمكنك مراسلة نفسك', 'error');
+        
+        const ids = [user.uid, currentAd.ownerId].sort();
+        activeChatId = ids.join("_");
+        await setDoc(doc(db, "chats", activeChatId), {
+            users: ids, lastMsg: "Start", lastSender: user.uid, ts: new Date().toISOString()
+        }, {merge:true});
+        openChatRoom(activeChatId, currentAd.ownerName || "المعلن");
+    }
+
+    window.openMyChats = async() => {
+        if(!user) return openModal('auth-modal');
+        document.getElementById('chat-list-page').classList.add('active');
+        document.getElementById('msg-badge').classList.remove('show');
+        
+        const q = query(collection(db, "chats"), where("users", "array-contains", user.uid));
+        const s = await getDocs(q);
+        const c = document.getElementById('chat-list-container');
+        c.innerHTML = '';
+        s.forEach(d => {
+            const dd = d.data();
+            c.innerHTML += `
+            <div class="chat-list-item" onclick="openChatRoom('${d.id}', 'محادثة')">
+                <div style="font-size:2rem"><i class="fas fa-user-circle"></i></div>
+                <div><div style="font-weight:bold">مستخدم</div><div style="font-size:0.8rem;color:#777">${dd.lastMsg}</div></div>
+            </div>`;
+        });
+    }
+
+    window.openChatRoom = (cid, title) => {
+        activeChatId = cid;
+        document.getElementById('chat-header-title').innerText = title;
+        document.getElementById('chat-room-page').classList.add('active');
+        
+        const q = query(collection(db, "chats", cid, "msgs"), orderBy("ts", "asc"));
+        onSnapshot(q, (s) => {
+            const b = document.getElementById('msgs-box');
+            b.innerHTML = '';
+            s.forEach(d => {
+                const m = d.data();
+                const cls = m.uid === user.uid ? 'msg-sent' : 'msg-recv';
+                b.innerHTML += `<div class="msg-bubble ${cls}">${m.txt}</div>`;
+            });
+            b.scrollTop = b.scrollHeight;
+        });
+    }
+
+    window.sendMsg = async(e) => {
+        e.preventDefault();
+        const i = document.getElementById('msg-input');
+        if(!i.value.trim()) return;
+        await addDoc(collection(db, "chats", activeChatId, "msgs"), { txt: i.value, uid: user.uid, ts: new Date().toISOString() });
+        await updateDoc(doc(db, "chats", activeChatId), { lastMsg: i.value, lastSender: user.uid, ts: new Date().toISOString() });
+        i.value = '';
+    }
 
     // --- ADMIN ---
     window.adminLogin = () => {
-        const p = prompt("Admin Password:");
-        if(p === "abobob123") {
-            document.getElementById('admin-view').style.display = 'block';
-            loadAdminData();
+        if(prompt("Password:") === "abobob123") {
+            document.getElementById('admin-panel').classList.add('active');
+            initAdm();
         }
-    };
-    
-    window.closeAdmin = () => document.getElementById('admin-view').style.display = 'none';
+    }
 
-    async function loadAdminData() {
+    async function initAdm() {
         document.getElementById('st-ads').innerText = allAds.length;
-        const uSnap = await getDocs(collection(db, "users"));
-        document.getElementById('st-users').innerText = uSnap.size;
+        const u = await getDocs(collection(db, "users"));
+        document.getElementById('st-users').innerText = u.size;
+        const r = await getDocs(collection(db, "reports"));
+        document.getElementById('st-reps').innerText = r.size;
 
-        // Ads List
-        const adsDiv = document.getElementById('adm-ads');
-        adsDiv.innerHTML = allAds.map(a => `
-            <div class="admin-row">
+        const l = document.getElementById('adm-ads-list');
+        l.innerHTML = allAds.map(a => `
+            <div class="admin-item">
                 <span>${a.title}</span>
                 <div>
-                    <button class="btn" style="padding:5px;background:${a.isFeatured?'gold':'#eee'}" onclick="admFeat('${a.id}', ${a.isFeatured})">★</button>
-                    <button class="btn btn-secondary" style="padding:5px;background:red" onclick="admDel('${a.id}')"><i class="fas fa-trash"></i></button>
+                    <button class="btn" style="padding:2px 6px;background:${a.isFeatured?'gold':'#eee'}" onclick="admFeat('${a.id}',${a.isFeatured})">★</button>
+                    <button class="btn btn-danger" style="padding:2px 6px" onclick="admDel('${a.id}')">X</button>
                 </div>
-            </div>
-        `).join('');
-
-        // Users List
-        const usersDiv = document.getElementById('adm-users');
-        usersDiv.innerHTML = '';
-        uSnap.forEach(u => {
-            const ud = u.data();
-            usersDiv.innerHTML += `
-                <div class="admin-row">
-                    <span>${ud.email}</span>
-                    <button class="btn" style="padding:5px;font-size:0.8rem;background:${ud.isBanned?'red':'green'}" onclick="admBan('${u.id}', ${ud.isBanned})">
-                        ${ud.isBanned?'فك حظر':'حظر'}
-                    </button>
-                </div>
-            `;
+            </div>`).join('');
+            
+        const ul = document.getElementById('adm-users-list');
+        ul.innerHTML = '';
+        u.forEach(d => {
+            const ud = d.data();
+            ul.innerHTML += `<div class="admin-item"><span>${ud.email}</span><button class="btn btn-secondary" onclick="admBan('${d.id}',${ud.isBanned})">${ud.isBanned?'فك':'حظر'}</button></div>`;
         });
     }
 
-    window.admFeat = async(id, st) => { await updateDoc(doc(db,"ads",id),{isFeatured:!st}); loadAdminData(); loadAds(); };
-    window.admDel = async(id) => { if(confirm('حذف؟')) { await deleteDoc(doc(db,"ads",id)); loadAdminData(); loadAds(); } };
-    window.admBan = async(id, st) => { await updateDoc(doc(db,"users",id),{isBanned:!st}); loadAdminData(); };
+    window.switchAdmin = (id) => {
+        document.querySelectorAll('.admin-view').forEach(e=>e.classList.remove('active'));
+        document.getElementById('adm-'+id).classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
+        event.target.classList.add('active');
+    }
 
-    // --- UI HELPERS ---
+    window.admDel = async(id) => { if(confirm('حذف؟')) { await deleteDoc(doc(db,"ads",id)); loadAds(); initAdm(); } };
+    window.admFeat = async(id, s) => { await updateDoc(doc(db,"ads",id), {isFeatured:!s}); loadAds(); initAdm(); };
+    window.admBan = async(id, s) => { await updateDoc(doc(db,"users",id), {isBanned:!s}); initAdm(); };
+
+    window.saveConf = async(k) => {
+        await setDoc(doc(db, "settings", "config"), { [k]: document.getElementById('set-'+k).value }, {merge:true});
+        Swal.fire('حفظ', '', 'success');
+    }
+    
+    async function loadConfig() {
+        const s = await getDoc(doc(db, "settings", "config"));
+        if(s.exists()) {
+            const d = s.data();
+            if(d.logo) document.getElementById('app-logo').innerText = d.logo;
+            if(d.banner) document.getElementById('main-banner').innerHTML = `<div class="swiper-slide"><img src="${d.banner}"></div>`;
+            localStorage.setItem('txt_about', d.about || "");
+        }
+    }
+
+    // --- UTILS ---
     window.openModal = (id) => document.getElementById(id).classList.add('active');
     window.closeModal = (id) => document.getElementById(id).classList.remove('active');
     window.closePage = (id) => document.getElementById(id).classList.remove('active');
-    window.toggleSidebar = () => {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.querySelector('.overlay').classList.toggle('active');
-    };
-    window.closeAll = () => {
-        document.getElementById('sidebar').classList.remove('active');
-        document.querySelector('.overlay').classList.remove('active');
-    };
-    window.sendReport = (e) => {
-        e.preventDefault();
-        Swal.fire('تم الإرسال', 'شكراً لك', 'success');
-        closeModal('report-modal');
-    };
-    window.showStatic = (p) => Swal.fire('صفحة ثابتة', 'محتوى تجريبي لـ '+p, 'info');
+    window.closeAll = () => { document.getElementById('sidebar').classList.remove('active'); document.querySelector('.overlay').classList.remove('active'); }
+    window.toggleSidebar = () => { document.getElementById('sidebar').classList.toggle('active'); document.querySelector('.overlay').classList.toggle('active'); }
+    window.sendReport = async() => {
+        await addDoc(collection(db,"reports"), {name: document.getElementById('r-name').value, desc: document.getElementById('r-desc').value});
+        Swal.fire('شكراً', '', 'success'); closeModal('report-modal');
+    }
+    window.doSearch = () => {
+        loadAds({search:document.getElementById('f-search').value, cat:document.getElementById('f-cat').value, city:document.getElementById('f-city').value});
+        closeModal('filter-modal');
+    }
+    window.filterCat = (c) => loadAds({cat:c});
+    window.showStatic = (k) => {
+        openModal('static-modal');
+        document.getElementById('static-title').innerText = tr[curLang][k] || k;
+        document.getElementById('static-body').innerText = k==='about' ? (localStorage.getItem('txt_about')||"...") : "...";
+    }
 
 </script>
 </body>

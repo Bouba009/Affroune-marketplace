@@ -83,8 +83,10 @@
         .ad-card.featured { border: 2px solid var(--gold); }
         .feat-badge { position: absolute; top: 8px; right: 8px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 2; }
         
-        .ad-img-box { height: 140px; background: #eee; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        /* UPDATED: Increased Height for better visibility */
+        .ad-img-box { height: 220px; background: #eee; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         .ad-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        
         .ad-content { padding: 10px; }
         .ad-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; }
         .ad-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 5px 0; }
@@ -255,8 +257,9 @@
             <input type="tel" id="p-phone" class="form-input" data-ph="ph_phone" placeholder="رقم الهاتف" required>
             <textarea id="p-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف..."></textarea>
             
-            <label style="font-weight:bold; font-size:0.9rem" data-tr="img_upload">صورة المنتج</label>
-            <input type="file" id="p-file" class="file-input" accept="image/*" required>
+            <label style="font-weight:bold; font-size:0.9rem" data-tr="img_upload">صور المنتج (يمكن اختيار أكثر من صورة)</label>
+            <!-- Updated: Multiple Files Support -->
+            <input type="file" id="p-file" class="file-input" accept="image/*" multiple required>
             
             <button type="submit" class="btn btn-primary w-100" style="margin-top:15px" id="pub-btn" data-tr="publish">نشر</button>
         </form>
@@ -308,7 +311,7 @@
         <i class="fas fa-arrow-right page-back" onclick="closePage('prod-page')"></i>
         <h3 style="flex:1" data-tr="details">التفاصيل</h3>
     </div>
-    <div class="swiper prodSwiper" style="height:300px; background:#000">
+    <div class="swiper prodSwiper" style="height:350px; background:#000">
         <div class="swiper-wrapper" id="prod-slides"></div>
         <div class="swiper-pagination"></div>
     </div>
@@ -501,6 +504,7 @@
         });
         renderCats();
         fillSelects();
+        loadAds(); // Reload ads to translate categories in cards
     }
 
     // --- DATA ---
@@ -525,7 +529,6 @@
     let allAds = [];
     let currentAd = null;
     let activeChatId = null;
-    let currentBanners = []; // To store loaded banners
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -659,7 +662,11 @@
         const btn = document.getElementById('pub-btn');
         btn.innerText = "جاري الرفع..."; btn.disabled = true;
         try {
-            const imgData = await compressImg(document.getElementById('p-file').files[0]);
+            // Updated: Handle multiple files
+            const files = document.getElementById('p-file').files;
+            const imgPromises = Array.from(files).map(file => compressImg(file));
+            const images = await Promise.all(imgPromises);
+
             await addDoc(collection(db, "ads"), {
                 title: document.getElementById('p-title').value,
                 category: document.getElementById('p-cat').value,
@@ -667,7 +674,7 @@
                 city: document.getElementById('p-city').value,
                 phone: document.getElementById('p-phone').value,
                 desc: document.getElementById('p-desc').value,
-                img: imgData,
+                images: images, // Store array
                 ownerId: user.uid,
                 ownerName: user.displayName || 'User',
                 timestamp: new Date().toISOString(),
@@ -715,10 +722,15 @@
 
     function mkAd(a) {
         const dispCat = curLang === 'fr' ? (catTr[a.category] || a.category) : a.category;
+        // Handle image source (multiple or single support)
+        let mainImg = "";
+        if(a.images && a.images.length > 0) mainImg = a.images[0];
+        else if(a.img) mainImg = a.img; // backward comp
+
         return `
         <div class="ad-card ${a.isFeatured?'featured':''}" onclick="openProd('${a.id}')">
             ${a.isFeatured ? '<div class="feat-badge">★</div>' : ''}
-            <div class="ad-img-box"><img src="${a.img}" loading="lazy"></div>
+            <div class="ad-img-box"><img src="${mainImg}" loading="lazy"></div>
             <div class="ad-content">
                 <div class="ad-price">${Number(a.price).toLocaleString()} DA</div>
                 <div class="ad-title">${a.title}</div>
@@ -732,7 +744,15 @@
         const ad = allAds.find(a => a.id === id);
         currentAd = ad;
         
-        document.getElementById('prod-slides').innerHTML = `<div class="swiper-slide"><img src="${ad.img}" style="width:100%;height:100%;object-fit:contain"></div>`;
+        // Handle Slides
+        let slides = '';
+        if(ad.images && ad.images.length > 0) {
+            slides = ad.images.map(src => `<div class="swiper-slide"><img src="${src}" style="width:100%;height:100%;object-fit:contain"></div>`).join('');
+        } else if(ad.img) {
+            slides = `<div class="swiper-slide"><img src="${ad.img}" style="width:100%;height:100%;object-fit:contain"></div>`;
+        }
+
+        document.getElementById('prod-slides').innerHTML = slides;
         new Swiper(".prodSwiper", {pagination:{clickable:true}});
 
         document.getElementById('v-price').innerText = Number(ad.price).toLocaleString() + " DA";

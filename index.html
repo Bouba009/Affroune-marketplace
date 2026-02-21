@@ -69,6 +69,7 @@
         .overlay.active { display: block; }
         .menu-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         
+        /* Banner Slider */
         .swiper { width: 100%; height: 200px; margin-bottom: 15px; border-radius: 0 0 15px 15px; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -146,7 +147,11 @@
         footer { text-align: center; padding: 30px; color: #999; margin-top: 20px; font-size: 0.8rem; }
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
-        .swiper.prodSwiper { height: 65vh !important; background: #000; }
+        
+        /* Updated: Extra Large Product Image Slider - True Scale */
+        .swiper.prodSwiper { height: 80vh !important; background: #000; }
+        /* Ensure images inside product slider are contained (true scale) */
+        .swiper-slide img.prod-view-img { width: 100%; height: 100%; object-fit: contain; }
     </style>
 </head>
 <body>
@@ -194,6 +199,7 @@
     <!-- Slider -->
     <div class="swiper mySwiper">
         <div class="swiper-wrapper" id="main-banner-wrapper">
+            <!-- Slides injected via JS -->
             <div class="swiper-slide">
                 <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80">
             </div>
@@ -262,7 +268,7 @@
             <input type="tel" id="p-phone" class="form-input" data-ph="ph_phone" placeholder="رقم الهاتف" required>
             <textarea id="p-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف..."></textarea>
             
-            <label style="font-weight:bold; font-size:0.9rem" data-tr="img_upload">صور المنتج (يمكن اختيار أكثر من صورة)</label>
+            <label style="font-weight:bold; font-size:0.9rem" data-tr="img_upload">صور المنتج (5 صور كحد أقصى)</label>
             <input type="file" id="p-file" class="file-input" accept="image/*" multiple>
             <small style="color:#777; display:block; margin-bottom:10px">اترك الصور فارغة عند التعديل للاحتفاظ بالصور القديمة</small>
             
@@ -341,6 +347,7 @@
             <div id="v-owner" style="font-weight:bold; font-size:1.1rem"></div>
         </div>
     </div>
+    <!-- Z-INDEX 2000 to appear ABOVE -->
     <div style="position:fixed; bottom:0; left:0; width:100%; padding:15px; background:white; box-shadow:0 -2px 10px rgba(0,0,0,0.1); display:flex; gap:10px; z-index:2000">
         <button class="btn btn-success w-100" onclick="callOwner()"><i class="fas fa-phone"></i> <span data-tr="call">اتصال</span></button>
         <button class="btn btn-primary w-100" onclick="startChat()"><i class="fas fa-comment"></i> <span data-tr="chat">رسالة</span></button>
@@ -542,7 +549,7 @@
     let allAds = [];
     let currentAd = null;
     let activeChatId = null;
-    let editId = null; // Global variable for editing
+    let editId = null;
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -695,14 +702,20 @@
         btn.innerText = "جاري الحفظ..."; btn.disabled = true;
         try {
             const files = document.getElementById('p-file').files;
+            
+            // Limit Check (Added logic)
+            if (files.length > 5) {
+                Swal.fire({icon: 'warning', title: 'تنبيه', text: 'أقصى حد هو 5 صور'});
+                btn.innerText = "نشر"; btn.disabled = false;
+                return;
+            }
+
             let images = [];
             
-            // If new images selected, compress them
             if (files.length > 0) {
                 const imgPromises = Array.from(files).map(file => compressImg(file));
                 images = await Promise.all(imgPromises);
             } else if (editId && currentAd) {
-                // Keep existing images if editing and no new files
                 images = currentAd.images || (currentAd.img ? [currentAd.img] : []);
             }
 
@@ -730,14 +743,13 @@
             
             closeModal('pub-modal');
             loadAds();
-            if(editId) closePage('prod-page'); // Close view to refresh if editing from view
+            if(editId) closePage('prod-page'); 
         } catch(err) { Swal.fire('خطأ', 'فشل العملية', 'error'); }
         btn.innerText = "نشر"; btn.disabled = false;
     });
 
     window.startPublish = () => {
         if(!user) return openModal('auth-modal');
-        // RESET FORM FOR NEW AD
         editId = null;
         document.getElementById('pub-form').reset();
         document.getElementById('pub-modal-title').innerText = "نشر إعلان";
@@ -746,39 +758,32 @@
     };
 
     window.editMyAd = (id) => {
-        // PRE-FILL FORM FOR EDIT
         const ad = allAds.find(a => a.id === id);
         if(!ad) return;
-        currentAd = ad; // Cache for image logic
+        currentAd = ad;
         editId = id;
-        
         document.getElementById('p-title').value = ad.title;
         document.getElementById('p-cat').value = ad.category;
         document.getElementById('p-price').value = ad.price;
         document.getElementById('p-city').value = ad.city;
         document.getElementById('p-phone').value = ad.phone;
         document.getElementById('p-desc').value = ad.desc;
-        
         document.getElementById('pub-modal-title').innerText = "تعديل الإعلان";
         document.getElementById('pub-btn').innerText = "حفظ التعديلات";
-        
         openModal('pub-modal');
     }
 
     window.deleteMyAd = async (id) => {
         Swal.fire({
             title: 'هل أنت متأكد؟',
-            text: "لا يمكن التراجع عن هذا الإجراء!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'نعم، احذف!',
-            cancelButtonText: 'إلغاء'
+            confirmButtonText: 'نعم',
+            cancelButtonText: 'لا'
         }).then(async (result) => {
             if (result.isConfirmed) {
                 await deleteDoc(doc(db, "ads", id));
-                Swal.fire('تم الحذف!', 'تم حذف إعلانك.', 'success');
+                Swal.fire('تم الحذف!', '', 'success');
                 closePage('prod-page');
                 loadAds();
             }
@@ -818,10 +823,9 @@
 
     function mkAd(a) {
         const dispCat = curLang === 'fr' ? (catTr[a.category] || a.category) : a.category;
-        // Handle image source (multiple or single support)
         let mainImg = "";
         if(a.images && a.images.length > 0) mainImg = a.images[0];
-        else if(a.img) mainImg = a.img; // backward comp
+        else if(a.img) mainImg = a.img;
 
         return `
         <div class="ad-card ${a.isFeatured?'featured':''}" onclick="openProd('${a.id}')">
@@ -841,12 +845,12 @@
         if(!ad) return;
         currentAd = ad;
         
-        // Handle Slides
         let slides = '';
         if(ad.images && ad.images.length > 0) {
-            slides = ad.images.map(src => `<div class="swiper-slide"><img src="${src}" style="width:100%;height:100%;object-fit:contain"></div>`).join('');
+            // Using a class to ensure true scale css applies
+            slides = ad.images.map(src => `<div class="swiper-slide"><img src="${src}" class="prod-view-img"></div>`).join('');
         } else if(ad.img) {
-            slides = `<div class="swiper-slide"><img src="${ad.img}" style="width:100%;height:100%;object-fit:contain"></div>`;
+            slides = `<div class="swiper-slide"><img src="${ad.img}" class="prod-view-img"></div>`;
         }
 
         document.getElementById('prod-slides').innerHTML = slides;
@@ -868,7 +872,6 @@
         const oDoc = await getDoc(doc(db, "users", ad.ownerId));
         document.getElementById('v-owner').innerText = oDoc.exists() ? (oDoc.data().name || "مستخدم") : "مجهول";
         
-        // Owner Actions Logic
         const actionsDiv = document.getElementById('owner-actions');
         if(user && user.uid === ad.ownerId) {
             actionsDiv.innerHTML = `
@@ -880,9 +883,7 @@
             actionsDiv.classList.add('hidden');
         }
 
-        // Deep link update
         window.location.hash = `ad/${id}`;
-
         document.getElementById('prod-page').classList.add('active');
     }
     
@@ -898,13 +899,8 @@
     // SHARE LOGIC UPDATE
     window.shareAd = async () => {
         const url = window.location.href;
-        
-        // 1. Always copy to clipboard first
-        try {
-            await navigator.clipboard.writeText(url);
-        } catch (err) { console.log('Copy failed', err); }
+        try { await navigator.clipboard.writeText(url); } catch (e) {}
 
-        // 2. Try native share
         if (navigator.share) {
             try {
                 await navigator.share({
@@ -912,11 +908,8 @@
                     text: `شاهد هذا الإعلان: ${currentAd.title}`,
                     url: url
                 });
-            } catch (err) {
-                // Ignore user cancellation
-            }
+            } catch (err) {}
         } else {
-            // Fallback
             Swal.fire({icon: 'success', title: 'تم نسخ الرابط'});
         }
     };

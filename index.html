@@ -135,6 +135,9 @@
         .stat-card { background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: var(--shadow); margin-bottom: 10px; }
         .admin-item { background: white; padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
 
+        .banner-list-item { display: flex; align-items: center; justify-content: space-between; border: 1px solid #eee; padding: 5px; margin-bottom: 5px; border-radius: 5px; }
+        .banner-list-item img { height: 40px; width: 60px; object-fit: cover; }
+
         footer { text-align: center; padding: 30px; color: #999; margin-top: 20px; font-size: 0.8rem; }
     </style>
 </head>
@@ -182,8 +185,9 @@
 <main>
     <!-- Slider -->
     <div class="swiper mySwiper">
-        <div class="swiper-wrapper" id="main-banner">
-            <div class="swiper-slide" id="banner-slide-content">
+        <div class="swiper-wrapper" id="main-banner-wrapper">
+            <!-- Slides injected via JS -->
+            <div class="swiper-slide">
                 <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80">
             </div>
         </div>
@@ -397,14 +401,14 @@
             <button class="btn btn-secondary" onclick="saveAdmLogo()">حفظ اللوغو</button>
         </div>
         <div class="stat-card" style="text-align:right">
-            <label>صورة البانر (رفع صورة)</label>
+            <label>بانرات الموقع (رفع صورة)</label>
             <input type="file" id="adm-banner-file" class="file-input">
             <label>رابط التحويل (اختياري)</label>
             <input type="text" id="adm-banner-link" class="form-input" placeholder="https://...">
-            <div style="margin-top:10px">
-                <button class="btn btn-secondary" onclick="saveAdmBanner()">حفظ البانر</button>
-                <button class="btn btn-danger" onclick="deleteAdmBanner()">حذف البانر</button>
-            </div>
+            <button class="btn btn-secondary" onclick="saveAdmBanner()">أضف البانر</button>
+            
+            <h4 style="margin-top:10px">البانرات الحالية:</h4>
+            <div id="adm-banners-list" style="margin-top:10px"></div>
         </div>
         <div class="stat-card" style="text-align:right">
             <label>كود HTML إعلاني (Banner Ads)</label>
@@ -472,6 +476,14 @@
             ph_search: "Recherche...", ph_min_price: "Prix Min", ph_max_price: "Prix Max"
         }
     };
+    
+    // Categories Translations
+    const catTr = {
+        "مركبات": "Véhicules", "هواتف": "Téléphones", "كهرومنزلية": "Electroménager", "ملابس نساء": "Vêtements Femmes",
+        "ملابس رجال": "Vêtements Hommes", "ملابس أطفال": "Vêtements Enfants", "خدمات": "Services", "خياطة": "Couture",
+        "حلويات": "Gâteaux", "وكالة سياحية": "Agence de Voyage", "عقارات": "Immobilier", "عروض عمل": "Offres d'emploi", "أخرى": "Autres"
+    };
+
     let curLang = "ar";
 
     window.toggleLang = () => {
@@ -487,6 +499,8 @@
         document.querySelectorAll('.page-back').forEach(el => {
             el.style.transform = curLang === "ar" ? "rotate(0deg)" : "rotate(180deg)";
         });
+        renderCats();
+        fillSelects();
     }
 
     // --- DATA ---
@@ -511,28 +525,12 @@
     let allAds = [];
     let currentAd = null;
     let activeChatId = null;
+    let currentBanners = []; // To store loaded banners
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-        // Init Slider
-        new Swiper(".mySwiper", {autoplay:{delay:3000}, loop:true, pagination:{clickable:true}});
-        
-        // Render Categories
-        const catHtml = categories.map(c => `
-            <div class="cat-card" onclick="filterCat('${c.name}')">
-                <img src="${c.img}" class="cat-img"><span class="cat-name">${c.name}</span>
-            </div>
-        `).join('');
-        document.getElementById('cats-container').innerHTML = catHtml;
-
-        // Populate Selects
-        const fill = (id, arr) => {
-            const el = document.getElementById(id);
-            arr.forEach(i => el.innerHTML += `<option value="${i.name||i}">${i.name||i}</option>`);
-        };
-        fill('p-cat', categories); fill('f-cat', categories);
-        fill('p-city', cities); fill('f-city', cities);
-
+        renderCats();
+        fillSelects();
         loadAds();
         trackVisits();
         
@@ -542,6 +540,39 @@
             setTimeout(()=> document.getElementById('app-loader').remove(), 500);
         });
     });
+
+    function renderCats() {
+        const catHtml = categories.map(c => {
+            const dispName = curLang === 'fr' ? (catTr[c.name] || c.name) : c.name;
+            return `
+            <div class="cat-card" onclick="filterCat('${c.name}')">
+                <img src="${c.img}" class="cat-img"><span class="cat-name">${dispName}</span>
+            </div>
+            `;
+        }).join('');
+        document.getElementById('cats-container').innerHTML = catHtml;
+    }
+
+    function fillSelects() {
+        // Clear first
+        document.getElementById('p-cat').innerHTML = '';
+        document.getElementById('f-cat').innerHTML = `<option value="">${tr[curLang].all_cats}</option>`;
+        document.getElementById('p-city').innerHTML = '';
+        document.getElementById('f-city').innerHTML = `<option value="">${tr[curLang].all_cities}</option>`;
+
+        categories.forEach(c => {
+            const dispName = curLang === 'fr' ? (catTr[c.name] || c.name) : c.name;
+            const opt = `<option value="${c.name}">${dispName}</option>`;
+            document.getElementById('p-cat').innerHTML += opt;
+            document.getElementById('f-cat').innerHTML += opt;
+        });
+
+        cities.forEach(c => {
+            const opt = `<option value="${c}">${c}</option>`;
+            document.getElementById('p-city').innerHTML += opt;
+            document.getElementById('f-city').innerHTML += opt;
+        });
+    }
 
     // --- VISITS TRACKING ---
     async function trackVisits() {
@@ -683,6 +714,7 @@
     }
 
     function mkAd(a) {
+        const dispCat = curLang === 'fr' ? (catTr[a.category] || a.category) : a.category;
         return `
         <div class="ad-card ${a.isFeatured?'featured':''}" onclick="openProd('${a.id}')">
             ${a.isFeatured ? '<div class="feat-badge">★</div>' : ''}
@@ -690,7 +722,7 @@
             <div class="ad-content">
                 <div class="ad-price">${Number(a.price).toLocaleString()} DA</div>
                 <div class="ad-title">${a.title}</div>
-                <div class="ad-meta"><span>${a.city}</span><span>${a.category}</span></div>
+                <div class="ad-meta"><span>${a.city}</span><span>${dispCat}</span></div>
             </div>
         </div>`;
     }
@@ -705,7 +737,8 @@
 
         document.getElementById('v-price').innerText = Number(ad.price).toLocaleString() + " DA";
         document.getElementById('v-title').innerText = ad.title;
-        document.getElementById('v-cat').innerText = ad.category;
+        const dispCat = curLang === 'fr' ? (catTr[ad.category] || ad.category) : ad.category;
+        document.getElementById('v-cat').innerText = dispCat;
         document.getElementById('v-city').innerText = ad.city;
         document.getElementById('v-desc').innerText = ad.desc;
         
@@ -813,6 +846,7 @@
         const r = await getDocs(collection(db, "reports"));
         document.getElementById('st-reps').innerText = r.size;
 
+        // Fetch Visits Stats
         const sDoc = await getDoc(doc(db, "stats", "visits"));
         if(sDoc.exists()) {
             const d = sDoc.data();
@@ -848,6 +882,8 @@
             const ud = d.data();
             ul.innerHTML += `<div class="admin-item"><span>${ud.email}</span><button class="btn btn-secondary" onclick="admBan('${d.id}',${ud.isBanned})">${ud.isBanned?'فك':'حظر'}</button></div>`;
         });
+
+        renderAdmBannersList();
     }
 
     window.switchAdmin = (id) => {
@@ -870,18 +906,49 @@
         Swal.fire({icon: 'success', title: 'تم تحديث اللوغو'});
     }
 
+    // MULTIPLE BANNERS LOGIC
     window.saveAdmBanner = async() => {
         const file = document.getElementById('adm-banner-file').files[0];
         const link = document.getElementById('adm-banner-link').value;
         if(!file) return;
         const b64 = await compressImg(file);
-        await setDoc(doc(db, "settings", "config"), { bannerBlob: b64, bannerLink: link }, {merge:true});
-        Swal.fire({icon: 'success', title: 'تم تحديث البانر'});
+        const newBanner = { id: Date.now(), img: b64, link: link };
+        
+        await setDoc(doc(db, "settings", "config"), { 
+            banners: arrayUnion(newBanner) 
+        }, {merge:true});
+        
+        loadConfig(); // Reload main slider
+        renderAdmBannersList(); // Update list
+        Swal.fire({icon: 'success', title: 'تم إضافة البانر'});
     }
 
-    window.deleteAdmBanner = async() => {
-        await updateDoc(doc(db, "settings", "config"), { bannerBlob: null, bannerLink: null });
-        Swal.fire({icon: 'success', title: 'تم حذف البانر'});
+    window.deleteAdmBanner = async(id) => {
+        // We need to read current array, filter, and write back
+        const docRef = doc(db, "settings", "config");
+        const snap = await getDoc(docRef);
+        if(snap.exists() && snap.data().banners) {
+            const newBanners = snap.data().banners.filter(b => b.id !== id);
+            await updateDoc(docRef, { banners: newBanners });
+            loadConfig();
+            renderAdmBannersList();
+            Swal.fire({icon: 'success', title: 'تم حذف البانر'});
+        }
+    }
+
+    async function renderAdmBannersList() {
+        const snap = await getDoc(doc(db, "settings", "config"));
+        const div = document.getElementById('adm-banners-list');
+        div.innerHTML = '';
+        if(snap.exists() && snap.data().banners) {
+            snap.data().banners.forEach(b => {
+                div.innerHTML += `
+                <div class="banner-list-item">
+                    <img src="${b.img}">
+                    <button class="btn btn-danger" style="padding:2px 6px" onclick="deleteAdmBanner(${b.id})">X</button>
+                </div>`;
+            });
+        }
     }
 
     window.saveHtmlAd = async() => {
@@ -905,10 +972,20 @@
         if(s.exists()) {
             const d = s.data();
             if(d.logoBlob) document.getElementById('app-logo').innerHTML = `<img src="${d.logoBlob}" style="height:40px; vertical-align:middle">`;
-            if(d.bannerBlob) {
-                const bannerHtml = `<img src="${d.bannerBlob}" style="cursor:pointer" onclick="window.open('${d.bannerLink||'#'}')">`;
-                document.getElementById('banner-slide-content').innerHTML = bannerHtml;
+            
+            // Multiple Banners
+            if(d.banners && d.banners.length > 0) {
+                let html = '';
+                d.banners.forEach(b => {
+                    html += `<div class="swiper-slide"><img src="${b.img}" style="cursor:pointer" onclick="window.open('${b.link||'#'}')"></div>`;
+                });
+                document.getElementById('main-banner-wrapper').innerHTML = html;
+                new Swiper(".mySwiper", {autoplay:{delay:4000}, loop:true, pagination:{clickable:true}});
+            } else if (d.bannerBlob) { // Fallback for old single banner
+                document.getElementById('main-banner-wrapper').innerHTML = `<div class="swiper-slide"><img src="${d.bannerBlob}"></div>`;
+                new Swiper(".mySwiper", {autoplay:{delay:4000}, loop:true});
             }
+
             if(d.htmlAd) {
                 document.getElementById('custom-ads-container').innerHTML = d.htmlAd;
             } else {

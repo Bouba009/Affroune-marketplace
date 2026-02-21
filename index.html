@@ -48,9 +48,12 @@
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-danger { background: #dc3545; color: white; }
         .btn-success { background: #28a745; color: white; }
-        .btn-info { background: #17a2b8; color: white; } /* New Share Button Color */
+        .btn-info { background: #17a2b8; color: white; }
         .w-100 { width: 100%; }
         
+        /* Fix SweetAlert Z-Index to appear ABOVE product page */
+        .swal2-container { z-index: 10000 !important; }
+
         header { background: var(--white); height: 60px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.3rem; font-weight: 800; color: var(--secondary); }
         .logo span { color: var(--primary); }
@@ -142,8 +145,10 @@
 
         footer { text-align: center; padding: 30px; color: #999; margin-top: 20px; font-size: 0.8rem; }
         
-        /* New Swiper Nav Colors */
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
+        
+        /* Updated: Very Large Product Image Slider */
+        .swiper.prodSwiper { height: 65vh !important; background: #000; }
     </style>
 </head>
 <body>
@@ -191,7 +196,6 @@
     <!-- Slider -->
     <div class="swiper mySwiper">
         <div class="swiper-wrapper" id="main-banner-wrapper">
-            <!-- Slides injected via JS -->
             <div class="swiper-slide">
                 <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80">
             </div>
@@ -314,7 +318,7 @@
         <h3 style="flex:1" data-tr="details">التفاصيل</h3>
     </div>
     <!-- Updated: Large Slider with Navigation -->
-    <div class="swiper prodSwiper" style="height:50vh; background:#000">
+    <div class="swiper prodSwiper">
         <div class="swiper-wrapper" id="prod-slides"></div>
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
@@ -811,19 +815,29 @@
 
     window.callOwner = () => Swal.fire('رقم الهاتف', currentAd.phone, 'info');
 
+    // SHARE LOGIC UPDATE
     window.shareAd = async () => {
         const url = window.location.href;
+        
+        // 1. Always copy to clipboard first
+        try {
+            await navigator.clipboard.writeText(url);
+        } catch (err) { console.log('Copy failed', err); }
+
+        // 2. Try native share
         if (navigator.share) {
             try {
                 await navigator.share({
                     title: currentAd.title,
-                    text: `شاهد هذا الإعلان على El Affroun Online: ${currentAd.title}`,
+                    text: `شاهد هذا الإعلان: ${currentAd.title}`,
                     url: url
                 });
-            } catch (err) { console.log(err); }
+            } catch (err) {
+                // Ignore user cancellation
+            }
         } else {
-            navigator.clipboard.writeText(url);
-            Swal.fire({icon: 'success', title: 'تم نسخ الرابط', timer: 1500, showConfirmButton: false});
+            // Fallback
+            Swal.fire({icon: 'success', title: 'تم نسخ الرابط'});
         }
     };
 

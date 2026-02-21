@@ -34,6 +34,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg); color: #333; padding-bottom: 90px; overflow-x: hidden; }
 
+        /* Loader */
+        #app-loader { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.5s; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #eee; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
         .hidden { display: none !important; }
         .flex { display: flex; align-items: center; }
         .center { display: flex; justify-content: center; align-items: center; }
@@ -85,6 +90,9 @@
         .ad-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 5px 0; }
         .ad-meta { font-size: 0.7rem; color: #888; display: flex; justify-content: space-between; }
 
+        /* HTML Ads Container */
+        .custom-ads-box { padding: 10px; margin: 10px 0; text-align: center; overflow: hidden; }
+
         .fab-zone { position: fixed; bottom: 25px; left: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
         .fab { width: 55px; height: 55px; border-radius: 50%; border: none; color: white; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; opacity: 0.6; transition: 0.3s; }
         .fab:hover, .fab:active { opacity: 1; transform: scale(1.1); }
@@ -132,6 +140,12 @@
 </head>
 <body>
 
+<!-- LOADING SCREEN -->
+<div id="app-loader">
+    <div class="spinner"></div>
+    <h3 style="margin-top:20px;color:#555">El Affroun Online</h3>
+</div>
+
 <!-- HEADER -->
 <header>
     <div class="flex">
@@ -159,6 +173,7 @@
     <div class="menu-item" onclick="openMyChats()"><i class="fas fa-comments"></i> <span data-tr="msgs">الرسائل</span></div>
     <div class="menu-item" onclick="showStatic('about')"><i class="fas fa-info-circle"></i> <span data-tr="about">من نحن</span></div>
     <div class="menu-item" onclick="showStatic('contact')"><i class="fas fa-phone"></i> <span data-tr="contact">اتصل بنا</span></div>
+    <div class="menu-item" onclick="showStatic('privacy')"><i class="fas fa-shield-alt"></i> <span data-tr="privacy">سياسة الخصوصية</span></div>
     <div class="menu-item" onclick="openModal('report-modal')"><i class="fas fa-bug"></i> <span data-tr="report">إبلاغ</span></div>
     <div class="menu-item hidden" id="logout-btn" onclick="logout()" style="color:var(--primary); margin-top:auto"><i class="fas fa-sign-out-alt"></i> <span data-tr="logout">خروج</span></div>
 </div>
@@ -174,6 +189,9 @@
         </div>
         <div class="swiper-pagination"></div>
     </div>
+    
+    <!-- Custom HTML Ads -->
+    <div id="custom-ads-container" class="custom-ads-box"></div>
 
     <!-- Categories -->
     <div class="cats-scroll" id="cats-container"></div>
@@ -226,8 +244,8 @@
         <form id="pub-form">
             <input type="text" id="p-title" class="form-input" data-ph="ph_title" placeholder="العنوان" required>
             <select id="p-cat" class="form-select" required></select>
-            <div class="flex" style="gap:10px;">
-                <input type="number" id="p-price" class="form-input" data-ph="ph_price" placeholder="السعر" required>
+            <div class="flex" style="gap:10px; margin-bottom:10px">
+                <input type="number" id="p-price" class="form-input" data-ph="ph_price" placeholder="السعر (DA)" required>
                 <select id="p-city" class="form-select" required></select>
             </div>
             <input type="tel" id="p-phone" class="form-input" data-ph="ph_phone" placeholder="رقم الهاتف" required>
@@ -247,8 +265,8 @@
         <span class="close-modal" onclick="closeModal('filter-modal')">&times;</span>
         <h3 data-tr="filter">فلترة</h3><br>
         <input type="text" id="f-search" class="form-input" data-ph="ph_search" placeholder="بحث...">
-        <select id="f-cat" class="form-select"><option value="" data-tr="all_cats">كل الفئات</option></select>
-        <select id="f-city" class="form-select"><option value="" data-tr="all_cities">كل المدن</option></select>
+        <select id="f-cat" class="form-select" style="margin-bottom:10px"><option value="" data-tr="all_cats">كل الفئات</option></select>
+        <select id="f-city" class="form-select" style="margin-bottom:10px"><option value="" data-tr="all_cities">كل المدن</option></select>
         <div class="flex" style="gap:10px">
             <input type="number" id="f-min" class="form-input" data-ph="ph_min_price" placeholder="أدنى سعر">
             <input type="number" id="f-max" class="form-input" data-ph="ph_max_price" placeholder="أقصى سعر">
@@ -263,6 +281,7 @@
         <span class="close-modal" onclick="closeModal('report-modal')">&times;</span>
         <h3 data-tr="report">إبلاغ</h3><br>
         <input type="text" id="r-name" class="form-input" data-ph="ph_name" placeholder="الاسم">
+        <input type="email" id="r-email" class="form-input" data-ph="ph_email" placeholder="البريد الإلكتروني">
         <textarea id="r-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف"></textarea>
         <button onclick="sendReport()" class="btn btn-danger w-100" style="margin-top:10px" data-tr="send">إرسال</button>
     </div>
@@ -380,9 +399,18 @@
         <div class="stat-card" style="text-align:right">
             <label>صورة البانر (رفع صورة)</label>
             <input type="file" id="adm-banner-file" class="file-input">
-            <label>رابط التحويل عند الضغط (اختياري)</label>
+            <label>رابط التحويل (اختياري)</label>
             <input type="text" id="adm-banner-link" class="form-input" placeholder="https://...">
-            <button class="btn btn-secondary" onclick="saveAdmBanner()">حفظ البانر</button>
+            <div style="margin-top:10px">
+                <button class="btn btn-secondary" onclick="saveAdmBanner()">حفظ البانر</button>
+                <button class="btn btn-danger" onclick="deleteAdmBanner()">حذف البانر</button>
+            </div>
+        </div>
+        <div class="stat-card" style="text-align:right">
+            <label>كود HTML إعلاني (Banner Ads)</label>
+            <textarea id="adm-html-ad" class="form-area" placeholder="<div>AdSense...</div>"></textarea>
+            <button class="btn btn-secondary" onclick="saveHtmlAd()">حفظ الإعلان</button>
+            <button class="btn btn-danger" onclick="deleteHtmlAd()">حذف الإعلان</button>
         </div>
         <div class="stat-card" style="text-align:right">
             <label>نص "من نحن"</label>
@@ -419,24 +447,26 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // DEFAULT CONTENT
+    const defaultAbout = `مرحبًا بكم في موقع العفرون أونلاين، منصتكم الأولى للإعلانات المبوبة في المنطقة. نحن نسعى لتسهيل عمليات البيع والشراء لجميع السكان وتوفير بيئة آمنة وسهلة الاستخدام.`;
+    const defaultPrivacy = `نحن في العفرون أونلاين نحترم خصوصيتكم ونلتزم بحماية بياناتكم الشخصية. يتم استخدام المعلومات فقط لغرض التواصل بين البائع والمشتري وتحسين تجربتكم في الموقع.`;
+
     // --- TRANSLATION ---
     const tr = {
         ar: {
-            menu: "القائمة", home: "الرئيسية", msgs: "الرسائل", about: "من نحن", contact: "اتصل بنا", report: "إبلاغ", logout: "خروج",
+            menu: "القائمة", home: "الرئيسية", msgs: "الرسائل", about: "من نحن", contact: "اتصل بنا", report: "إبلاغ", logout: "خروج", privacy: "سياسة الخصوصية",
             featured: "⭐ مميزة", latest: "📦 أحدث الإعلانات", login: "دخول", submit: "دخول", pub_title: "نشر إعلان",
             img_upload: "صورة المنتج", publish: "نشر", filter: "فلترة", search: "بحث", send: "إرسال", call: "اتصال", chat: "رسالة", owner: "المعلن", details: "التفاصيل",
             all_cats: "كل الفئات", all_cities: "كل المدن",
-            // Placeholders
             ph_email: "البريد الإلكتروني", ph_pass: "كلمة المرور", ph_name: "الاسم", ph_phone: "الهاتف",
             ph_title: "العنوان", ph_price: "السعر", ph_desc: "الوصف",
             ph_search: "بحث...", ph_min_price: "أدنى سعر", ph_max_price: "أقصى سعر"
         },
         fr: {
-            menu: "Menu", home: "Accueil", msgs: "Messages", about: "À propos", contact: "Contact", report: "Signaler", logout: "Déconnexion",
+            menu: "Menu", home: "Accueil", msgs: "Messages", about: "À propos", contact: "Contact", report: "Signaler", logout: "Déconnexion", privacy: "Politique de confidentialité",
             featured: "⭐ En Vedette", latest: "📦 Dernières Annonces", login: "Connexion", submit: "Entrer", pub_title: "Publier",
             img_upload: "Image du produit", publish: "Publier", filter: "Filtrer", search: "Rechercher", send: "Envoyer", call: "Appeler", chat: "Message", owner: "Vendeur", details: "Détails",
             all_cats: "Toutes Catégories", all_cities: "Toutes Villes",
-            // Placeholders
             ph_email: "Email", ph_pass: "Mot de passe", ph_name: "Nom", ph_phone: "Téléphone",
             ph_title: "Titre", ph_price: "Prix", ph_desc: "Description",
             ph_search: "Recherche...", ph_min_price: "Prix Min", ph_max_price: "Prix Max"
@@ -448,11 +478,9 @@
         curLang = curLang === "ar" ? "fr" : "ar";
         document.documentElement.dir = curLang === "ar" ? "rtl" : "ltr";
         document.getElementById('lang-txt').innerText = curLang.toUpperCase();
-        // Translate Text
         document.querySelectorAll('[data-tr]').forEach(el => {
             el.innerText = tr[curLang][el.getAttribute('data-tr')];
         });
-        // Translate Placeholders
         document.querySelectorAll('[data-ph]').forEach(el => {
             el.placeholder = tr[curLang][el.getAttribute('data-ph')];
         });
@@ -468,7 +496,7 @@
         {name: "كهرومنزلية", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=100"},
         {name: "ملابس نساء", img: "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=100"},
         {name: "ملابس رجال", img: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=100"},
-        {name: "ملابس أطفال", img: "https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=100"}, // Fixed Kids Image
+        {name: "ملابس أطفال", img: "https://images.unsplash.com/photo-1519457431-44ccd64a579b?w=100"},
         {name: "خدمات", img: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=100"},
         {name: "خياطة", img: "https://images.unsplash.com/photo-1528578577235-b963df6db908?w=100"},
         {name: "حلويات", img: "https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=100"},
@@ -506,8 +534,13 @@
         fill('p-city', cities); fill('f-city', cities);
 
         loadAds();
-        loadConfig();
         trackVisits();
+        
+        // Load Config & Hide Loader
+        loadConfig().then(() => {
+            document.getElementById('app-loader').style.opacity = '0';
+            setTimeout(()=> document.getElementById('app-loader').remove(), 500);
+        });
     });
 
     // --- VISITS TRACKING ---
@@ -518,7 +551,6 @@
         
         if (lastVisit !== today) {
             localStorage.setItem('last_visit', today);
-            // Increment Firestore counters
             const statsRef = doc(db, "stats", "visits");
             await setDoc(statsRef, {
                 [today]: increment(1),
@@ -610,7 +642,7 @@
                 timestamp: new Date().toISOString(),
                 isFeatured: false
             });
-            Swal.fire('تم', 'تم النشر بنجاح', 'success');
+            Swal.fire({icon: 'success', title: 'تم النشر بنجاح'});
             closeModal('pub-modal');
             loadAds();
         } catch(err) { Swal.fire('خطأ', 'فشل الرفع', 'error'); }
@@ -685,9 +717,8 @@
     
     window.callOwner = () => Swal.fire('رقم الهاتف', currentAd.phone, 'info');
 
-    // --- CHAT SYSTEM (UPDATED) ---
+    // --- CHAT SYSTEM ---
     function msgListener() {
-        // Badge shows only if my ID is in 'unreadFor' array
         const q = query(collection(db, "chats"), where("unreadFor", "array-contains", user.uid));
         onSnapshot(q, (s) => {
             const b = document.getElementById('msg-badge');
@@ -703,11 +734,8 @@
         const ids = [user.uid, currentAd.ownerId].sort();
         activeChatId = ids.join("_");
         
-        // Add current user to unreadFor to ensure logic consistency if needed, but primarily mark receiver
         await setDoc(doc(db, "chats", activeChatId), {
-            users: ids, 
-            lastMsg: "Start", 
-            ts: new Date().toISOString()
+            users: ids, lastMsg: "Start", ts: new Date().toISOString()
         }, {merge:true});
         
         openChatRoom(activeChatId, currentAd.ownerName || "المعلن");
@@ -737,7 +765,6 @@
         document.getElementById('chat-header-title').innerText = title;
         document.getElementById('chat-room-page').classList.add('active');
         
-        // Mark as read by removing my ID from unreadFor
         await updateDoc(doc(db, "chats", cid), { unreadFor: arrayRemove(user.uid) });
 
         const q = query(collection(db, "chats", cid, "msgs"), orderBy("ts", "asc"));
@@ -763,8 +790,6 @@
         const otherUser = chatDoc.data().users.find(u => u !== user.uid);
 
         await addDoc(collection(db, "chats", activeChatId, "msgs"), { txt: i.value, uid: user.uid, ts: new Date().toISOString() });
-        
-        // Update chat metadata and mark unread for the RECIPIENT
         await updateDoc(chatRef, { 
             lastMsg: i.value, 
             ts: new Date().toISOString(),
@@ -788,7 +813,6 @@
         const r = await getDocs(collection(db, "reports"));
         document.getElementById('st-reps').innerText = r.size;
 
-        // Fetch Visits Stats
         const sDoc = await getDoc(doc(db, "stats", "visits"));
         if(sDoc.exists()) {
             const d = sDoc.data();
@@ -797,6 +821,16 @@
             document.getElementById('st-day').innerText = d[today] || 0;
             document.getElementById('st-month').innerText = d[month] || 0;
         }
+
+        document.getElementById('adm-reps-list').innerHTML = '';
+        r.forEach(d => {
+            const rd = d.data();
+            document.getElementById('adm-reps-list').innerHTML += `
+            <div class="admin-item" style="flex-direction:column;align-items:flex-start">
+                <b>${rd.name} (${rd.email})</b>
+                <p>${rd.desc}</p>
+            </div>`;
+        });
 
         const l = document.getElementById('adm-ads-list');
         l.innerHTML = allAds.map(a => `
@@ -823,17 +857,17 @@
         event.target.classList.add('active');
     }
 
-    window.admDel = async(id) => { if(confirm('حذف؟')) { await deleteDoc(doc(db,"ads",id)); loadAds(); initAdm(); } };
-    window.admFeat = async(id, s) => { await updateDoc(doc(db,"ads",id), {isFeatured:!s}); loadAds(); initAdm(); };
-    window.admBan = async(id, s) => { await updateDoc(doc(db,"users",id), {isBanned:!s}); initAdm(); };
+    window.admDel = async(id) => { if(confirm('حذف؟')) { await deleteDoc(doc(db,"ads",id)); loadAds(); initAdm(); Swal.fire({icon:'success', title:'تم الحذف'}); } };
+    window.admFeat = async(id, s) => { await updateDoc(doc(db,"ads",id), {isFeatured:!s}); loadAds(); initAdm(); Swal.fire({icon:'success', title:'تم التعديل'}); };
+    window.admBan = async(id, s) => { await updateDoc(doc(db,"users",id), {isBanned:!s}); initAdm(); Swal.fire({icon:'success', title:'تم'}); };
 
-    // Admin Uploads
+    // Admin Settings
     window.saveAdmLogo = async() => {
         const file = document.getElementById('adm-logo-file').files[0];
         if(!file) return;
         const b64 = await compressImg(file);
         await setDoc(doc(db, "settings", "config"), { logoBlob: b64 }, {merge:true});
-        Swal.fire('تم', 'تم تحديث اللوغو', 'success');
+        Swal.fire({icon: 'success', title: 'تم تحديث اللوغو'});
     }
 
     window.saveAdmBanner = async() => {
@@ -842,27 +876,47 @@
         if(!file) return;
         const b64 = await compressImg(file);
         await setDoc(doc(db, "settings", "config"), { bannerBlob: b64, bannerLink: link }, {merge:true});
-        Swal.fire('تم', 'تم تحديث البانر', 'success');
+        Swal.fire({icon: 'success', title: 'تم تحديث البانر'});
+    }
+
+    window.deleteAdmBanner = async() => {
+        await updateDoc(doc(db, "settings", "config"), { bannerBlob: null, bannerLink: null });
+        Swal.fire({icon: 'success', title: 'تم حذف البانر'});
+    }
+
+    window.saveHtmlAd = async() => {
+        const html = document.getElementById('adm-html-ad').value;
+        await setDoc(doc(db, "settings", "config"), { htmlAd: html }, {merge:true});
+        Swal.fire({icon: 'success', title: 'تم حفظ الإعلان'});
+    }
+    
+    window.deleteHtmlAd = async() => {
+        await updateDoc(doc(db, "settings", "config"), { htmlAd: null });
+        Swal.fire({icon: 'success', title: 'تم حذف الإعلان'});
     }
 
     window.saveConf = async(k) => {
         await setDoc(doc(db, "settings", "config"), { [k]: document.getElementById('set-'+k).value }, {merge:true});
-        Swal.fire('حفظ', '', 'success');
+        Swal.fire({icon: 'success', title: 'تم الحفظ'});
     }
     
     async function loadConfig() {
         const s = await getDoc(doc(db, "settings", "config"));
         if(s.exists()) {
             const d = s.data();
-            if(d.logoBlob) {
-                 // Create an image tag or set text. If it was text before, replacing with img:
-                 document.getElementById('app-logo').innerHTML = `<img src="${d.logoBlob}" style="height:40px; vertical-align:middle">`;
-            }
+            if(d.logoBlob) document.getElementById('app-logo').innerHTML = `<img src="${d.logoBlob}" style="height:40px; vertical-align:middle">`;
             if(d.bannerBlob) {
-                const bannerHtml = `<img src="${d.bannerBlob}" onclick="window.open('${d.bannerLink||'#'}')">`;
+                const bannerHtml = `<img src="${d.bannerBlob}" style="cursor:pointer" onclick="window.open('${d.bannerLink||'#'}')">`;
                 document.getElementById('banner-slide-content').innerHTML = bannerHtml;
             }
-            localStorage.setItem('txt_about', d.about || "");
+            if(d.htmlAd) {
+                document.getElementById('custom-ads-container').innerHTML = d.htmlAd;
+            } else {
+                document.getElementById('custom-ads-container').innerHTML = '';
+            }
+            localStorage.setItem('txt_about', d.about || defaultAbout);
+        } else {
+            localStorage.setItem('txt_about', defaultAbout);
         }
     }
 
@@ -872,10 +926,16 @@
     window.closePage = (id) => document.getElementById(id).classList.remove('active');
     window.closeAll = () => { document.getElementById('sidebar').classList.remove('active'); document.querySelector('.overlay').classList.remove('active'); }
     window.toggleSidebar = () => { document.getElementById('sidebar').classList.toggle('active'); document.querySelector('.overlay').classList.toggle('active'); }
+    
     window.sendReport = async() => {
-        await addDoc(collection(db,"reports"), {name: document.getElementById('r-name').value, desc: document.getElementById('r-desc').value});
-        Swal.fire('شكراً', '', 'success'); closeModal('report-modal');
+        await addDoc(collection(db,"reports"), {
+            name: document.getElementById('r-name').value, 
+            email: document.getElementById('r-email').value, 
+            desc: document.getElementById('r-desc').value
+        });
+        Swal.fire({icon: 'success', title: 'تم الإرسال'}); closeModal('report-modal');
     }
+    
     window.doSearch = () => {
         loadAds({
             search: document.getElementById('f-search').value,
@@ -886,11 +946,17 @@
         });
         closeModal('filter-modal');
     }
+    
     window.filterCat = (c) => loadAds({cat:c});
+    
     window.showStatic = (k) => {
         openModal('static-modal');
         document.getElementById('static-title').innerText = tr[curLang][k] || k;
-        document.getElementById('static-body').innerText = k==='about' ? (localStorage.getItem('txt_about')||"...") : "...";
+        let content = "...";
+        if(k === 'about') content = localStorage.getItem('txt_about');
+        if(k === 'privacy') content = defaultPrivacy;
+        if(k === 'contact') content = `Email: contact@elaffroun.online`;
+        document.getElementById('static-body').innerText = content;
     }
 
 </script>

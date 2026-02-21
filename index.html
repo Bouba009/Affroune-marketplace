@@ -51,7 +51,7 @@
         .btn-info { background: #17a2b8; color: white; }
         .w-100 { width: 100%; }
         
-        /* Fix SweetAlert Z-Index to appear ABOVE product page */
+        /* Fix SweetAlert Z-Index */
         .swal2-container { z-index: 10000 !important; }
 
         header { background: var(--white); height: 60px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
@@ -146,8 +146,6 @@
         footer { text-align: center; padding: 30px; color: #999; margin-top: 20px; font-size: 0.8rem; }
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
-        
-        /* Updated: Very Large Product Image Slider */
         .swiper.prodSwiper { height: 65vh !important; background: #000; }
     </style>
 </head>
@@ -253,7 +251,7 @@
 <div class="modal-wrap" id="pub-modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal('pub-modal')">&times;</span>
-        <h3 style="margin-bottom:15px" data-tr="pub_title">نشر إعلان</h3>
+        <h3 style="margin-bottom:15px" data-tr="pub_title" id="pub-modal-title">نشر إعلان</h3>
         <form id="pub-form">
             <input type="text" id="p-title" class="form-input" data-ph="ph_title" placeholder="العنوان" required>
             <select id="p-cat" class="form-select" required></select>
@@ -265,7 +263,8 @@
             <textarea id="p-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف..."></textarea>
             
             <label style="font-weight:bold; font-size:0.9rem" data-tr="img_upload">صور المنتج (يمكن اختيار أكثر من صورة)</label>
-            <input type="file" id="p-file" class="file-input" accept="image/*" multiple required>
+            <input type="file" id="p-file" class="file-input" accept="image/*" multiple>
+            <small style="color:#777; display:block; margin-bottom:10px">اترك الصور فارغة عند التعديل للاحتفاظ بالصور القديمة</small>
             
             <button type="submit" class="btn btn-primary w-100" style="margin-top:15px" id="pub-btn" data-tr="publish">نشر</button>
         </form>
@@ -325,6 +324,10 @@
         <div class="swiper-pagination"></div>
     </div>
     <div style="padding:20px; padding-bottom:100px">
+        <div id="owner-actions" class="hidden flex" style="gap:10px; margin-bottom:15px">
+            <!-- Edit/Delete buttons injected here -->
+        </div>
+        
         <h2 id="v-price" style="color:var(--primary); font-size:1.5rem"></h2>
         <h3 id="v-title" style="margin:5px 0 15px 0"></h3>
         <div class="flex" style="gap:15px; color:#666; font-size:0.9rem; margin-bottom:20px">
@@ -338,7 +341,7 @@
             <div id="v-owner" style="font-weight:bold; font-size:1.1rem"></div>
         </div>
     </div>
-    <div style="position:fixed; bottom:0; left:0; width:100%; padding:15px; background:white; box-shadow:0 -2px 10px rgba(0,0,0,0.1); display:flex; gap:10px">
+    <div style="position:fixed; bottom:0; left:0; width:100%; padding:15px; background:white; box-shadow:0 -2px 10px rgba(0,0,0,0.1); display:flex; gap:10px; z-index:2000">
         <button class="btn btn-success w-100" onclick="callOwner()"><i class="fas fa-phone"></i> <span data-tr="call">اتصال</span></button>
         <button class="btn btn-primary w-100" onclick="startChat()"><i class="fas fa-comment"></i> <span data-tr="chat">رسالة</span></button>
         <button class="btn btn-info w-100" onclick="shareAd()"><i class="fas fa-share-alt"></i></button>
@@ -346,7 +349,7 @@
 </div>
 
 <!-- Chat List -->
-<div class="full-page" id="chat-list-page">
+<div class="full-page" id="chat-list-page" style="z-index:2500">
     <div class="page-header">
         <i class="fas fa-arrow-right page-back" onclick="closePage('chat-list-page')"></i>
         <h3 data-tr="msgs">الرسائل</h3>
@@ -355,7 +358,7 @@
 </div>
 
 <!-- Chat Room -->
-<div class="full-page" id="chat-room-page" style="z-index:1600">
+<div class="full-page" id="chat-room-page" style="z-index:3000">
     <div class="page-header" style="background:var(--secondary); color:white">
         <i class="fas fa-arrow-right page-back" onclick="closePage('chat-room-page')"></i>
         <h3 id="chat-header-title">Chat</h3>
@@ -539,6 +542,7 @@
     let allAds = [];
     let currentAd = null;
     let activeChatId = null;
+    let editId = null; // Global variable for editing
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -683,39 +687,103 @@
         });
     }
 
-    // --- ADS PUBLISH ---
+    // --- ADS PUBLISH & EDIT ---
     document.getElementById('pub-form').addEventListener('submit', async(e) => {
         e.preventDefault();
         if(!user) return openModal('auth-modal');
         const btn = document.getElementById('pub-btn');
-        btn.innerText = "جاري الرفع..."; btn.disabled = true;
+        btn.innerText = "جاري الحفظ..."; btn.disabled = true;
         try {
-            // Updated: Handle multiple files
             const files = document.getElementById('p-file').files;
-            const imgPromises = Array.from(files).map(file => compressImg(file));
-            const images = await Promise.all(imgPromises);
+            let images = [];
+            
+            // If new images selected, compress them
+            if (files.length > 0) {
+                const imgPromises = Array.from(files).map(file => compressImg(file));
+                images = await Promise.all(imgPromises);
+            } else if (editId && currentAd) {
+                // Keep existing images if editing and no new files
+                images = currentAd.images || (currentAd.img ? [currentAd.img] : []);
+            }
 
-            await addDoc(collection(db, "ads"), {
+            const adData = {
                 title: document.getElementById('p-title').value,
                 category: document.getElementById('p-cat').value,
                 price: Number(document.getElementById('p-price').value),
                 city: document.getElementById('p-city').value,
                 phone: document.getElementById('p-phone').value,
                 desc: document.getElementById('p-desc').value,
-                images: images, // Store array
+                images: images,
                 ownerId: user.uid,
                 ownerName: user.displayName || 'User',
                 timestamp: new Date().toISOString(),
                 isFeatured: false
-            });
-            Swal.fire({icon: 'success', title: 'تم النشر بنجاح'});
+            };
+
+            if (editId) {
+                await updateDoc(doc(db, "ads", editId), adData);
+                Swal.fire({icon: 'success', title: 'تم التعديل بنجاح'});
+            } else {
+                await addDoc(collection(db, "ads"), adData);
+                Swal.fire({icon: 'success', title: 'تم النشر بنجاح'});
+            }
+            
             closeModal('pub-modal');
             loadAds();
-        } catch(err) { Swal.fire('خطأ', 'فشل الرفع', 'error'); }
+            if(editId) closePage('prod-page'); // Close view to refresh if editing from view
+        } catch(err) { Swal.fire('خطأ', 'فشل العملية', 'error'); }
         btn.innerText = "نشر"; btn.disabled = false;
     });
 
-    window.startPublish = () => user ? openModal('pub-modal') : openModal('auth-modal');
+    window.startPublish = () => {
+        if(!user) return openModal('auth-modal');
+        // RESET FORM FOR NEW AD
+        editId = null;
+        document.getElementById('pub-form').reset();
+        document.getElementById('pub-modal-title').innerText = "نشر إعلان";
+        document.getElementById('pub-btn').innerText = "نشر";
+        openModal('pub-modal');
+    };
+
+    window.editMyAd = (id) => {
+        // PRE-FILL FORM FOR EDIT
+        const ad = allAds.find(a => a.id === id);
+        if(!ad) return;
+        currentAd = ad; // Cache for image logic
+        editId = id;
+        
+        document.getElementById('p-title').value = ad.title;
+        document.getElementById('p-cat').value = ad.category;
+        document.getElementById('p-price').value = ad.price;
+        document.getElementById('p-city').value = ad.city;
+        document.getElementById('p-phone').value = ad.phone;
+        document.getElementById('p-desc').value = ad.desc;
+        
+        document.getElementById('pub-modal-title').innerText = "تعديل الإعلان";
+        document.getElementById('pub-btn').innerText = "حفظ التعديلات";
+        
+        openModal('pub-modal');
+    }
+
+    window.deleteMyAd = async (id) => {
+        Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: "لا يمكن التراجع عن هذا الإجراء!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'نعم، احذف!',
+            cancelButtonText: 'إلغاء'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await deleteDoc(doc(db, "ads", id));
+                Swal.fire('تم الحذف!', 'تم حذف إعلانك.', 'success');
+                closePage('prod-page');
+                loadAds();
+            }
+        });
+    }
 
     // --- ADS LOAD & FILTER ---
     window.loadAds = async (filter={}) => {
@@ -800,6 +868,18 @@
         const oDoc = await getDoc(doc(db, "users", ad.ownerId));
         document.getElementById('v-owner').innerText = oDoc.exists() ? (oDoc.data().name || "مستخدم") : "مجهول";
         
+        // Owner Actions Logic
+        const actionsDiv = document.getElementById('owner-actions');
+        if(user && user.uid === ad.ownerId) {
+            actionsDiv.innerHTML = `
+                <button class="btn btn-secondary w-100" onclick="editMyAd('${ad.id}')">تعديل</button>
+                <button class="btn btn-danger w-100" onclick="deleteMyAd('${ad.id}')">حذف</button>
+            `;
+            actionsDiv.classList.remove('hidden');
+        } else {
+            actionsDiv.classList.add('hidden');
+        }
+
         // Deep link update
         window.location.hash = `ad/${id}`;
 

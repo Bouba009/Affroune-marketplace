@@ -69,6 +69,7 @@
         .overlay.active { display: block; }
         .menu-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         
+        /* Banner Slider */
         .swiper { width: 100%; height: 200px; margin-bottom: 15px; border-radius: 0 0 15px 15px; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -146,7 +147,15 @@
         footer { text-align: center; padding: 30px; color: #999; margin-top: 20px; font-size: 0.8rem; }
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
-        .swiper.prodSwiper { height: 80vh !important; background: #000; }
+        
+        /* Updated: 9:16 Aspect Ratio for Product View */
+        .swiper.prodSwiper {
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            max-height: 80vh; /* Safety Cap */
+            background: #000;
+            margin: 0 auto;
+        }
         .swiper-slide img.prod-view-img { width: 100%; height: 100%; object-fit: contain; }
     </style>
 </head>
@@ -195,6 +204,7 @@
     <!-- Slider -->
     <div class="swiper mySwiper">
         <div class="swiper-wrapper" id="main-banner-wrapper">
+            <!-- Slides injected via JS -->
             <div class="swiper-slide">
                 <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80">
             </div>
@@ -264,7 +274,7 @@
             <textarea id="p-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف..."></textarea>
             
             <label style="font-weight:bold; font-size:0.9rem" data-tr="img_upload">صور المنتج (الحد الأقصى 5 صور)</label>
-            <!-- Modified: 5 individual file inputs -->
+            <!-- 5 Individual File Inputs -->
             <div id="image-inputs-container">
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 1</label>
                 <input type="file" id="p-file-1" class="file-input" accept="image/*">
@@ -333,7 +343,7 @@
         <i class="fas fa-arrow-right page-back" onclick="closePage('prod-page')"></i>
         <h3 style="flex:1" data-tr="details">التفاصيل</h3>
     </div>
-    <!-- Updated: Large Slider with Navigation -->
+    <!-- Updated: 9:16 Aspect Ratio Slider -->
     <div class="swiper prodSwiper">
         <div class="swiper-wrapper" id="prod-slides"></div>
         <div class="swiper-button-next"></div>

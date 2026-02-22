@@ -148,15 +148,17 @@
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
         
-        /* Updated: 9:16 Aspect Ratio for Product View */
-        .swiper.prodSwiper {
-            width: 100%;
-            aspect-ratio: 9 / 16;
-            max-height: 80vh; /* Safety Cap */
+        /* Updated: Product View Slider to be Full Height / Portrait 9:16 approx */
+        .swiper.prodSwiper { 
+            height: 85vh !important; /* Large vertical height */
             background: #000;
-            margin: 0 auto;
+            width: 100%;
         }
-        .swiper-slide img.prod-view-img { width: 100%; height: 100%; object-fit: contain; }
+        .swiper-slide img.prod-view-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; /* Ensure full image is visible */
+        }
     </style>
 </head>
 <body>
@@ -343,7 +345,7 @@
         <i class="fas fa-arrow-right page-back" onclick="closePage('prod-page')"></i>
         <h3 style="flex:1" data-tr="details">التفاصيل</h3>
     </div>
-    <!-- Updated: 9:16 Aspect Ratio Slider -->
+    <!-- Updated: Large Vertical Slider (85vh) -->
     <div class="swiper prodSwiper">
         <div class="swiper-wrapper" id="prod-slides"></div>
         <div class="swiper-button-next"></div>

@@ -148,17 +148,20 @@
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
         
-        /* Updated: Product View Slider */
+        /* Updated: Extra Large & Tall Product View Slider */
+        /* Increased height to 80vh and min-height 600px */
+        /* object-fit set to CONTAIN so the full image is visible inside the tall box */
         .swiper.prodSwiper { 
             width: 100%;
-            height: 75vh !important;
+            height: 80vh !important; 
+            min-height: 600px;
             background: #000;
             margin: 0;
         }
         .swiper-slide img.prod-view-img { 
             width: 100%; 
             height: 100%; 
-            object-fit: cover; /* Cover Screen */
+            object-fit: contain; /* Full image visible */
         }
     </style>
 </head>
@@ -346,14 +349,14 @@
         <i class="fas fa-arrow-right page-back" onclick="closePage('prod-page')"></i>
         <h3 style="flex:1" data-tr="details">التفاصيل</h3>
     </div>
-    <!-- Updated: Large Vertical Slider (75vh) and Cover -->
+    <!-- Updated: Extra Tall Vertical Slider (80vh) & Contain Object Fit -->
     <div class="swiper prodSwiper">
         <div class="swiper-wrapper" id="prod-slides"></div>
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
         <div class="swiper-pagination"></div>
     </div>
-    <div style="padding:20px;">
+    <div style="padding:20px; padding-bottom:100px">
         <div id="owner-actions" class="hidden flex" style="gap:10px; margin-bottom:15px">
             <!-- Edit/Delete buttons injected here -->
         </div>

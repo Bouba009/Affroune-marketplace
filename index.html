@@ -3,8 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>El Affroun Online</title>
     
+    <!-- SEO & Meta Tags -->
+    <title>El Affroun Online - سوق العفرون الإلكتروني</title>
+    <meta name="description" content="أفضل موقع إعلانات مبوبة في العفرون، موزاية، شفة، واد جر. بيع وشراء العقارات، السيارات، الهواتف، والخدمات بسهولة.">
+    <meta name="keywords" content="العفرون, بيع, شراء, سوق, سيارات, عقارات, هواتف, El Affroun, Ouedkniss, إعلانات">
+    <meta name="author" content="El Affroun Online">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Social Media Tags (Open Graph) -->
+    <meta property="og:title" content="El Affroun Online">
+    <meta property="og:description" content="سوقك الإلكتروني الأول في العفرون وضواحيها.">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630?text=El+Affroun+Online">
+    <meta property="og:url" content="https://elaffroun.online">
+    <meta property="og:type" content="website">
+
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -148,7 +161,7 @@
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
         
-        /* Updated: 55% Height Product Slider - Portrait aspect (approx 500x700 ratio feel) */
+        /* Updated: 55% Height Product Slider - Portrait aspect */
         .swiper.prodSwiper { 
             width: 100%;
             height: 55vh !important; /* ~55% of Screen */
@@ -288,12 +301,16 @@
             <div id="image-inputs-container">
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 1</label>
                 <input type="file" id="p-file-1" class="file-input" accept="image/*">
+                
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 2</label>
                 <input type="file" id="p-file-2" class="file-input" accept="image/*">
+                
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 3</label>
                 <input type="file" id="p-file-3" class="file-input" accept="image/*">
+                
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 4</label>
                 <input type="file" id="p-file-4" class="file-input" accept="image/*">
+                
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 5</label>
                 <input type="file" id="p-file-5" class="file-input" accept="image/*">
             </div>
@@ -596,6 +613,7 @@
     let currentAd = null;
     let activeChatId = null;
     let editId = null;
+    let currentBanners = []; 
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {

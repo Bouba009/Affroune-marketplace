@@ -88,7 +88,6 @@
         .ad-card.featured { border: 2px solid var(--gold); }
         .feat-badge { position: absolute; top: 8px; right: 8px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 2; }
         
-        /* Main Page Image Size */
         .ad-img-box { height: 220px; background: #eee; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         .ad-img-box img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -149,10 +148,10 @@
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
         
-        /* Updated: Product View Slider 55% Height & Contain Object Fit */
+        /* Updated: 55% Height Product Slider - Portrait aspect (approx 500x700 ratio feel) */
         .swiper.prodSwiper { 
             width: 100%;
-            height: 55vh !important; /* Ideal height */
+            height: 55vh !important; /* ~55% of Screen */
             min-height: 400px;
             background: #000;
             margin: 0;
@@ -160,7 +159,7 @@
         .swiper-slide img.prod-view-img { 
             width: 100%; 
             height: 100%; 
-            object-fit: contain; /* Shows full image */
+            object-fit: contain; /* Full image visible inside box */
         }
     </style>
 </head>
@@ -217,11 +216,14 @@
         <div class="swiper-pagination"></div>
     </div>
     
-    <!-- Custom HTML Ads -->
-    <div id="custom-ads-container" class="custom-ads-box"></div>
+    <!-- Custom HTML Ads: TOP -->
+    <div id="ads-top-container" class="custom-ads-box"></div>
 
     <!-- Categories -->
     <div class="cats-scroll" id="cats-container"></div>
+    
+    <!-- Custom HTML Ads: MIDDLE -->
+    <div id="ads-middle-container" class="custom-ads-box"></div>
 
     <!-- Featured -->
     <div id="feat-section" class="hidden">
@@ -235,6 +237,9 @@
         <small style="color:var(--primary); cursor:pointer" onclick="openModal('filter-modal')"><i class="fas fa-filter"></i></small>
     </div>
     <div class="ads-grid" id="all-ads"></div>
+    
+    <!-- Custom HTML Ads: BOTTOM -->
+    <div id="ads-bottom-container" class="custom-ads-box"></div>
 </main>
 
 <!-- FLOATING BUTTONS -->
@@ -463,6 +468,11 @@
         </div>
         <div class="stat-card" style="text-align:right">
             <label>كود HTML إعلاني (Banner Ads)</label>
+            <select id="adm-ad-pos" class="form-select" style="margin-bottom:5px">
+                <option value="top">أعلى (Top)</option>
+                <option value="middle">وسط (Middle)</option>
+                <option value="bottom">أسفل (Bottom)</option>
+            </select>
             <textarea id="adm-html-ad" class="form-area" placeholder="<div>AdSense...</div>"></textarea>
             <button class="btn btn-secondary" onclick="saveHtmlAd()">حفظ الإعلان</button>
             <button class="btn btn-danger" onclick="deleteHtmlAd()">حذف الإعلان</button>
@@ -550,9 +560,17 @@
         document.querySelectorAll('.page-back').forEach(el => {
             el.style.transform = curLang === "ar" ? "rotate(0deg)" : "rotate(180deg)";
         });
+        
+        // FIX SWIPER BANNER ON LANG CHANGE
+        const mainSwiper = document.querySelector('.mySwiper').swiper;
+        if(mainSwiper) {
+            mainSwiper.rtlTranslate = curLang === 'ar';
+            mainSwiper.update();
+        }
+
         renderCats();
         fillSelects();
-        loadAds(); // Reload ads to translate categories in cards
+        loadAds(); 
     }
 
     // --- DATA ---
@@ -589,11 +607,9 @@
         // DEEP LINKING CHECK
         if(window.location.hash.startsWith("#ad/")) {
             const id = window.location.hash.split('/')[1];
-            // Wait a bit for ads to load or fetch directly
             setTimeout(() => {
                 if(allAds.length > 0) openProd(id);
                 else {
-                    // Fallback fetch if not loaded
                     getDoc(doc(db, "ads", id)).then(s => {
                         if(s.exists()) {
                             allAds.push({id: s.id, ...s.data()});
@@ -1174,13 +1190,18 @@
 
     window.saveHtmlAd = async() => {
         const html = document.getElementById('adm-html-ad').value;
-        await setDoc(doc(db, "settings", "config"), { htmlAd: html }, {merge:true});
+        const pos = document.getElementById('adm-ad-pos').value;
+        
+        await setDoc(doc(db, "settings", "config"), { [`htmlAd_${pos}`]: html }, {merge:true});
         Swal.fire({icon: 'success', title: 'تم حفظ الإعلان'});
+        loadConfig(); // Refresh to see ad
     }
     
     window.deleteHtmlAd = async() => {
-        await updateDoc(doc(db, "settings", "config"), { htmlAd: null });
+        const pos = document.getElementById('adm-ad-pos').value;
+        await updateDoc(doc(db, "settings", "config"), { [`htmlAd_${pos}`]: null });
         Swal.fire({icon: 'success', title: 'تم حذف الإعلان'});
+        loadConfig();
     }
 
     window.saveConf = async(k) => {
@@ -1207,11 +1228,11 @@
                 new Swiper(".mySwiper", {autoplay:{delay:4000}, loop:true});
             }
 
-            if(d.htmlAd) {
-                document.getElementById('custom-ads-container').innerHTML = d.htmlAd;
-            } else {
-                document.getElementById('custom-ads-container').innerHTML = '';
-            }
+            // ADS PLACEMENT
+            document.getElementById('ads-top-container').innerHTML = d.htmlAd_top || "";
+            document.getElementById('ads-middle-container').innerHTML = d.htmlAd_middle || "";
+            document.getElementById('ads-bottom-container').innerHTML = d.htmlAd_bottom || "";
+
             localStorage.setItem('txt_about', d.about || defaultAbout);
         } else {
             localStorage.setItem('txt_about', defaultAbout);

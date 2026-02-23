@@ -444,6 +444,11 @@
     </div>
 
     <div id="adm-settings" class="admin-view">
+        <div class="stat-card" style="text-align:right; border: 1px solid red; background: #fff5f5;">
+            <label style="color:red; font-weight:bold">نظام التنظيف التلقائي</label>
+            <p style="font-size:0.8rem; color:#555">حذف المنشورات التي تجاوزت 30 يوماً لتوفير المساحة.</p>
+            <button class="btn btn-danger w-100" onclick="cleanupOldAds()">تشغيل التنظيف الآن 🗑️</button>
+        </div>
         <div class="stat-card" style="text-align:right">
             <label>شعار الموقع (رفع صورة)</label>
             <input type="file" id="adm-logo-file" class="file-input">
@@ -1089,6 +1094,33 @@
     window.admDel = async(id) => { if(confirm('حذف؟')) { await deleteDoc(doc(db,"ads",id)); loadAds(); initAdm(); Swal.fire({icon:'success', title:'تم الحذف'}); } };
     window.admFeat = async(id, s) => { await updateDoc(doc(db,"ads",id), {isFeatured:!s}); loadAds(); initAdm(); Swal.fire({icon:'success', title:'تم التعديل'}); };
     window.admBan = async(id, s) => { await updateDoc(doc(db,"users",id), {isBanned:!s}); initAdm(); Swal.fire({icon:'success', title:'تم'}); };
+
+    window.cleanupOldAds = async () => {
+        if(!confirm("هل أنت متأكد؟ سيتم حذف جميع المنشورات الأقدم من 30 يوماً نهائياً ولا يمكن التراجع!")) return;
+        const now = new Date();
+        const cutoffDate = new Date(now.setDate(now.getDate() - 30));
+        
+        Swal.fire({title: 'جاري التنظيف...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+        
+        try {
+            const q = query(collection(db, "ads"));
+            const snapshot = await getDocs(q);
+            let deletedCount = 0;
+            const deletePromises = [];
+            
+            snapshot.forEach((docSnap) => {
+                const adData = docSnap.data();
+                const adDate = new Date(adData.timestamp);
+                if (adDate < cutoffDate) {
+                    deletePromises.push(deleteDoc(doc(db, "ads", docSnap.id)));
+                    deletedCount++;
+                }
+            });
+            await Promise.all(deletePromises);
+            Swal.fire('تم!', `تم حذف ${deletedCount} منشور قديم.`, 'success');
+            loadAds(); initAdm();
+        } catch (error) { Swal.fire('خطأ', error.message, 'error'); }
+    };
 
     // Admin Settings
     window.saveAdmLogo = async() => {

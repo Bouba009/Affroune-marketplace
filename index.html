@@ -148,20 +148,18 @@
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
         
-        /* Updated: Extra Large & Tall Product View Slider */
-        /* Increased height to 80vh and min-height 600px */
-        /* object-fit set to CONTAIN so the full image is visible inside the tall box */
+        /* Updated: 55% Height Product Slider - Portrait aspect (approx 500x700 ratio feel) */
         .swiper.prodSwiper { 
             width: 100%;
-            height: 80vh !important; 
-            min-height: 600px;
+            height: 55vh !important; /* ~55% of Screen */
+            min-height: 400px;
             background: #000;
             margin: 0;
         }
         .swiper-slide img.prod-view-img { 
             width: 100%; 
             height: 100%; 
-            object-fit: contain; /* Full image visible */
+            object-fit: contain; /* Full image visible inside box */
         }
     </style>
 </head>
@@ -349,7 +347,7 @@
         <i class="fas fa-arrow-right page-back" onclick="closePage('prod-page')"></i>
         <h3 style="flex:1" data-tr="details">التفاصيل</h3>
     </div>
-    <!-- Updated: Extra Tall Vertical Slider (80vh) & Contain Object Fit -->
+    <!-- Updated: 55% Height Slider - Portrait Aspect -->
     <div class="swiper prodSwiper">
         <div class="swiper-wrapper" id="prod-slides"></div>
         <div class="swiper-button-next"></div>

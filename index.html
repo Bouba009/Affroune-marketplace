@@ -3,21 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>El Affroun Online</title>
     
-    <!-- SEO & Meta Tags -->
-    <title>El Affroun Online - سوق العفرون الإلكتروني</title>
-    <meta name="description" content="أفضل موقع إعلانات مبوبة في العفرون، موزاية، شفة، واد جر. بيع وشراء العقارات، السيارات، الهواتف، والخدمات بسهولة.">
-    <meta name="keywords" content="العفرون, بيع, شراء, سوق, سيارات, عقارات, هواتف, El Affroun, Ouedkniss, إعلانات">
-    <meta name="author" content="El Affroun Online">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Social Media Tags (Open Graph) -->
-    <meta property="og:title" content="El Affroun Online">
-    <meta property="og:description" content="سوقك الإلكتروني الأول في العفرون وضواحيها.">
-    <meta property="og:image" content="https://via.placeholder.com/1200x630?text=El+Affroun+Online">
-    <meta property="og:url" content="https://elaffroun.online">
-    <meta property="og:type" content="website">
-
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -100,7 +87,10 @@
         .ad-card:active { transform: scale(0.98); }
         .ad-card.featured { border: 2px solid var(--gold); }
         .feat-badge { position: absolute; top: 8px; right: 8px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 2; }
-        
+        /* Report Icon on Ad Card */
+        .report-badge { position: absolute; top: 8px; left: 8px; background: rgba(255,255,255,0.8); color: red; padding: 5px; border-radius: 50%; font-size: 0.9rem; z-index: 3; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .report-badge:hover { background: red; color: white; }
+
         .ad-img-box { height: 220px; background: #eee; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         .ad-img-box img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -212,7 +202,7 @@
     <div class="menu-item" onclick="showStatic('about')"><i class="fas fa-info-circle"></i> <span data-tr="about">من نحن</span></div>
     <div class="menu-item" onclick="showStatic('contact')"><i class="fas fa-phone"></i> <span data-tr="contact">اتصل بنا</span></div>
     <div class="menu-item" onclick="showStatic('privacy')"><i class="fas fa-shield-alt"></i> <span data-tr="privacy">سياسة الخصوصية</span></div>
-    <div class="menu-item" onclick="openModal('report-modal')"><i class="fas fa-bug"></i> <span data-tr="report">إبلاغ</span></div>
+    <div class="menu-item" onclick="openModal('report-modal')"><i class="fas fa-bug"></i> <span data-tr="report">إبلاغ عام</span></div>
     <div class="menu-item hidden" id="logout-btn" onclick="logout()" style="color:var(--primary); margin-top:auto"><i class="fas fa-sign-out-alt"></i> <span data-tr="logout">خروج</span></div>
 </div>
 
@@ -301,16 +291,12 @@
             <div id="image-inputs-container">
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 1</label>
                 <input type="file" id="p-file-1" class="file-input" accept="image/*">
-                
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 2</label>
                 <input type="file" id="p-file-2" class="file-input" accept="image/*">
-                
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 3</label>
                 <input type="file" id="p-file-3" class="file-input" accept="image/*">
-                
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 4</label>
                 <input type="file" id="p-file-4" class="file-input" accept="image/*">
-                
                 <label style="font-size:0.8rem; margin-top:5px; display:block">الصورة 5</label>
                 <input type="file" id="p-file-5" class="file-input" accept="image/*">
             </div>
@@ -341,7 +327,7 @@
 <div class="modal-wrap" id="report-modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal('report-modal')">&times;</span>
-        <h3 data-tr="report">إبلاغ</h3><br>
+        <h3 data-tr="report">إبلاغ عام</h3><br>
         <input type="text" id="r-name" class="form-input" data-ph="ph_name" placeholder="الاسم">
         <input type="email" id="r-email" class="form-input" data-ph="ph_email" placeholder="البريد الإلكتروني">
         <textarea id="r-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف"></textarea>
@@ -434,6 +420,7 @@
         <div class="tab-btn active" onclick="switchAdmin('dash')">الرئيسية</div>
         <div class="tab-btn" onclick="switchAdmin('ads')">الإعلانات</div>
         <div class="tab-btn" onclick="switchAdmin('users')">المستخدمين</div>
+        <div class="tab-btn" onclick="switchAdmin('ad-reports')">بلاغات المنشورات</div>
         <div class="tab-btn" onclick="switchAdmin('settings')">إعدادات</div>
     </div>
     
@@ -448,7 +435,7 @@
             <div class="stat-card"><h3>المستخدمين</h3><b id="st-users">0</b></div>
             <div class="stat-card"><h3>البلاغات</h3><b id="st-reps">0</b></div>
         </div>
-        <h4 style="margin:15px 0">البلاغات الأخيرة</h4>
+        <h4 style="margin:15px 0">بلاغات عامة أخيرة</h4>
         <div id="adm-reps-list"></div>
     </div>
 
@@ -460,6 +447,11 @@
     <div id="adm-users" class="admin-view">
         <input type="text" class="form-input" placeholder="بحث..." onkeyup="filterAdmUsers(this.value)">
         <div id="adm-users-list" style="margin-top:10px"></div>
+    </div>
+
+    <div id="adm-ad-reports" class="admin-view">
+        <h4>بلاغات عن منشورات مخالفة</h4>
+        <div id="adm-ad-reports-list" style="margin-top:10px"></div>
     </div>
 
     <div id="adm-settings" class="admin-view">
@@ -577,17 +569,9 @@
         document.querySelectorAll('.page-back').forEach(el => {
             el.style.transform = curLang === "ar" ? "rotate(0deg)" : "rotate(180deg)";
         });
-        
-        // FIX SWIPER BANNER ON LANG CHANGE
-        const mainSwiper = document.querySelector('.mySwiper').swiper;
-        if(mainSwiper) {
-            mainSwiper.rtlTranslate = curLang === 'ar';
-            mainSwiper.update();
-        }
-
         renderCats();
         fillSelects();
-        loadAds(); 
+        loadAds(); // Reload ads to translate categories in cards
     }
 
     // --- DATA ---
@@ -613,7 +597,6 @@
     let currentAd = null;
     let activeChatId = null;
     let editId = null;
-    let currentBanners = []; 
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -896,6 +879,9 @@
         return `
         <div class="ad-card ${a.isFeatured?'featured':''}" onclick="openProd('${a.id}')">
             ${a.isFeatured ? '<div class="feat-badge">★</div>' : ''}
+            <div class="report-badge" onclick="event.stopPropagation(); reportSpecificAd('${a.id}', '${a.title}')">
+                <i class="fas fa-flag"></i>
+            </div>
             <div class="ad-img-box"><img src="${mainImg}" loading="lazy"></div>
             <div class="ad-content">
                 <div class="ad-price">${Number(a.price).toLocaleString()} DA</div>
@@ -904,6 +890,27 @@
             </div>
         </div>`;
     }
+
+    // --- REPORT AD ---
+    window.reportSpecificAd = async (id, title) => {
+        const { value: text } = await Swal.fire({
+            input: 'textarea',
+            inputLabel: 'سبب الإبلاغ',
+            inputPlaceholder: 'لماذا تريد الإبلاغ عن هذا المنشور؟',
+            showCancelButton: true
+        });
+
+        if (text) {
+            await addDoc(collection(db, "reports"), {
+                type: 'ad',
+                adId: id,
+                adTitle: title,
+                desc: text,
+                timestamp: new Date().toISOString()
+            });
+            Swal.fire('تم', 'شكراً على التبليغ', 'success');
+        }
+    };
 
     // --- PRODUCT VIEW ---
     window.openProd = async(id) => {
@@ -1085,13 +1092,36 @@
             document.getElementById('st-month').innerText = d[month] || 0;
         }
 
-        document.getElementById('adm-reps-list').innerHTML = '';
-        r.forEach(d => {
+        // LOAD GENERAL REPORTS
+        const repsList = document.getElementById('adm-reps-list');
+        repsList.innerHTML = '';
+        const genReps = r.docs.filter(d => !d.data().type); // Filter generic
+        
+        genReps.forEach(d => {
             const rd = d.data();
-            document.getElementById('adm-reps-list').innerHTML += `
+            repsList.innerHTML += `
             <div class="admin-item" style="flex-direction:column;align-items:flex-start">
                 <b>${rd.name} (${rd.email})</b>
                 <p>${rd.desc}</p>
+                <button class="btn btn-secondary" onclick="deleteDoc(doc(db,'reports','${d.id}'));initAdm()">حذف</button>
+            </div>`;
+        });
+
+        // LOAD AD REPORTS
+        const adRepsList = document.getElementById('adm-ad-reports-list');
+        adRepsList.innerHTML = '';
+        const adReps = r.docs.filter(d => d.data().type === 'ad');
+
+        adReps.forEach(d => {
+            const rd = d.data();
+            adRepsList.innerHTML += `
+            <div class="admin-item" style="flex-direction:column;align-items:flex-start; background:#fff0f0">
+                <b style="color:red">بلاغ عن: ${rd.adTitle}</b>
+                <p>السبب: ${rd.desc}</p>
+                <div style="display:flex; gap:10px; margin-top:5px">
+                    <button class="btn btn-danger" onclick="deleteAdFromReport('${rd.adId}', '${d.id}')">حذف المنشور</button>
+                    <button class="btn btn-secondary" onclick="deleteDoc(doc(db,'reports','${d.id}'));initAdm()">حذف البلاغ</button>
+                </div>
             </div>`;
         });
 
@@ -1125,6 +1155,16 @@
     window.admDel = async(id) => { if(confirm('حذف؟')) { await deleteDoc(doc(db,"ads",id)); loadAds(); initAdm(); Swal.fire({icon:'success', title:'تم الحذف'}); } };
     window.admFeat = async(id, s) => { await updateDoc(doc(db,"ads",id), {isFeatured:!s}); loadAds(); initAdm(); Swal.fire({icon:'success', title:'تم التعديل'}); };
     window.admBan = async(id, s) => { await updateDoc(doc(db,"users",id), {isBanned:!s}); initAdm(); Swal.fire({icon:'success', title:'تم'}); };
+
+    window.deleteAdFromReport = async (adId, reportId) => {
+        if(confirm("هل أنت متأكد من حذف هذا المنشور؟")) {
+            await deleteDoc(doc(db, "ads", adId)); // Delete AD
+            await deleteDoc(doc(db, "reports", reportId)); // Delete Report
+            Swal.fire('تم', 'تم حذف المنشور والبلاغ', 'success');
+            loadAds();
+            initAdm();
+        }
+    }
 
     // UPDATED CLEANUP FUNCTION: DELETES ADS & MESSAGES > 30 DAYS
     window.cleanupOldData = async () => {

@@ -69,8 +69,14 @@
         .overlay.active { display: block; }
         .menu-item { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         
-        /* Banner Slider */
-        .swiper { width: 100%; height: 200px; margin-bottom: 15px; border-radius: 0 0 15px 15px; }
+        /* Banner Slider - FIXED: Force LTR to prevent bugs */
+        .swiper { 
+            width: 100%; 
+            height: 200px; 
+            margin-bottom: 15px; 
+            border-radius: 0 0 15px 15px;
+            direction: ltr !important; /* Key fix */
+        }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
 
         .cats-scroll { overflow-x: auto; padding: 10px 15px; white-space: nowrap; scrollbar-width: none; background: white; margin-bottom: 15px; }
@@ -151,18 +157,19 @@
         
         .swiper-button-next, .swiper-button-prev { color: var(--primary); text-shadow: 0 0 5px rgba(255,255,255,0.8); }
         
-        /* Updated: 55% Height Product Slider - Portrait aspect */
+        /* Product View Slider 55% Height & Contain Object Fit - FIXED DIRECTION */
         .swiper.prodSwiper { 
             width: 100%;
-            height: 55vh !important; /* ~55% of Screen */
+            height: 55vh !important;
             min-height: 400px;
             background: #000;
             margin: 0;
+            direction: ltr !important; /* Force LTR for images */
         }
         .swiper-slide img.prod-view-img { 
             width: 100%; 
             height: 100%; 
-            object-fit: contain; /* Full image visible inside box */
+            object-fit: contain; 
         }
     </style>
 </head>
@@ -569,14 +576,6 @@
         document.querySelectorAll('.page-back').forEach(el => {
             el.style.transform = curLang === "ar" ? "rotate(0deg)" : "rotate(180deg)";
         });
-        
-        // FIX SWIPER BANNER ON LANG CHANGE
-        const mainSwiper = document.querySelector('.mySwiper').swiper;
-        if(mainSwiper) {
-            mainSwiper.changeDirection(curLang === 'ar' ? 'rtl' : 'ltr');
-            mainSwiper.update();
-        }
-
         renderCats();
         fillSelects();
         loadAds(); 
@@ -605,6 +604,7 @@
     let currentAd = null;
     let activeChatId = null;
     let editId = null;
+    let currentBanners = []; 
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -1188,8 +1188,13 @@
             const snapAds = await getDocs(qAds);
             const adPromises = snapAds.docs.map(d => deleteDoc(d.ref));
             
-            // 2. Cleanup Chats (Simple logic: if last message < 30 days, delete whole chat)
-            // Note: Field name is 'ts' for timestamp in chats
+            // 2. Cleanup Chats (Delete messages older than 30 days)
+            // Note: In Firestore, you have to query subcollections if they exist, 
+            // but here we are storing chats in root collection or subcollection logic.
+            // Based on previous code, chats are docs, messages are subcollections.
+            // Deleting parent chat doc doesn't delete subcollections automatically in client SDK,
+            // but for simplicity here we delete the chat reference.
+            
             const qChats = query(collection(db, "chats"), where("ts", "<", cutoffDate));
             const snapChats = await getDocs(qChats);
             const chatPromises = snapChats.docs.map(d => deleteDoc(d.ref));

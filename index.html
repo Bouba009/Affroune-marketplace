@@ -202,7 +202,7 @@
     <div class="menu-item" onclick="showStatic('about')"><i class="fas fa-info-circle"></i> <span data-tr="about">من نحن</span></div>
     <div class="menu-item" onclick="showStatic('contact')"><i class="fas fa-phone"></i> <span data-tr="contact">اتصل بنا</span></div>
     <div class="menu-item" onclick="showStatic('privacy')"><i class="fas fa-shield-alt"></i> <span data-tr="privacy">سياسة الخصوصية</span></div>
-    <div class="menu-item" onclick="openModal('report-modal')"><i class="fas fa-bug"></i> <span data-tr="report">إبلاغ عام</span></div>
+    <div class="menu-item" onclick="openModal('report-modal')"><i class="fas fa-bug"></i> <span data-tr="report">إبلاغ</span></div>
     <div class="menu-item hidden" id="logout-btn" onclick="logout()" style="color:var(--primary); margin-top:auto"><i class="fas fa-sign-out-alt"></i> <span data-tr="logout">خروج</span></div>
 </div>
 
@@ -327,7 +327,7 @@
 <div class="modal-wrap" id="report-modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal('report-modal')">&times;</span>
-        <h3 data-tr="report">إبلاغ عام</h3><br>
+        <h3 data-tr="report">إبلاغ</h3><br>
         <input type="text" id="r-name" class="form-input" data-ph="ph_name" placeholder="الاسم">
         <input type="email" id="r-email" class="form-input" data-ph="ph_email" placeholder="البريد الإلكتروني">
         <textarea id="r-desc" class="form-area" rows="3" data-ph="ph_desc" placeholder="الوصف"></textarea>
@@ -569,9 +569,17 @@
         document.querySelectorAll('.page-back').forEach(el => {
             el.style.transform = curLang === "ar" ? "rotate(0deg)" : "rotate(180deg)";
         });
+        
+        // FIX SWIPER BANNER ON LANG CHANGE
+        const mainSwiper = document.querySelector('.mySwiper').swiper;
+        if(mainSwiper) {
+            mainSwiper.changeDirection(curLang === 'ar' ? 'rtl' : 'ltr');
+            mainSwiper.update();
+        }
+
         renderCats();
         fillSelects();
-        loadAds(); // Reload ads to translate categories in cards
+        loadAds(); 
     }
 
     // --- DATA ---
@@ -1181,6 +1189,7 @@
             const adPromises = snapAds.docs.map(d => deleteDoc(d.ref));
             
             // 2. Cleanup Chats (Simple logic: if last message < 30 days, delete whole chat)
+            // Note: Field name is 'ts' for timestamp in chats
             const qChats = query(collection(db, "chats"), where("ts", "<", cutoffDate));
             const snapChats = await getDocs(qChats);
             const chatPromises = snapChats.docs.map(d => deleteDoc(d.ref));

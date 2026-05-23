@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -144,7 +145,7 @@
             <i class="fa-solid fa-motorcycle text-4xl text-orange-500 absolute animate-bounce"></i>
         </div>
         <h2 class="text-white font-black text-2xl mt-8 tracking-wide">العفرون أونلاين</h2>
-        <p class="text-slate-400 text-sm mt-2 font-medium">مستوى عالٍ من كفاءة وموثوقية الأداء...</p>
+        <p id="loadingStatusText" class="text-slate-400 text-sm mt-3 px-6 text-center font-medium transition-all duration-300">جاري الاتصال بخادم قاعدة البيانات...</p>
     </div>
 
     <!-- نافذة الإعلانات المنبثقة التفاعلية -->
@@ -365,7 +366,7 @@
                         <div class="flex items-center justify-center sm:justify-start gap-2">
                             <h2 id="menuRestName" class="text-xl md:text-3xl font-black text-slate-800">--</h2>
                             <!-- التقييم المجمع للجميع -->
-                            <span id="menuRestRatingBadge" class="text-xs font-bold text-amber-500 bg-amber-50 px-2 py-1 rounded-lg"></span>
+                            <span id="menuRestRatingBadge" class="text-xs font-bold text-amber-500 bg-amber-50 px-2.5 py-1 rounded-lg"></span>
                         </div>
                         <p id="menuRestPhone" class="text-xs text-slate-400 font-bold flex items-center justify-center sm:justify-start gap-1.5"></p>
                     </div>
@@ -830,7 +831,7 @@
     </main>
 
     <!-- شريط تنقل سفلي للهواتف الذكية (يمنح تجربة التطبيق الاحترافي) -->
-    <div class="md:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-100 h-16 flex items-center justify-around z-35 px-4 shadow-lg">
+    <div class="md:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-100 h-16 flex items-center justify-around z-30 px-4 shadow-lg">
         <button onclick="navigateHome()" class="flex flex-col items-center justify-center gap-1 text-slate-450 hover:text-orange-600 transition-colors">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[9px] font-black">الرئيسية</span>
@@ -878,7 +879,7 @@
         let customerCart = [];
         let selectedRestaurantId = null;
         let selectedRestaurantData = null;
-        let customerCoordinates = null; // تفعيل المتغير بنطاق عام لمنع انهيار الـ JS
+        let customerCoordinates = null; 
         
         let activeTrackerMap = null;
         let activeDriverMap = null;
@@ -952,6 +953,23 @@
             }
         }
 
+        // --- نظام الحماية الذكي ضد تعليق شاشة التحميل (SPLASH-SCREEN WATCHDOG FAIL-SAFE) ---
+        setTimeout(() => {
+            const loadingText = document.getElementById('loadingStatusText');
+            if (loadingText) {
+                loadingText.innerText = "جاري الاتصال بالخادم، يرجى التحقق من اتصال الإنترنت إذا طال الانتظار...";
+                loadingText.classList.add('text-orange-400');
+            }
+        }, 3000);
+
+        setTimeout(() => {
+            const loader = document.getElementById('loadingOverlay');
+            if (loader && !loader.classList.contains('hidden')) {
+                console.warn("إخفاء شاشة التحميل قسرياً للتفادي والوقاية ضد التعليق بالخادم.");
+                showLoading(false);
+            }
+        }, 5000); // 5 ثوان كحد أقصى لضمان الدخول المباشر والتصفح مهما كانت حالة الاتصال بالخادم
+
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('currentYear').innerText = new Date().getFullYear();
             
@@ -1013,7 +1031,7 @@
                         }
                     }
                 });
-            });
+            }, (err) => { console.warn("Ads fetching deactivated or rule restricted.", err); });
         }
 
         function showAdPopup(adData, adId) {
@@ -1051,7 +1069,7 @@
                     document.getElementById('landingHeroText').innerHTML = data.heroText || `العفرون أونلاين <br><span class="text-orange-500">جسر طعامك السريع</span>`;
                     document.getElementById('settingsHeroText').value = data.heroText || "";
                 }
-            });
+            }, (err) => { console.warn("Settings listening error or permission denied.", err); });
         }
 
         function setupRoleInterface(role) {
@@ -1261,7 +1279,7 @@
                     `;
                     grid.appendChild(card);
                 });
-            });
+            }, (err) => { console.warn("Firestore access rules or connection issue. Defaulting UI.", err); });
 
             checkActiveOrders();
         }
@@ -1271,23 +1289,20 @@
                 snapshot.forEach((docSnap) => {
                     const order = docSnap.data();
                     
-                    // إذا تم تسليم الطلب ولم يقيّمه العميل بعد، تظهر نافذة التقييم فوراً
                     if (order.status === 'delivered' && !order.isRated) {
                         triggerRatingSystem(order);
                     } else if (order.status !== 'delivered' && order.status !== 'cancelled') {
                         showOrderTracker(order);
                     }
                 });
-            });
+            }, (err) => { console.warn(err); });
         }
 
-        // تفعيل شاشة تقييم المطعم والمندوب للعملاء
         function triggerRatingSystem(order) {
             ratingOrderId = order.id;
             selectedRestaurantRating = 0;
             selectedDriverRating = 0;
             
-            // إعادة تصفير نجوم التقييم
             for (let i = 1; i <= 5; i++) {
                 document.getElementById(`star-rest-${i}`).className = "cursor-pointer text-slate-300 transition-colors";
                 document.getElementById(`star-driver-${i}`).className = "cursor-pointer text-slate-300 transition-colors";
@@ -1332,7 +1347,6 @@
                 if (orderSnap.exists()) {
                     const orderData = orderSnap.data();
                     
-                    // 1. تحديث تقييم المطعم المجمع
                     const restRef = doc(db, "restaurants", orderData.restaurantId);
                     const restSnap = await getDoc(restRef);
                     if (restSnap.exists()) {
@@ -1348,7 +1362,6 @@
                         });
                     }
 
-                    // 2. تحديث تقييم المندوب المجمع
                     if (orderData.driverId) {
                         const driverRef = doc(db, "users", orderData.driverId);
                         const driverSnap = await getDoc(driverRef);
@@ -1366,7 +1379,6 @@
                         }
                     }
 
-                    // 3. الإشارة بأن الطلب تم تقييمه لإغلاق النافذة بنجاح
                     await updateDoc(orderRef, { isRated: true });
                 }
                 
@@ -1455,12 +1467,11 @@
                         `;
                         list.appendChild(card);
                     });
-                });
+                }, (err) => { console.warn(err); });
 
                 document.getElementById('customerHome').classList.add('hidden');
                 document.getElementById('restaurantMenuDetail').classList.remove('hidden');
                 
-                // Initialize the Interactive Location Selection Map (CartoDB voyager flat layer)
                 setTimeout(() => {
                     initInteractiveLocationMap();
                 }, 300);
@@ -1472,7 +1483,6 @@
             }
         };
 
-        // Initialize user-interactive map with draggable pin
         function initInteractiveLocationMap() {
             const defaultLat = 36.4694;
             const defaultLng = 2.6247;
@@ -1569,7 +1579,6 @@
             updateCartUI();
         };
 
-        // Geolocation browser acquisition with fallback and high accuracy settings
         window.getCustomerLocation = function() {
             if ("geolocation" in navigator) {
                 document.getElementById('gpsStatus').innerText = "جاري الاتصال بالأقمار الصناعية...";
@@ -1726,7 +1735,7 @@
                     document.getElementById('profileRestPhone').value = data.phone;
                     document.getElementById('profileRestPic').value = data.image || "";
                 }
-            });
+            }, (err) => { console.warn(err); });
 
             onSnapshot(query(collection(db, "dishes"), where("restaurantId", "==", currentUser.uid)), (snapshot) => {
                 const list = document.getElementById('restDishesManageList');
@@ -1749,7 +1758,7 @@
                     `;
                     list.appendChild(div);
                 });
-            });
+            }, (err) => { console.warn(err); });
 
             onSnapshot(query(collection(db, "orders"), where("restaurantId", "==", currentUser.uid)), (snapshot) => {
                 let countNew = 0, countConf = 0, countCan = 0;
@@ -1814,7 +1823,7 @@
                 if (container.children.length === 0) {
                     container.innerHTML = `<p class="text-xs text-slate-400 py-8 text-center font-bold">لا توجد طلبات واردة حالياً بانتظار التحضير.</p>`;
                 }
-            });
+            }, (err) => { console.warn(err); });
         }
 
         window.switchRestTab = function(tabId) {
@@ -1976,6 +1985,8 @@
                     }
 
                     if (order.status === 'ready') {
+                        triggerDriverIncomingOverlay(order);
+
                         const itemsList = order.items.map(i => `<li>• ${i.name} (${i.quantity}x)</li>`).join('');
                         const card = document.createElement('div');
                         card.className = "bg-orange-50/70 border-2 border-orange-200 rounded-3xl p-6 shadow-sm text-right space-y-4 text-slate-800";
@@ -1989,7 +2000,7 @@
                                 <p><strong>الوجهة:</strong> ${order.customerName} - العفرون</p>
                                 <ul class="space-y-1 bg-white p-4 rounded-2xl border border-orange-100 font-semibold text-slate-700 mt-2">${itemsList}</ul>
                             </div>
-                            <button onclick="acceptDeliveryTask('${order.id}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3.5 rounded-2xl text-xs transition">
+                            <button onclick="acceptDeliveryTask('${order.id}')" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-extrabold py-3.5 rounded-2xl text-xs transition">
                                 قبول المهمة وبدء تتبع الدراجة النارية
                             </button>
                         `;
@@ -2029,7 +2040,34 @@
                 if (container.children.length === 0) {
                     container.innerHTML = `<p class="text-xs text-slate-400 py-8 text-center font-bold">لا توجد مهمات شاغرة بمدينة العفرون في الوقت الحالي.</p>`;
                 }
-            });
+            }, (err) => { console.warn(err); });
+        }
+
+        function triggerDriverIncomingOverlay(order) {
+            const overlay = document.getElementById('driverRequestOverlay');
+            if(!overlay) return;
+
+            document.getElementById('overlayOrderId').innerText = order.id;
+            document.getElementById('overlayRestName').innerText = order.restaurantName;
+            document.getElementById('overlayCustName').innerText = order.customerName;
+            document.getElementById('overlayCustPhone').href = `tel:${order.customerPhone}`;
+            document.getElementById('overlayCustPhoneText').innerText = order.customerPhone;
+
+            const listContainer = document.getElementById('overlayItemsList');
+            listContainer.innerHTML = order.items.map(i => `
+                <div class="flex justify-between items-center bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs">
+                    <span class="text-white font-bold">${i.name}</span>
+                    <span class="text-orange-500 font-black">الكمية: ${i.quantity}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('overlayAcceptBtn').onclick = function() {
+                acceptDeliveryTask(order.id);
+                overlay.classList.add('hidden');
+            };
+
+            playChimeAlert();
+            overlay.classList.remove('hidden');
         }
 
         window.switchDeliveryTab = function(tabId) {
@@ -2206,11 +2244,11 @@
                 document.getElementById('adminStatRestaurants').innerText = restCount;
                 document.getElementById('adminStatDrivers').innerText = driverCount;
                 document.getElementById('adminStatCustomers').innerText = customerCount;
-            });
+            }, (err) => { console.warn(err); });
 
             onSnapshot(collection(db, "orders"), (snapshot) => {
                 document.getElementById('adminStatOrders').innerText = snapshot.size;
-            });
+            }, (err) => { console.warn(err); });
         }
 
         window.toggleUserBan = async function(userId, currentStatus) {

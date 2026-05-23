@@ -15,11 +15,17 @@
                 extend: {
                     colors: {
                         brand: {
-                            light: '#f97316',
+                            light: '#ff7e29',
                             DEFAULT: '#ea580c',
                             dark: '#c2410c',
-                            bg: '#0f172a',
+                            slate: '#0f172a',
+                            panel: '#1e293b',
                         }
+                    },
+                    boxShadow: {
+                        'premium': '0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 20px 40px -15px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 20px 0 rgba(234, 88, 12, 0.15)',
+                        'glow-success': '0 0 20px 0 rgba(16, 185, 129, 0.2)',
                     }
                 }
             }
@@ -41,28 +47,29 @@
         body {
             font-family: 'Cairo', sans-serif;
             background-color: #f8fafc;
-            color: #1e293b;
+            color: #0f172a;
             overflow-x: hidden;
+            letter-spacing: -0.01em;
         }
 
         .glass-panel {
             background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .glass-panel-dark {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         /* Loading Spinner */
         .loader {
             border-top-color: #ea580c;
-            animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            animation: spinner 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         }
         @keyframes spinner {
             0% { transform: rotate(0deg); }
@@ -76,27 +83,37 @@
             justify-content: center;
         }
         .pulse-ring {
-            border: 3px solid #ea580c;
+            border: 4px solid #ea580c;
             border-radius: 50%;
-            height: 46px;
-            width: 46px;
+            height: 52px;
+            width: 52px;
             position: absolute;
-            animation: pulsate 1.8s ease-out infinite;
+            animation: pulsate 1.5s ease-out infinite;
             opacity: 0;
         }
         @keyframes pulsate {
             0% { transform: scale(0.1, 0.1); opacity: 0.0; }
-            50% { opacity: 1.0; }
-            100% { transform: scale(1.2, 1.2); opacity: 0.0; }
+            50% { opacity: 0.8; }
+            100% { transform: scale(1.3, 1.3); opacity: 0.0; }
+        }
+
+        /* Radar active pulse for full screen overlay */
+        .radar-pulse {
+            animation: radar 2s infinite;
+        }
+        @keyframes radar {
+            0% { box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(234, 88, 12, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 88, 12, 0); }
         }
 
         /* Custom scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
@@ -105,58 +122,127 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        
+        /* Premium custom Leaflet popup design */
+        .leaflet-popup-content-wrapper {
+            background: rgba(15, 23, 42, 0.95) !important;
+            backdrop-filter: blur(10px);
+            color: #ffffff !important;
+            border-radius: 16px !important;
+            padding: 4px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+        }
+        .leaflet-popup-tip {
+            background: rgba(15, 23, 42, 0.95) !important;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-slate-50">
 
     <!-- شاشة التحميل الكلية المحمية برمجياً ضد التعليق -->
-    <div id="loadingOverlay" class="fixed inset-0 z-[9999] bg-slate-950/90 flex flex-col items-center justify-center transition-all duration-300">
+    <div id="loadingOverlay" class="fixed inset-0 z-[9999] bg-slate-950/95 flex flex-col items-center justify-center transition-all duration-300">
         <div class="relative flex items-center justify-center">
-            <div class="absolute w-24 h-24 rounded-full border-4 border-slate-800"></div>
-            <div class="loader rounded-full border-4 border-transparent h-24 w-24"></div>
-            <i class="fa-solid fa-motorcycle text-3xl text-orange-500 absolute animate-pulse"></i>
+            <div class="absolute w-28 h-28 rounded-full border-4 border-slate-800"></div>
+            <div class="loader rounded-full border-4 border-transparent h-28 w-28"></div>
+            <i class="fa-solid fa-motorcycle text-4xl text-orange-500 absolute animate-bounce"></i>
         </div>
-        <h2 class="text-white font-extrabold text-xl mt-6 tracking-wide">العفرون أونلاين</h2>
-        <p class="text-slate-400 text-xs mt-1">جاري مزامنة بيانات المنصة بالزمن الحقيقي...</p>
+        <h2 class="text-white font-black text-2xl mt-8 tracking-wide">العفرون أونلاين</h2>
+        <p class="text-slate-400 text-sm mt-2 font-medium">جاري المزامنة بأحدث المعايير البرمجية المتطورة...</p>
     </div>
 
-    <!-- نافذة الإعلانات المنبثقة -->
-    <div id="adContainer" class="fixed inset-0 bg-slate-950/80 z-[9990] flex items-center justify-center hidden p-4 animate-fade-in">
-        <div class="bg-white rounded-[2.5rem] max-w-lg w-full p-8 shadow-2xl relative border border-slate-100 overflow-hidden">
+    <!-- نافذة الإعلانات المنبثقة التفاعلية -->
+    <div id="adContainer" class="fixed inset-0 bg-slate-950/85 z-[9990] flex items-center justify-center hidden p-4 transition-all duration-300 backdrop-blur-md">
+        <div class="bg-white rounded-[2rem] max-w-lg w-full p-8 shadow-2xl relative border border-slate-100 overflow-hidden transform transition-all">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl"></div>
-            <button id="closeAdBtn" class="absolute top-6 left-6 text-slate-400 hover:text-red-500 text-sm font-extrabold flex items-center gap-1.5 transition">
+            <button id="closeAdBtn" class="absolute top-6 left-6 text-slate-400 hover:text-red-500 text-sm font-extrabold flex items-center gap-1.5 transition-colors">
                 إغلاق (<span id="adTimer">5</span>) <i class="fa-solid fa-circle-xmark text-lg"></i>
             </button>
-            <div id="adContentArea" class="mt-8 text-right">
+            <div id="adContentArea" class="mt-8 text-right text-slate-700 leading-relaxed font-semibold">
                 <!-- محتوى الإعلان -->
             </div>
         </div>
     </div>
 
-    <!-- هيدر منصة العفرون -->
+    <!-- الإشعار العملاق لعاملي التوصيل عند تلقي مهمة جديدة (شاشة كاملة) -->
+    <div id="driverRequestOverlay" class="fixed inset-0 bg-slate-950/98 backdrop-blur-xl z-[9995] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl text-center space-y-6 relative overflow-hidden">
+            <div class="absolute -top-24 -left-24 w-56 h-56 bg-orange-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -right-24 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            
+            <!-- Radar Visual Cue -->
+            <div class="relative flex items-center justify-center mx-auto w-24 h-24 bg-orange-500/20 rounded-full radar-pulse">
+                <i class="fa-solid fa-bell text-4xl text-orange-500 animate-bounce"></i>
+            </div>
+            
+            <div class="space-y-2">
+                <span class="bg-orange-500/10 text-orange-400 border border-orange-500/20 px-4 py-1.5 rounded-full text-xs font-black tracking-wider uppercase inline-block">مهمة توصيل جديدة واردة</span>
+                <h2 class="text-2xl font-black text-white">طلب رقم <span id="overlayOrderId" class="text-orange-500">#--</span></h2>
+                <p class="text-slate-400 text-sm font-medium">الرجاء اتخاذ إجراء فوري للقبول أو الرفض للطلب المتاح بالمنطقة</p>
+            </div>
+
+            <div class="bg-slate-850 rounded-2xl p-6 border border-slate-800 text-right space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                    <div class="w-10 h-10 bg-orange-500/10 text-orange-400 rounded-xl flex items-center justify-center"><i class="fa-solid fa-store"></i></div>
+                    <div>
+                        <span class="text-[10px] text-slate-500 block">نقطة الاستلام (المطعم)</span>
+                        <span id="overlayRestName" class="text-sm font-black text-white">--</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center"><i class="fa-solid fa-location-dot"></i></div>
+                    <div>
+                        <span class="text-[10px] text-slate-500 block">نقطة التسليم (الزبون)</span>
+                        <span id="overlayCustName" class="text-sm font-black text-white">--</span>
+                        <a id="overlayCustPhone" href="#" class="text-[11px] text-orange-400 font-bold block mt-1 hover:underline">
+                            <i class="fa-solid fa-phone text-[9px]"></i> الاتصال: <span id="overlayCustPhoneText">--</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- وجبات الطلب -->
+            <div class="space-y-3">
+                <h4 class="text-slate-400 text-xs text-right font-bold"><i class="fa-solid fa-utensils text-[10px]"></i> الوجبات المطلوب نقلها:</h4>
+                <div id="overlayItemsList" class="max-h-36 overflow-y-auto space-y-2 pr-1">
+                    <!-- تعبأ برمجياً -->
+                </div>
+            </div>
+
+            <div class="flex gap-4 pt-2">
+                <button id="overlayAcceptBtn" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold py-4 rounded-2xl text-sm transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
+                    <i class="fa-solid fa-circle-check ml-1.5"></i> قبول التوصيل
+                </button>
+                <button onclick="document.getElementById('driverRequestOverlay').classList.add('hidden')" class="flex-1 bg-slate-800 hover:bg-slate-755 text-slate-300 font-extrabold py-4 rounded-2xl text-sm transition-all active:scale-95 border border-slate-700">
+                    <i class="fa-solid fa-circle-xmark ml-1.5"></i> تخطي / رفض
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- هيدر منصة العفرون أونلاين العصري -->
     <header class="glass-panel sticky top-0 z-40 border-b border-slate-100 shadow-sm">
         <div class="container mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-4 cursor-pointer" onclick="navigateHome()">
-                <div class="bg-gradient-to-tr from-orange-600 to-amber-500 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                <div class="bg-gradient-to-tr from-orange-600 to-brand-light text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30 transform hover:scale-105 transition-all">
                     <i class="fa-solid fa-motorcycle text-2xl"></i>
                 </div>
                 <div class="text-right">
-                    <span class="text-xl font-black text-slate-900 block leading-tight">العفرون <span class="text-orange-600">أونلاين</span></span>
-                    <span class="text-[10px] text-slate-400 font-bold block">منصتك التفاعلية للتوصيل</span>
+                    <span class="text-2xl font-black text-slate-900 block leading-tight tracking-tight">العفرون <span class="text-orange-600">أونلاين</span></span>
+                    <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">المنصة التفاعلية الأقوى للتوصيل</span>
                 </div>
             </div>
             
-            <nav class="flex items-center gap-3">
-                <div id="userProfileHeader" class="hidden flex items-center gap-3 bg-slate-50 border border-slate-100 px-4 py-2 rounded-2xl">
+            <nav class="flex items-center gap-4">
+                <div id="userProfileHeader" class="hidden flex items-center gap-3 bg-slate-50 border border-slate-100 px-4 py-2 rounded-2xl shadow-sm">
                     <div class="text-right">
-                        <span id="headerUserName" class="text-xs font-bold text-slate-800 block">--</span>
-                        <span id="headerUserRole" class="text-[9px] text-orange-600 font-extrabold uppercase">--</span>
+                        <span id="headerUserName" class="text-xs font-black text-slate-800 block">--</span>
+                        <span id="headerUserRole" class="text-[9px] text-orange-600 font-extrabold uppercase tracking-widest">--</span>
                     </div>
                 </div>
-                <button id="logoutBtn" class="hidden bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-2xl text-xs font-extrabold transition-all duration-300">
+                <button id="logoutBtn" class="hidden bg-red-50 hover:bg-red-100 text-red-600 px-5 py-3 rounded-2xl text-xs font-black transition-all duration-300">
                     <i class="fa-solid fa-arrow-right-from-bracket ml-1.5"></i> خروج
                 </button>
-                <button id="loginTriggerBtn" class="bg-slate-900 hover:bg-slate-850 text-white px-6 py-3 rounded-2xl text-xs font-extrabold shadow-md shadow-slate-950/10 transition-all duration-300">
+                <button id="loginTriggerBtn" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3.5 rounded-2xl text-xs font-black shadow-md shadow-slate-950/10 transition-all duration-300 active:scale-95">
                     دخول / حساب جديد
                 </button>
             </nav>
@@ -166,19 +252,19 @@
     <main class="flex-grow">
         
         <!-- 1. واجهة الترحيب والهوم -->
-        <section id="landingSection" class="relative py-16 md:py-28 overflow-hidden bg-slate-950 text-white flex items-center min-h-[85vh]">
-            <div class="absolute inset-0 opacity-20 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1600&auto=format&fit=crop');"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent"></div>
+        <section id="landingSection" class="relative py-20 md:py-32 overflow-hidden bg-slate-950 text-white flex items-center min-h-[85vh]">
+            <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop');"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent"></div>
             
             <div class="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div class="space-y-8 text-right">
-                    <span class="bg-orange-500/10 text-orange-400 border border-orange-500/20 px-4 py-1.5 rounded-full text-[11px] font-extrabold inline-block tracking-wider">الربط المباشر بين الزبون والمطعم وعامل التوصيل</span>
+                    <span class="bg-orange-500/10 text-orange-400 border border-orange-500/20 px-4 py-1.5 rounded-full text-[11px] font-black inline-block tracking-wider uppercase">الجيل الجديد من خدمات الطعام</span>
                     <h1 id="landingHeroText" class="text-4xl md:text-6xl font-black leading-tight tracking-tight">العفرون أونلاين <br><span class="text-transparent bg-clip-text bg-gradient-to-l from-orange-400 to-amber-500">جسر طعامك السريع</span></h1>
-                    <p class="text-slate-300 text-sm md:text-base max-w-lg leading-relaxed">
-                        المنصة الأكثر كفاءة التي تجمعك بأفضل مطاعم مدينة العفرون، مع شبكة توصيل ممتازة وتتبع حي ومباشر لتحركات المندوب بالدراجة النارية من المطبخ لباب منزلك!
+                    <p class="text-slate-300 text-sm md:text-base max-w-lg leading-relaxed font-medium">
+                        أول منصة توصيل عالمية متكاملة تجمعك بنخبة مطاعم مدينة العفرون، مجهزة بخدمات الخرائط التفاعلية الذكية وبث مباشر لتتبع مسار مندوب التوصيل خطوة بخطوة.
                     </p>
                     <div class="flex flex-wrap gap-4 pt-4">
-                        <button onclick="openAuthModal('register')" class="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white font-extrabold px-10 py-4 rounded-2xl shadow-xl shadow-orange-500/20 transition-all duration-300 flex items-center gap-3">
+                        <button onclick="openAuthModal('register')" class="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white font-black px-10 py-4.5 rounded-2xl shadow-xl shadow-orange-500/25 transition-all duration-300 flex items-center gap-3 active:scale-95">
                             ابدأ طلب طعامك الآن 
                             <i class="fa-solid fa-arrow-left"></i>
                         </button>
@@ -186,16 +272,16 @@
                 </div>
                 <div class="hidden lg:flex justify-center relative">
                     <div class="absolute -inset-4 rounded-full bg-orange-500/10 blur-3xl animate-pulse"></div>
-                    <div class="glass-panel-dark p-8 rounded-[2.5rem] shadow-2xl w-96 text-center relative z-10">
+                    <div class="glass-panel-dark p-8 rounded-[2.5rem] shadow-2xl w-96 text-center relative z-10 border border-slate-800">
                         <div class="w-16 h-16 bg-gradient-to-tr from-orange-50 to-amber-400 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-orange-500/20 mb-6">
-                            <i class="fa-solid fa-map-location-dot text-3xl text-white"></i>
+                            <i class="fa-solid fa-map-location-dot text-3xl text-white animate-pulse"></i>
                         </div>
                         <h3 class="font-extrabold text-lg text-white mb-2">تتبع الدراجة النارية مباشر</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed mb-6">شاهد مسار مندوب التوصيل خطوة بخطوة على الخريطة حتى الاستلام.</p>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-6 font-medium">شاهد مسار مندوب التوصيل بدقة فائقة على الخريطة المباشرة حتى باب بيتك.</p>
                         <div class="h-28 bg-slate-900/60 rounded-2xl p-4 flex flex-col justify-between text-right text-xs border border-white/5">
-                            <div class="flex justify-between items-center text-orange-400 font-bold">
+                            <div class="flex justify-between items-center text-orange-400 font-black">
                                 <span>طلب رقم #3942</span>
-                                <span class="bg-orange-500/20 px-2.5 py-0.5 rounded-full text-[9px] uppercase">في الطريق</span>
+                                <span class="bg-orange-500/20 px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider">في الطريق</span>
                             </div>
                             <div class="flex items-center gap-3 mt-1 text-slate-200">
                                 <i class="fa-solid fa-motorcycle text-orange-500 text-base animate-bounce"></i>
@@ -208,41 +294,41 @@
         </section>
 
         <!-- نافذة تسجيل الدخول وانشاء حساب -->
-        <div id="authModal" class="fixed inset-0 bg-slate-950/70 z-[9980] flex items-center justify-center hidden p-4 transition-all duration-300">
-            <div class="bg-white rounded-[2.5rem] max-w-md w-full p-8 shadow-2xl relative overflow-hidden border border-slate-100">
-                <button onclick="closeAuthModal()" class="absolute top-6 left-6 text-slate-400 hover:text-slate-600 transition">
+        <div id="authModal" class="fixed inset-0 bg-slate-950/80 z-[9980] flex items-center justify-center hidden p-4 transition-all duration-300 backdrop-blur-sm">
+            <div class="bg-white rounded-[2.5rem] max-w-md w-full p-8 shadow-2xl relative overflow-hidden border border-slate-100 transform transition-transform">
+                <button onclick="closeAuthModal()" class="absolute top-6 left-6 text-slate-400 hover:text-slate-600 transition-colors">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
                 
                 <div class="flex border-b border-slate-100 mb-8">
-                    <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-4 text-center border-b-2 border-orange-500 font-black text-slate-800 text-sm">تسجيل الدخول</button>
+                    <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-4 text-center border-b-2 border-orange-500 font-black text-slate-850 text-sm">تسجيل الدخول</button>
                     <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 font-black hover:text-slate-600 text-sm">إنشاء حساب</button>
                 </div>
 
                 <form id="authForm" class="space-y-4">
                     <div id="registerFields" class="hidden space-y-4">
                         <div>
-                            <label class="block text-xs font-extrabold text-slate-600 mb-1.5">الاسم الكامل</label>
+                            <label class="block text-xs font-black text-slate-600 mb-1.5">الاسم الكامل</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"><i class="fa-regular fa-user"></i></span>
-                                <input type="text" id="regName" class="w-full pr-11 pl-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold" placeholder="أدخل اسمك الكامل">
+                                <input type="text" id="regName" class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold focus:ring-2 focus:ring-orange-500/15" placeholder="أدخل اسمك الكامل">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-extrabold text-slate-600 mb-1.5">رقم الهاتف</label>
+                            <label class="block text-xs font-black text-slate-600 mb-1.5">رقم الهاتف</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"><i class="fa-solid fa-phone"></i></span>
-                                <input type="tel" id="regPhone" class="w-full pr-11 pl-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold" placeholder="مثال: 0550000000">
+                                <input type="tel" id="regPhone" class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold focus:ring-2 focus:ring-orange-500/15" placeholder="مثال: 0550000000">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-extrabold text-slate-600 mb-1.5">المدينة</label>
-                                <input type="text" id="regCity" value="العفرون" readonly class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-500 text-xs cursor-not-allowed font-extrabold" title="الخدمة متوفرة حالياً في العفرون فقط">
+                                <label class="block text-xs font-black text-slate-600 mb-1.5">المدينة</label>
+                                <input type="text" id="regCity" value="العفرون" readonly class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-500 text-xs cursor-not-allowed font-black" title="الخدمة متوفرة حالياً في العفرون فقط">
                             </div>
                             <div>
-                                <label class="block text-xs font-extrabold text-slate-600 mb-1.5">نوع الحساب</label>
-                                <select id="regRole" class="w-full px-3 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-bold">
+                                <label class="block text-xs font-black text-slate-600 mb-1.5">نوع الحساب</label>
+                                <select id="regRole" class="w-full px-3 py-3.5 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-bold">
                                     <option value="customer">زبون</option>
                                     <option value="restaurant">صاحب مطعم</option>
                                     <option value="delivery">عامل توصيل</option>
@@ -252,21 +338,21 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-extrabold text-slate-600 mb-1.5">البريد الإلكتروني</label>
+                        <label class="block text-xs font-black text-slate-600 mb-1.5">البريد الإلكتروني</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"><i class="fa-regular fa-envelope"></i></span>
-                            <input type="email" id="authEmail" required class="w-full pr-11 pl-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold" placeholder="name@example.com">
+                            <input type="email" id="authEmail" required class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold focus:ring-2 focus:ring-orange-500/15" placeholder="name@example.com">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-extrabold text-slate-600 mb-1.5">كلمة المرور</label>
+                        <label class="block text-xs font-black text-slate-600 mb-1.5">كلمة المرور</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"><i class="fa-solid fa-lock"></i></span>
-                            <input type="password" id="authPassword" required class="w-full pr-11 pl-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold" placeholder="••••••••">
+                            <input type="password" id="authPassword" required class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold focus:ring-2 focus:ring-orange-500/15" placeholder="••••••••">
                         </div>
                     </div>
 
-                    <button type="submit" id="authSubmitBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3.5 rounded-2xl transition shadow-lg shadow-slate-900/10 text-xs mt-4">
+                    <button type="submit" id="authSubmitBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-4 rounded-2xl transition shadow-lg shadow-slate-900/10 text-xs mt-4 active:scale-95">
                         تسجيل الدخول
                     </button>
                 </form>
@@ -277,16 +363,20 @@
         <!-- 2. واجهة الزبون -->
         <section id="customerView" class="hidden container mx-auto px-6 py-12">
             <div id="customerHome" class="space-y-12">
-                <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-[2.5rem] p-8 md:p-12 border border-orange-100 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div class="text-right space-y-3">
-                        <h2 class="text-2xl md:text-3xl font-black text-slate-900">أهلاً بك في العفرون أونلاين</h2>
-                        <p class="text-xs text-slate-500 leading-relaxed">اختر مطعمك المفضل وسنقوم بربطك مع موظفي الطبخ والتوصيل بأفضل الوسائل التكنولوجية.</p>
+                <div class="bg-gradient-to-r from-orange-500 to-amber-500 rounded-[2.5rem] p-8 md:p-14 text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-premium relative overflow-hidden">
+                    <div class="absolute -right-24 -bottom-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                    <div class="text-right space-y-3 relative z-10">
+                        <h2 class="text-3xl md:text-4xl font-black">أهلاً بك في العفرون أونلاين</h2>
+                        <p class="text-sm text-orange-100 max-w-xl font-medium leading-relaxed">اختر وجبتك المفضلة وسنتولى الباقي بدقة متناهية وسرعة لم تعهدها من قبل.</p>
                     </div>
-                    <i class="fa-solid fa-motorcycle text-5xl text-orange-500 opacity-20 hidden md:block"></i>
+                    <i class="fa-solid fa-pizza-slice text-7xl text-white/20 hidden md:block relative z-10"></i>
                 </div>
 
                 <div class="space-y-6">
-                    <h3 class="text-xl font-extrabold text-slate-850">المطاعم النشطة حالياً</h3>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-2xl font-black text-slate-900">المطاعم المفتوحة الآن بالعفرون</h3>
+                        <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3.5 py-1.5 rounded-full">تحديث حي ومباشر</span>
+                    </div>
                     <div id="restaurantsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         <!-- تظهر المطاعم برمجياً -->
                     </div>
@@ -295,18 +385,17 @@
 
             <!-- صفحة المنيو بالتفصيل والطلب مع خريطة اختيار الموقع يدوياً بدقة -->
             <div id="restaurantMenuDetail" class="hidden space-y-8">
-                <button onclick="backToRestaurants()" class="text-orange-600 font-extrabold text-sm flex items-center gap-2 hover:underline">
+                <button onclick="backToRestaurants()" class="text-orange-600 font-black text-sm flex items-center gap-2 hover:underline">
                     <i class="fa-solid fa-arrow-right"></i> العودة لقائمة المطاعم المتاحة
                 </button>
                 
-                <div class="bg-white rounded-[2rem] p-6 shadow-md border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
-                    <img id="menuRestImg" src="" class="w-24 h-24 rounded-2xl object-cover shadow-md" alt="Restaurant Image">
-                    <div class="text-center md:text-right space-y-1.5">
-                        <h2 id="menuRestName" class="text-2xl font-black text-slate-800"></h2>
-                        <!-- تم إضافة العنصر المفقود برمجياً الذي تسبب في انهيار الدالة مسبقاً -->
-                        <p id="menuRestPhone" class="text-xs text-slate-500 font-bold flex items-center justify-center md:justify-start gap-1.5 mt-1"></p>
-                        <span class="inline-flex items-center gap-2 text-xs bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full font-bold">
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> مفتوح وجاهز لاستلام طلبك
+                <div class="bg-white rounded-[2rem] p-8 shadow-premium border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
+                    <img id="menuRestImg" src="" class="w-28 h-28 rounded-3xl object-cover shadow-premium" alt="Restaurant Image">
+                    <div class="text-center md:text-right space-y-2">
+                        <h2 id="menuRestName" class="text-3xl font-black text-slate-800">--</h2>
+                        <p id="menuRestPhone" class="text-sm text-slate-400 font-bold flex items-center justify-center md:justify-start gap-1.5"></p>
+                        <span class="inline-flex items-center gap-2 text-xs bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full font-black">
+                            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span> نحن جاهزون لاستلام طلبك وتحضيره فوراً
                         </span>
                     </div>
                 </div>
@@ -314,37 +403,43 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- المنيو -->
                     <div class="lg:col-span-2 space-y-6">
-                        <h3 class="text-lg font-extrabold text-slate-800">قائمة الوجبات اللذيذة</h3>
+                        <h3 class="text-xl font-black text-slate-900 border-b border-slate-100 pb-3">قائمة الوجبات اللذيذة</h3>
                         <div id="dishesList" class="grid grid-cols-1 gap-6">
                             <!-- الأطباق المتاحة -->
                         </div>
                     </div>
+                    
                     <!-- السلة وخريطة الدبوس التفاعلية لضبط دقة الموقع -->
-                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl h-fit space-y-6">
-                        <h3 class="text-lg font-extrabold text-slate-800 border-b border-slate-100 pb-4">تفاصيل الطلبية</h3>
-                        <div id="cartItemsList" class="space-y-4 max-h-48 overflow-y-auto pr-1">
+                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-premium h-fit space-y-6">
+                        <div class="border-b border-slate-100 pb-4">
+                            <h3 class="text-xl font-black text-slate-900">سلتك المجهزة</h3>
+                            <p class="text-[11px] text-slate-400 font-medium">اختر وجباتك المفضلة وسنقوم بالتوصيل لمنزلك</p>
+                        </div>
+                        <div id="cartItemsList" class="space-y-4 max-h-56 overflow-y-auto pr-1">
                             <p class="text-xs text-slate-400 text-center py-6">السلة فارغة حالياً. اضغط على الوجبات لإضافتها.</p>
                         </div>
                         
                         <!-- نظام تحديد وتعديل الموقع الجغرافي لضمان دقة 100% -->
-                        <div class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-100">
-                            <span class="block text-[10px] font-extrabold text-slate-750">موقع التوصيل بدقة (قم بسحب الدبوس على الخريطة لتعديل موقع منزلك):</span>
+                        <div class="bg-slate-50 p-5 rounded-3xl space-y-4 border border-slate-100">
+                            <span class="block text-xs font-black text-slate-800"><i class="fa-solid fa-map-pin text-orange-600 ml-1"></i> موقع التوصيل بدقة عالية:</span>
                             
-                            <button type="button" onclick="getCustomerLocation()" class="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2">
+                            <button type="button" onclick="getCustomerLocation()" class="w-full py-3.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-black rounded-2xl transition shadow-lg shadow-orange-500/10 flex items-center justify-center gap-2 active:scale-95">
                                 <i class="fa-solid fa-location-crosshairs"></i>
                                 <span id="gpsStatus">البحث التلقائي (GPS)</span>
                             </button>
                             
                             <!-- خريطة اختيار وتدبيس الموقع الجغرافي بدقة لمنع الخطأ -->
-                            <div id="interactiveLocationMap" class="h-44 w-full rounded-xl border border-slate-200 z-10"></div>
-                            <span id="coordinatesText" class="block text-[9px] text-slate-550 text-center font-bold">الموقع: العفرون مركز (افتراضي)</span>
+                            <div class="relative rounded-2xl overflow-hidden border border-slate-200">
+                                <div id="interactiveLocationMap" class="h-56 w-full z-10"></div>
+                            </div>
+                            <span id="coordinatesText" class="block text-[10px] text-slate-500 text-center font-bold">الموقع: العفرون مركز (افتراضي)</span>
                         </div>
 
-                        <div class="border-t border-slate-100 pt-4 flex justify-between items-center font-extrabold text-slate-850">
+                        <div class="border-t border-slate-100 pt-4 flex justify-between items-center font-black text-slate-850">
                             <span class="text-sm">المجموع الكلي:</span>
-                            <span id="cartTotalPrice" class="text-xl text-orange-600">0 د.ج</span>
+                            <span id="cartTotalPrice" class="text-2xl text-orange-600">0 د.ج</span>
                         </div>
-                        <button onclick="submitOrder()" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-extrabold py-4 rounded-2xl shadow-xl shadow-slate-900/10 transition-all text-xs">
+                        <button onclick="submitOrder()" class="w-full bg-slate-950 hover:bg-slate-850 text-white font-black py-4.5 rounded-2xl shadow-xl shadow-slate-900/10 transition-all text-xs active:scale-95">
                             إرسال الطلب للمطعم فوراً
                         </button>
                     </div>
@@ -353,40 +448,42 @@
 
             <!-- صفحة تتبع الطلبية والمسار والدراجة التفاعلية للزبون -->
             <div id="customerOrderTracker" class="hidden space-y-8">
-                <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl space-y-6 text-center">
-                    <span class="bg-orange-50 text-orange-600 px-4 py-1.5 rounded-full text-xs font-extrabold inline-block">حالة تقدم الطلبية</span>
-                    <h2 class="text-xl md:text-2xl font-black text-slate-800">الطلب الجاري: <span id="customerOrderStatus" class="text-orange-600">--</span></h2>
+                <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-premium space-y-6 text-center">
+                    <span class="bg-orange-50 text-orange-600 px-4 py-1.5 rounded-full text-xs font-black inline-block tracking-wider">لوحة التتبع النشطة</span>
+                    <h2 class="text-2xl md:text-3xl font-black text-slate-900">حالة الطلبية: <span id="customerOrderStatus" class="text-orange-600">--</span></h2>
                     
                     <div class="grid grid-cols-4 gap-2 max-w-lg mx-auto py-4">
                         <div id="step-pending" class="flex flex-col items-center text-orange-500">
-                            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xs font-bold border-2 border-orange-500">1</div>
-                            <span class="text-[9px] mt-2 font-bold">بانتظار القبول</span>
+                            <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-sm font-black border-2 border-orange-500">1</div>
+                            <span class="text-[10px] mt-2 font-bold">بانتظار القبول</span>
                         </div>
                         <div id="step-accepted" class="flex flex-col items-center text-slate-300">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold border-2 border-transparent">2</div>
-                            <span class="text-[9px] mt-2 font-bold">تجهيز الأكل</span>
+                            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-sm font-black border-2 border-transparent">2</div>
+                            <span class="text-[10px] mt-2 font-bold">تجهيز الأكل</span>
                         </div>
                         <div id="step-delivering" class="flex flex-col items-center text-slate-300">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold border-2 border-transparent">3</div>
-                            <span class="text-[9px] mt-2 font-bold">في الطريق بالدراجة</span>
+                            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-sm font-black border-2 border-transparent">3</div>
+                            <span class="text-[10px] mt-2 font-bold">في الطريق</span>
                         </div>
                         <div id="step-delivered" class="flex flex-col items-center text-slate-300">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold border-2 border-transparent">4</div>
-                            <span class="text-[9px] mt-2 font-bold">تم التوصيل</span>
+                            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-sm font-black border-2 border-transparent">4</div>
+                            <span class="text-[10px] mt-2 font-bold">تم التوصيل</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- خريطة تتبع موقع الدراجة النارية بالزمن الحقيقي للزبون -->
-                <div id="customerMapBox" class="hidden bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
+                <div id="customerMapBox" class="hidden bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-premium space-y-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                        <h3 class="text-base font-black text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-map-location-dot text-orange-500 animate-bounce"></i>
                             تتبع مباشر للدراجة النارية على الخريطة
                         </h3>
-                        <span class="text-[10px] text-slate-400 font-bold">الخريطة تحدث موقع المندوب تلقائياً</span>
+                        <span class="text-xs text-slate-400 font-bold bg-slate-100 px-3 py-1 rounded-full">يتحدث تلقائياً</span>
                     </div>
-                    <div id="trackerMap" class="h-[25rem] w-full rounded-[2rem] bg-slate-100 z-10 border border-slate-150"></div>
+                    <div class="relative rounded-2xl overflow-hidden border border-slate-200">
+                        <div id="trackerMap" class="h-[28rem] w-full bg-slate-100 z-10"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -397,24 +494,24 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <!-- القائمة الجانبية -->
                 <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-md text-center space-y-5">
-                        <img id="ownerRestPic" src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=200" class="w-20 h-20 rounded-2xl object-cover mx-auto shadow-md" alt="My Restaurant">
+                    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium text-center space-y-5">
+                        <img id="ownerRestPic" src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=200" class="w-24 h-24 rounded-3xl object-cover mx-auto shadow-premium border-2 border-white" alt="My Restaurant">
                         <div class="space-y-1">
-                            <h3 id="ownerRestName" class="font-black text-slate-800 text-base">--</h3>
-                            <span class="text-xs text-slate-400 font-bold" id="ownerRestPhone">--</span>
+                            <h3 id="ownerRestName" class="font-black text-slate-800 text-lg">--</h3>
+                            <span class="text-xs text-slate-400 font-black tracking-wide" id="ownerRestPhone">--</span>
                         </div>
                         <div class="flex items-center justify-between border-t border-slate-100 pt-4">
-                            <span class="text-xs font-bold text-slate-600">حالة المطعم للزبائن:</span>
-                            <button id="restaurantStatusToggle" onclick="toggleRestaurantStatus()" class="px-5 py-2 rounded-full text-xs font-bold transition duration-300 bg-red-50 text-red-600">
+                            <span class="text-xs font-black text-slate-600">حالة المطعم حالياً:</span>
+                            <button id="restaurantStatusToggle" onclick="toggleRestaurantStatus()" class="px-5 py-2 rounded-full text-xs font-bold transition duration-300 bg-red-50 text-red-600 shadow-sm">
                                 مغلق
                             </button>
                         </div>
                     </div>
 
-                    <div class="bg-white p-4 rounded-[2rem] border border-slate-100 shadow-md flex flex-col space-y-1">
-                        <button onclick="switchRestTab('restDashboard')" class="rest-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs bg-orange-50 text-orange-600 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> لوحة الإحصائيات</button>
-                        <button onclick="switchRestTab('restMenu')" class="rest-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2"><i class="fa-solid fa-utensils"></i> إضافة وتعديل الأطباق</button>
-                        <button onclick="switchRestTab('restInfo')" class="rest-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2"><i class="fa-solid fa-user-gear"></i> معلوماتي الشخصية</button>
+                    <div class="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-premium flex flex-col space-y-1">
+                        <button onclick="switchRestTab('restDashboard')" class="rest-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs bg-orange-50 text-orange-600 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-chart-pie"></i> لوحة الإحصائيات والطلبات</button>
+                        <button onclick="switchRestTab('restMenu')" class="rest-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-utensils"></i> إدارة الأطباق والمأكولات</button>
+                        <button onclick="switchRestTab('restInfo')" class="rest-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-user-gear"></i> الإعدادات والملف التعريفي</button>
                     </div>
                 </div>
 
@@ -424,43 +521,43 @@
                     <!-- أ. لوحة الإحصائيات والطلبات -->
                     <div id="restDashboard" class="rest-tab-content space-y-8">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-premium flex items-center justify-between">
                                 <div class="space-y-1">
                                     <span class="text-xs text-slate-400 font-bold">طلبات جديدة</span>
-                                    <h4 id="restStatNew" class="text-2xl font-black text-slate-850">0</h4>
+                                    <h4 id="restStatNew" class="text-3xl font-black text-slate-800">0</h4>
                                 </div>
-                                <div class="p-3.5 bg-orange-50 text-orange-500 rounded-2xl"><i class="fa-solid fa-receipt text-xl"></i></div>
+                                <div class="p-4 bg-orange-50 text-orange-500 rounded-2xl shadow-sm"><i class="fa-solid fa-receipt text-2xl"></i></div>
                             </div>
-                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-premium flex items-center justify-between">
                                 <div class="space-y-1">
                                     <span class="text-xs text-slate-400 font-bold">طلبات مكتملة</span>
-                                    <h4 id="restStatConfirmed" class="text-2xl font-black text-emerald-600">0</h4>
+                                    <h4 id="restStatConfirmed" class="text-3xl font-black text-emerald-600">0</h4>
                                 </div>
-                                <div class="p-3.5 bg-emerald-50 text-emerald-500 rounded-2xl"><i class="fa-solid fa-circle-check text-xl"></i></div>
+                                <div class="p-4 bg-emerald-50 text-emerald-500 rounded-2xl shadow-sm"><i class="fa-solid fa-circle-check text-2xl"></i></div>
                             </div>
-                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-premium flex items-center justify-between">
                                 <div class="space-y-1">
                                     <span class="text-xs text-slate-400 font-bold">طلبات ملغية</span>
-                                    <h4 id="restStatCancelled" class="text-2xl font-black text-red-500">0</h4>
+                                    <h4 id="restStatCancelled" class="text-3xl font-black text-red-500">0</h4>
                                 </div>
-                                <div class="p-3.5 bg-red-50 text-red-500 rounded-2xl"><i class="fa-solid fa-circle-xmark text-xl"></i></div>
+                                <div class="p-4 bg-red-50 text-red-500 rounded-2xl shadow-sm"><i class="fa-solid fa-circle-xmark text-2xl"></i></div>
                             </div>
                         </div>
 
                         <!-- تقارير CSV للمطعم -->
-                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div class="text-right">
-                                <h4 class="font-extrabold text-slate-800 text-sm">أرشيف مبيعات المطعم</h4>
-                                <p class="text-[11px] text-slate-400 mt-0.5">يمكنك تنزيل أرشيف العمليات والمبيعات بنظام CSV لفتحه بالـ Excel</p>
+                                <h4 class="font-black text-slate-800 text-base">تحليل مبيعات المطعم</h4>
+                                <p class="text-xs text-slate-400 mt-1">تصدير تقرير المبيعات بصيغة CSV المتوافقة مع Microsoft Excel بضغطة زر</p>
                             </div>
-                            <button onclick="exportRestaurantCSV()" class="bg-slate-900 hover:bg-slate-850 text-white font-extrabold px-6 py-3 rounded-xl text-xs transition flex items-center gap-2">
-                                <i class="fa-solid fa-download"></i> تحميل التقرير CSV
+                            <button onclick="exportRestaurantCSV()" class="bg-slate-900 hover:bg-slate-850 text-white font-black px-6 py-3.5 rounded-2xl text-xs transition-all flex items-center gap-2 active:scale-95">
+                                <i class="fa-solid fa-download"></i> تصدير التقرير CSV
                             </button>
                         </div>
 
                         <!-- الطلبيات الجارية الآن -->
                         <div class="space-y-6">
-                            <h3 class="text-base font-extrabold text-slate-800">الطلبيات الواردة الحالية للتحضير</h3>
+                            <h3 class="text-lg font-black text-slate-800">الطلبات الواردة التي تحتاج للتحضير</h3>
                             <div id="restOrdersContainer" class="grid grid-cols-1 gap-6">
                                 <!-- الطلبيات للقبول والرفض -->
                             </div>
@@ -469,48 +566,48 @@
 
                     <!-- ب. منيو الأطباق وإضافة طبق -->
                     <div id="restMenu" class="rest-tab-content hidden space-y-8">
-                        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md">
-                            <h3 class="text-base font-extrabold text-slate-850 mb-6"><i class="fa-solid fa-plus-circle text-orange-500 ml-2"></i>إضافة وجبة جديدة للمطعم</h3>
+                        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium">
+                            <h3 class="text-lg font-black text-slate-850 mb-6 flex items-center gap-2"><i class="fa-solid fa-plus-circle text-orange-500"></i>إضافة وجبة جديدة للمنيو</h3>
                             <form id="dishForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">اسم الطبق</label>
-                                        <input type="text" id="dishName" required class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500">
+                                        <label class="block text-xs font-black text-slate-600 mb-1.5">اسم الطبق</label>
+                                        <input type="text" id="dishName" required class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">الوصف</label>
-                                        <textarea id="dishDesc" rows="3" class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500" placeholder="مكونات الوجبة بالتفصيل..."></textarea>
+                                        <label class="block text-xs font-black text-slate-600 mb-1.5">الوصف</label>
+                                        <textarea id="dishDesc" rows="3" class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500" placeholder="مكونات الوجبة بالتفصيل..."></textarea>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-xs font-bold text-slate-600 mb-1">السعر بالدينار (د.ج)</label>
-                                            <input type="number" id="dishPrice" required class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-bold focus:outline-none focus:border-orange-500">
+                                            <label class="block text-xs font-black text-slate-600 mb-1.5">السعر بالدينار (د.ج)</label>
+                                            <input type="number" id="dishPrice" required class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-black focus:outline-none focus:border-orange-500">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold text-slate-600 mb-1">رابط صورة الطبق</label>
-                                            <input type="url" id="dishImg" required class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500" placeholder="https://unsplash.com/...">
+                                            <label class="block text-xs font-black text-slate-600 mb-1.5">رابط صورة الطبق</label>
+                                            <input type="url" id="dishImg" required class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500" placeholder="https://unsplash.com/...">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="space-y-4 flex flex-col justify-between">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">الصلصات (افصل بينها بفاصلة)</label>
-                                        <input type="text" id="dishSauces" class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500" placeholder="مايونيز, كاتشب, صلصة حارة">
+                                        <label class="block text-xs font-black text-slate-600 mb-1.5">الصلصات (افصل بينها بفاصلة)</label>
+                                        <input type="text" id="dishSauces" class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500" placeholder="مايونيز, كاتشب, صلصة حارة">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">المشروبات (افصل بينها بفاصلة)</label>
-                                        <input type="text" id="dishDrinks" class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500" placeholder="كوكا كولا, حمود بوعلام, ماء">
+                                        <label class="block text-xs font-black text-slate-600 mb-1.5">المشروبات (افصل بينها بفاصلة)</label>
+                                        <input type="text" id="dishDrinks" class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-orange-500" placeholder="كوكا كولا, حمود بوعلام, ماء">
                                     </div>
-                                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-extrabold py-3.5 rounded-2xl transition text-xs">
-                                        حفظ وإدراج الطبق
+                                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-black py-4 rounded-2xl transition shadow-lg shadow-slate-900/10 text-xs active:scale-95">
+                                        حفظ وإدراج الوجبة فوراً
                                     </button>
                                 </div>
                             </form>
                         </div>
 
                         <!-- عرض الأطباق السابقة للمطعم -->
-                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-md space-y-4">
-                            <h3 class="text-sm font-extrabold text-slate-850">قائمة الأطباق المسجلة</h3>
+                        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium space-y-4">
+                            <h3 class="text-base font-black text-slate-850 border-b border-slate-50 pb-3">قائمة الوجبات المسجلة بالمنيو</h3>
                             <div id="restDishesManageList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <!-- تملأ برمجياً -->
                             </div>
@@ -519,24 +616,24 @@
 
                     <!-- ج. تعديل بيانات المطعم -->
                     <div id="restInfo" class="rest-tab-content hidden space-y-8">
-                        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md">
-                            <h3 class="text-base font-extrabold text-slate-850 mb-6">تعديل الملف التعريفي لمطعمك</h3>
+                        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium">
+                            <h3 class="text-base font-black text-slate-850 mb-6 border-b border-slate-50 pb-3">تحديث معلومات المطعم التعريفي</h3>
                             <form id="restProfileForm" class="space-y-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">اسم المطعم التجاري</label>
-                                        <input type="text" id="profileRestName" required class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-bold">
+                                        <label class="block text-xs font-black text-slate-600 mb-1.5">اسم المطعم التجاري</label>
+                                        <input type="text" id="profileRestName" required class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-black">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">رقم هاتف المطعم</label>
-                                        <input type="tel" id="profileRestPhone" required class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-bold">
+                                        <label class="block text-xs font-black text-slate-600 mb-1.5">رقم هاتف المطعم</label>
+                                        <input type="tel" id="profileRestPhone" required class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-black">
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">رابط صورة/شعار المطعم الرئيسي</label>
-                                    <input type="url" id="profileRestPic" class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-semibold">
+                                    <label class="block text-xs font-black text-slate-600 mb-1.5">رابط صورة/شعار المطعم الرئيسي</label>
+                                    <input type="url" id="profileRestPic" class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-semibold">
                                 </div>
-                                <button type="submit" class="bg-slate-900 hover:bg-slate-850 text-white font-extrabold px-8 py-3 rounded-2xl text-xs transition">
+                                <button type="submit" class="bg-slate-900 hover:bg-slate-850 text-white font-black px-8 py-3.5 rounded-2xl text-xs transition shadow-md hover:shadow-lg active:scale-95">
                                     حفظ وتحديث معلومات المحل
                                 </button>
                             </form>
@@ -553,17 +650,17 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <!-- القائمة الجانبية للتوصيل -->
                 <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-md text-center space-y-5">
-                        <img id="driverPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" class="w-20 h-20 rounded-2xl object-cover mx-auto shadow-md" alt="Driver Profile">
+                    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium text-center space-y-5">
+                        <img id="driverPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" class="w-24 h-24 rounded-3xl object-cover mx-auto shadow-premium border-2 border-white" alt="Driver Profile">
                         <div class="space-y-1">
-                            <h3 id="driverName" class="font-black text-slate-850 text-base">--</h3>
-                            <span id="driverPhone" class="text-xs text-slate-400 font-bold">--</span>
+                            <h3 id="driverName" class="font-black text-slate-850 text-lg">--</h3>
+                            <span id="driverPhone" class="text-xs text-slate-400 font-bold block">--</span>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-4 rounded-[2rem] border border-slate-100 shadow-md flex flex-col space-y-1">
-                        <button onclick="switchDeliveryTab('driverDashboard')" class="driver-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs bg-orange-50 text-orange-600 flex items-center gap-2"><i class="fa-solid fa-map"></i> خريطة التتبع النشطة</button>
-                        <button onclick="switchDeliveryTab('driverInfo')" class="driver-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2"><i class="fa-solid fa-id-card"></i> حسابي ومعلوماتي</button>
+                    <div class="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-premium flex flex-col space-y-1">
+                        <button onclick="switchDeliveryTab('driverDashboard')" class="driver-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs bg-orange-50 text-orange-600 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-map"></i> خريطة التتبع النشطة</button>
+                        <button onclick="switchDeliveryTab('driverInfo')" class="driver-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-id-card"></i> حسابي ومعلوماتي</button>
                     </div>
                 </div>
 
@@ -572,46 +669,48 @@
                     
                     <div id="driverDashboard" class="driver-tab-content space-y-8">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-premium flex items-center justify-between">
                                 <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 font-bold">تسليم ناجح للزبون</span>
-                                    <h4 id="driverStatDelivered" class="text-2xl font-black text-emerald-600">0</h4>
+                                    <span class="text-xs text-slate-400 font-bold">تسليم ناجح للزبائن</span>
+                                    <h4 id="driverStatDelivered" class="text-3xl font-black text-emerald-600">0</h4>
                                 </div>
-                                <div class="p-3.5 bg-emerald-50 text-emerald-500 rounded-2xl"><i class="fa-solid fa-circle-check text-xl"></i></div>
+                                <div class="p-4 bg-emerald-50 text-emerald-500 rounded-2xl shadow-sm"><i class="fa-solid fa-circle-check text-2xl"></i></div>
                             </div>
-                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-premium flex items-center justify-between">
                                 <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 font-bold">إجمالي المهام المنجزة</span>
-                                    <h4 id="driverStatTotal" class="text-2xl font-black text-slate-800">0</h4>
+                                    <span class="text-xs text-slate-400 font-bold">الرحلات الإجمالية</span>
+                                    <h4 id="driverStatTotal" class="text-3xl font-black text-slate-800">0</h4>
                                 </div>
-                                <div class="p-3.5 bg-blue-50 text-blue-500 rounded-2xl"><i class="fa-solid fa-route text-xl"></i></div>
+                                <div class="p-4 bg-blue-50 text-blue-500 rounded-2xl shadow-sm"><i class="fa-solid fa-route text-2xl"></i></div>
                             </div>
-                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-premium flex items-center justify-between">
                                 <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 font-bold">تقرير الرحلات السابقة</span>
-                                    <button onclick="exportDriverCSV()" class="text-xs text-orange-600 font-extrabold hover:underline">تحميل تقرير CSV <i class="fa-solid fa-download mr-1 font-bold"></i></button>
+                                    <span class="text-xs text-slate-400 font-bold">تقرير الرحلات والعمليات</span>
+                                    <button onclick="exportDriverCSV()" class="text-xs text-orange-600 font-black hover:underline block mt-1">تحميل CSV <i class="fa-solid fa-download mr-1"></i></button>
                                 </div>
-                                <div class="p-3.5 bg-slate-50 text-slate-600 rounded-2xl"><i class="fa-solid fa-file-csv text-xl"></i></div>
+                                <div class="p-4 bg-slate-50 text-slate-600 rounded-2xl shadow-sm"><i class="fa-solid fa-file-csv text-2xl"></i></div>
                             </div>
                         </div>
 
                         <!-- خريطة المندوب التي تظهر الدراجة النارية بالزمن الفعلي -->
-                        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-xl space-y-4">
-                            <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-premium space-y-4">
+                            <div class="flex items-center justify-between flex-wrap gap-4">
                                 <div class="text-right">
-                                    <h3 class="font-extrabold text-slate-850 text-sm">بث الإحداثيات والمسار</h3>
-                                    <p class="text-[10px] text-slate-400 mt-0.5">شاهد موقعك وعملائك بالدراجة النارية فورياً</p>
+                                    <h3 class="font-black text-slate-850 text-base">بث الإحداثيات والمسار</h3>
+                                    <p class="text-[11px] text-slate-400">شاهد موقعك وعملائك بالدراجة النارية فورياً للوصول المثالي</p>
                                 </div>
-                                <button onclick="enableDriverGPS()" class="bg-orange-600 hover:bg-orange-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-md shadow-orange-600/15">
-                                    <i class="fa-solid fa-location-arrow"></i> تفعيل بث موقع الدراجة
+                                <button onclick="enableDriverGPS()" class="bg-orange-600 hover:bg-orange-700 text-white font-black px-6 py-3 rounded-2xl text-xs transition flex items-center gap-1.5 shadow-md shadow-orange-600/15 active:scale-95">
+                                    <i class="fa-solid fa-location-arrow animate-pulse"></i> تفعيل بث موقع الدراجة
                                 </button>
                             </div>
-                            <div id="driverMap" class="h-[25rem] w-full rounded-[2rem] bg-slate-100 z-10 border border-slate-150"></div>
+                            <div class="relative rounded-2xl overflow-hidden border border-slate-200">
+                                <div id="driverMap" class="h-[28rem] w-full bg-slate-100 z-10"></div>
+                            </div>
                         </div>
 
                         <!-- الطلبيات الجاهزة للاستلام -->
                         <div class="space-y-6">
-                            <h3 class="text-base font-extrabold text-slate-800">الطلبيات النشطة والمهام المتاحة</h3>
+                            <h3 class="text-lg font-black text-slate-800">الطلبيات الشاغرة بمدينة العفرون</h3>
                             <div id="driverOrdersContainer" class="grid grid-cols-1 gap-6">
                                 <!-- بطاقات طلبات التوصيل الجاهزة -->
                             </div>
@@ -620,24 +719,24 @@
 
                     <!-- معلومات الموصل الشخصية -->
                     <div id="driverInfo" class="driver-tab-content hidden space-y-8">
-                        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md">
-                            <h3 class="text-base font-extrabold text-slate-850 mb-6">الملف التعريفي الخاص بك كمندوب توصيل</h3>
+                        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium">
+                            <h3 class="text-base font-black text-slate-850 mb-6 border-b border-slate-50 pb-3">تحديث بيانات الملف الشخصي للمندوب</h3>
                             <form id="driverProfileForm" class="space-y-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">الاسم الكامل</label>
-                                        <input type="text" id="profileDriverName" required class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-bold">
+                                        <label class="block text-xs font-black text-slate-600 mb-1.5">الاسم الكامل</label>
+                                        <input type="text" id="profileDriverName" required class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-bold">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-600 mb-1">رقم الهاتف النشط</label>
-                                        <input type="tel" id="profileDriverPhone" required class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-bold">
+                                        <label class="block text-xs font-black text-slate-600 mb-1.5">رقم الهاتف النشط</label>
+                                        <input type="tel" id="profileDriverPhone" required class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-bold">
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">رابط صورتك الشخصية</label>
-                                    <input type="url" id="profileDriverPic" class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-xs font-semibold">
+                                    <label class="block text-xs font-black text-slate-600 mb-1.5">رابط صورتك الشخصية</label>
+                                    <input type="url" id="profileDriverPic" class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 text-xs font-semibold">
                                 </div>
-                                <button type="submit" class="bg-slate-900 hover:bg-slate-850 text-white font-extrabold px-8 py-3 rounded-2xl text-xs transition">
+                                <button type="submit" class="bg-slate-900 hover:bg-slate-850 text-white font-black px-8 py-3.5 rounded-2xl text-xs transition shadow-md active:scale-95">
                                     حفظ وتحديث ملف الموصل
                                 </button>
                             </form>
@@ -651,51 +750,51 @@
 
         <!-- 5. واجهة الأدمن -->
         <section id="adminView" class="hidden container mx-auto px-6 py-12 space-y-8">
-            <h2 class="text-xl md:text-2xl font-black text-slate-900 flex items-center gap-2"><i class="fa-solid fa-shield text-red-500"></i> إدارة ومراقبة منصة العفرون أونلاين</h2>
+            <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2"><i class="fa-solid fa-shield text-red-500"></i> إدارة ومراقبة منصة العفرون أونلاين</h2>
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="text-[10px] text-slate-400 font-extrabold block">إجمالي الطلبات</span>
-                    <h4 id="adminStatOrders" class="text-xl font-bold text-slate-800 mt-1">0</h4>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-premium">
+                    <span class="text-[10px] text-slate-400 font-black block uppercase">إجمالي الطلبات</span>
+                    <h4 id="adminStatOrders" class="text-2xl font-black text-slate-800 mt-1">0</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="text-[10px] text-slate-400 font-extrabold block">عدد المطاعم</span>
-                    <h4 id="adminStatRestaurants" class="text-xl font-bold text-slate-800 mt-1">0</h4>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-premium">
+                    <span class="text-[10px] text-slate-400 font-black block uppercase">عدد المطاعم</span>
+                    <h4 id="adminStatRestaurants" class="text-2xl font-black text-slate-800 mt-1">0</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="text-[10px] text-slate-400 font-extrabold block">عمال التوصيل</span>
-                    <h4 id="adminStatDrivers" class="text-xl font-bold text-slate-800 mt-1">0</h4>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-premium">
+                    <span class="text-[10px] text-slate-400 font-black block uppercase">عمال التوصيل</span>
+                    <h4 id="adminStatDrivers" class="text-2xl font-black text-slate-800 mt-1">0</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="text-[10px] text-slate-400 font-extrabold block">عدد الزبائن</span>
-                    <h4 id="adminStatCustomers" class="text-xl font-bold text-slate-800 mt-1">0</h4>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-premium">
+                    <span class="text-[10px] text-slate-400 font-black block uppercase">عدد الزبائن</span>
+                    <h4 id="adminStatCustomers" class="text-2xl font-black text-slate-800 mt-1">0</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="text-[10px] text-slate-400 font-extrabold block">زيارات اليوم</span>
-                    <h4 id="adminStatDailyVisits" class="text-xl font-bold text-orange-600 mt-1">140</h4>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-premium">
+                    <span class="text-[10px] text-slate-400 font-black block uppercase">زيارات اليوم</span>
+                    <h4 id="adminStatDailyVisits" class="text-2xl font-black text-orange-600 mt-1">140</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="text-[10px] text-slate-400 font-extrabold block">زيارات الشهر</span>
-                    <h4 id="adminStatMonthlyVisits" class="text-xl font-bold text-orange-600 mt-1">4,120</h4>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-premium">
+                    <span class="text-[10px] text-slate-400 font-black block uppercase">زيارات الشهر</span>
+                    <h4 id="adminStatMonthlyVisits" class="text-2xl font-black text-orange-600 mt-1">4,120</h4>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- أ. التحكم بالمستخدمين وحظرهم -->
-                <div class="lg:col-span-2 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-md space-y-6">
-                    <div class="flex items-center justify-between flex-wrap gap-3">
-                        <h3 class="font-extrabold text-slate-850">إدارة المستخدمين النشطين</h3>
-                        <button onclick="exportAllUsersCSV()" class="bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-4 py-2 rounded-xl text-xs transition"><i class="fa-solid fa-download ml-1.5"></i> تصدير المستخدمين CSV</button>
+                <div class="lg:col-span-2 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-premium space-y-6">
+                    <div class="flex items-center justify-between flex-wrap gap-3 border-b border-slate-50 pb-3">
+                        <h3 class="font-black text-lg text-slate-850">إدارة مستخدمي النظام</h3>
+                        <button onclick="exportAllUsersCSV()" class="bg-slate-900 hover:bg-slate-800 text-white font-black px-4 py-2.5 rounded-xl text-xs transition active:scale-95"><i class="fa-solid fa-download ml-1.5"></i> تصدير المستخدمين CSV</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-right text-xs">
                             <thead>
-                                <tr class="border-b border-slate-100 text-slate-400 font-extrabold">
-                                    <th class="py-3">المستخدم</th>
-                                    <th class="py-3">البريد</th>
-                                    <th class="py-3">رقم الهاتف</th>
-                                    <th class="py-3">الدور</th>
-                                    <th class="py-3 text-center">الإجراء</th>
+                                <tr class="border-b border-slate-100 text-slate-400 font-black uppercase">
+                                    <th class="py-3.5 px-2">المستخدم</th>
+                                    <th class="py-3.5 px-2">البريد الإلكتروني</th>
+                                    <th class="py-3.5 px-2">رقم الهاتف</th>
+                                    <th class="py-3.5 px-2">الدور الوظيفي</th>
+                                    <th class="py-3.5 px-2 text-center">الإجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="adminUsersTable" class="divide-y divide-slate-50">
@@ -707,36 +806,36 @@
 
                 <!-- ب. إعدادات الموقع ونشر الإعلانات -->
                 <div class="space-y-8">
-                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-md space-y-4">
-                        <h3 class="font-extrabold text-slate-800 text-sm">نصوص وواجهة الهوم</h3>
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-premium space-y-4">
+                        <h3 class="font-black text-slate-800 text-sm border-b border-slate-50 pb-2">نصوص وواجهة الهوم</h3>
                         <form id="siteSettingsForm" class="space-y-3">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">العنوان الترحيبي الرئيسي (Hero Text)</label>
-                                <input type="text" id="settingsHeroText" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-bold" required>
+                                <label class="block text-[10px] font-black text-slate-500 mb-1">العنوان الترحيبي الرئيسي (Hero Text)</label>
+                                <input type="text" id="settingsHeroText" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-xs font-bold" required>
                             </div>
-                            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-extrabold py-3 rounded-xl text-xs transition">تحديث النص الترحيبي</button>
+                            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-3.5 rounded-xl text-xs transition active:scale-95">تحديث النص الترحيبي</button>
                         </form>
                     </div>
 
-                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-md space-y-4">
-                        <h3 class="font-extrabold text-slate-800 text-sm">برمجة إعلانات منبثقة تفاعلية</h3>
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-premium space-y-4">
+                        <h3 class="font-black text-slate-800 text-sm border-b border-slate-50 pb-2">برمجة إعلانات منبثقة تفاعلية</h3>
                         <form id="adManagerForm" class="space-y-3">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">كود الإعلان البرمجي (HTML Code)</label>
-                                <textarea id="adHtmlCode" rows="3" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-mono" placeholder="مثال: <p class='text-orange-500 font-extrabold text-center'>خصومات مميزة بمطاعم العفرون اليوم!</p>" required></textarea>
+                                <label class="block text-[10px] font-black text-slate-500 mb-1">كود الإعلان البرمجي (HTML Code)</label>
+                                <textarea id="adHtmlCode" rows="3" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-xs font-mono" placeholder="مثال: <p class='text-orange-500 font-extrabold text-center'>خصومات مميزة بمطاعم العفرون اليوم!</p>" required></textarea>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">وقت الإغلاق</label>
-                                    <select id="adDuration" class="w-full px-2 py-2.5 border border-slate-200 rounded-xl text-xs font-bold">
+                                    <label class="block text-[10px] font-black text-slate-500 mb-1">وقت الإغلاق</label>
+                                    <select id="adDuration" class="w-full px-2 py-3 border border-slate-200 rounded-xl text-xs font-bold">
                                         <option value="3">3 ثواني</option>
                                         <option value="5">5 ثواني</option>
                                         <option value="10">10 ثواني</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">الواجهة المستهدفة</label>
-                                    <select id="adTarget" class="w-full px-2 py-2.5 border border-slate-200 rounded-xl text-xs font-bold">
+                                    <label class="block text-[10px] font-black text-slate-500 mb-1">الواجهة المستهدفة</label>
+                                    <select id="adTarget" class="w-full px-2 py-3 border border-slate-200 rounded-xl text-xs font-bold">
                                         <option value="all">الجميع</option>
                                         <option value="customer">الزبائن</option>
                                         <option value="restaurant">أصحاب المطاعم</option>
@@ -744,7 +843,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-extrabold py-3 rounded-xl text-xs transition">نشر الإعلان المستهدف</button>
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-black py-3.5 rounded-xl text-xs transition active:scale-95">نشر الإعلان المستهدف</button>
                         </form>
                     </div>
                 </div>
@@ -753,11 +852,11 @@
 
     </main>
 
-    <!-- الفوتر السفلي -->
-    <footer class="bg-slate-950 text-slate-500 py-8 border-t border-slate-900 text-center text-xs">
+    <!-- الفوتر السفلي العريق -->
+    <footer class="bg-slate-950 text-slate-500 py-10 border-t border-slate-900 text-center text-xs">
         <div class="container mx-auto px-6 space-y-2">
-            <p>© <span id="currentYear">2026</span> منصة العفرون أونلاين للتوصيل الفوري. جميع الحقوق محفوظة.</p>
-            <p class="text-[10px] text-slate-600">تم تطوير النظام واللوحات لتجربة متزامنة بين المتجر والمندوب بالدراجة النارية والزبون.</p>
+            <p>© <span id="currentYear">2026</span> منصة العفرون أونلاين للتوصيل الفوري. جميع الحقوق محفوظة للجهة المالكة.</p>
+            <p class="text-[10px] text-slate-600">الربط المتزامن للطلبات يعتمد على تقنيات تتبع المواقع الحية وقواعد البيانات المتطورة للشركة.</p>
         </div>
     </footer>
 
@@ -807,14 +906,14 @@
             html: `
                 <div class="pulse-marker relative flex items-center justify-center">
                     <div class="pulse-ring"></div>
-                    <div class="relative bg-orange-600 text-white w-10 h-10 rounded-full shadow-lg border-2 border-white flex items-center justify-center">
-                        <i class="fa-solid fa-motorcycle text-sm"></i>
+                    <div class="relative bg-orange-600 text-white w-11 h-11 rounded-full shadow-lg border-2 border-white flex items-center justify-center">
+                        <i class="fa-solid fa-motorcycle text-base"></i>
                     </div>
                 </div>
             `,
             className: 'custom-motorcycle-icon',
-            iconSize: [46, 46],
-            iconAnchor: [23, 23]
+            iconSize: [52, 52],
+            iconAnchor: [26, 26]
         });
 
         // Safe web audio tone generator for restaurant and delivery incoming push notifications
@@ -1143,13 +1242,13 @@
                     const rest = docSnap.data();
                     const restId = docSnap.id; // معرّف الوثيقة كبديل آمن لحماية المطاعم التي ليس بها حقل uid
                     const card = document.createElement('div');
-                    card.className = "bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 flex flex-col justify-between";
+                    card.className = "bg-white rounded-[2rem] overflow-hidden shadow-premium hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-slate-100 flex flex-col justify-between";
                     card.innerHTML = `
-                        <img src="${rest.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600'}" class="w-full h-48 object-cover" alt="${rest.name}">
+                        <img src="${rest.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600'}" class="w-full h-52 object-cover" alt="${rest.name}">
                         <div class="p-6 space-y-4 text-right">
-                            <h3 class="font-extrabold text-slate-900 text-lg">${rest.name}</h3>
-                            <p class="text-xs text-slate-400 flex items-center gap-1.5 justify-start"><i class="fa-solid fa-phone text-orange-500"></i> الهاتف: ${rest.phone}</p>
-                            <button onclick="viewRestaurantMenu('${restId}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3 rounded-2xl text-xs transition animate-fade-in">
+                            <h3 class="font-black text-slate-900 text-lg">${rest.name}</h3>
+                            <p class="text-xs text-slate-450 flex items-center gap-1.5 justify-start font-semibold"><i class="fa-solid fa-phone text-orange-500"></i> الهاتف: ${rest.phone}</p>
+                            <button onclick="viewRestaurantMenu('${restId}')" class="w-full bg-slate-950 hover:bg-slate-850 text-white font-black py-3.5 rounded-2xl text-xs transition active:scale-95 shadow-md">
                                 تصفح الوجبات والطلب
                             </button>
                         </div>
@@ -1204,7 +1303,7 @@
                     snapshot.forEach((docSnap) => {
                         const dish = docSnap.data();
                         const card = document.createElement('div');
-                        card.className = "bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex gap-4 items-center justify-between hover:shadow-md transition";
+                        card.className = "bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex gap-4 items-center justify-between hover:shadow-premium transition-all duration-300";
                         
                         const sauces = dish.sauces ? dish.sauces.split(',') : [];
                         const drinks = dish.drinks ? dish.drinks.split(',') : [];
@@ -1214,12 +1313,12 @@
                             extrasHtml += `<div class="mt-3 space-y-2">`;
                             if(sauces.length > 0) {
                                 extrasHtml += `<div class="flex flex-wrap gap-1.5 text-[9px]"><span class="text-slate-500 font-bold">الصلصات المضافة:</span>`;
-                                sauces.forEach(s => extrasHtml += `<label class="bg-slate-50 text-slate-600 px-2 py-1 rounded-lg border border-slate-100 cursor-pointer hover:bg-orange-50"><input type="checkbox" name="sauce-${dish.id}" value="${s.trim()}" class="ml-1 scale-90"> ${s.trim()}</label>`);
+                                sauces.forEach(s => extrasHtml += `<label class="bg-slate-50 text-slate-600 px-2 py-1 rounded-lg border border-slate-100 cursor-pointer hover:bg-orange-50 transition-colors"><input type="checkbox" name="sauce-${dish.id}" value="${s.trim()}" class="ml-1 scale-90"> ${s.trim()}</label>`);
                                 extrasHtml += `</div>`;
                             }
                             if(drinks.length > 0) {
                                 extrasHtml += `<div class="flex flex-wrap gap-1.5 text-[9px] mt-1.5"><span class="text-slate-500 font-bold">مشروب اختياري:</span>`;
-                                drinks.forEach(d => extrasHtml += `<label class="bg-slate-50 text-slate-600 px-2 py-1 rounded-lg border border-slate-100 cursor-pointer hover:bg-orange-50"><input type="radio" name="drink-${dish.id}" value="${d.trim()}" class="ml-1 scale-90"> ${d.trim()}</label>`);
+                                drinks.forEach(d => extrasHtml += `<label class="bg-slate-50 text-slate-600 px-2 py-1 rounded-lg border border-slate-100 cursor-pointer hover:bg-orange-50 transition-colors"><input type="radio" name="drink-${dish.id}" value="${d.trim()}" class="ml-1 scale-90"> ${d.trim()}</label>`);
                                 extrasHtml += `</div>`;
                             }
                             extrasHtml += `</div>`;
@@ -1227,15 +1326,15 @@
 
                         card.innerHTML = `
                             <div class="flex gap-4 items-center flex-1">
-                                <img src="${dish.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=300'}" class="w-16 h-16 rounded-2xl object-cover shadow-sm" alt="${dish.name}">
+                                <img src="${dish.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=300'}" class="w-20 h-20 rounded-2xl object-cover shadow-sm" alt="${dish.name}">
                                 <div class="text-right flex-grow">
                                     <h4 class="font-extrabold text-slate-900 text-sm">${dish.name}</h4>
-                                    <p class="text-[11px] text-slate-400 mt-0.5 leading-normal">${dish.desc || ''}</p>
-                                    <span class="text-xs font-black text-orange-600 block mt-1.5">${dish.price} د.ج</span>
+                                    <p class="text-[11px] text-slate-400 mt-0.5 leading-normal font-medium">${dish.desc || ''}</p>
+                                    <span class="text-sm font-black text-orange-600 block mt-1.5">${dish.price} د.ج</span>
                                     ${extrasHtml}
                                 </div>
                             </div>
-                            <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price})" class="bg-orange-50 hover:bg-orange-100 text-orange-600 p-3 rounded-2xl transition">
+                            <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price})" class="bg-orange-50 hover:bg-orange-100 text-orange-600 p-3.5 rounded-2xl transition-colors active:scale-90">
                                 <i class="fa-solid fa-cart-plus text-base"></i>
                             </button>
                         `;
@@ -1270,7 +1369,7 @@
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(interactiveSelectMap);
                 
                 interactiveLocationMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(interactiveSelectMap)
-                    .bindPopup("<strong class='text-orange-600'>موقع التوصيل الخاص بك<br>(اسحبني بدقة فوق منزلك)</strong>").openPopup();
+                    .bindPopup("<strong class='text-orange-600 font-extrabold'>موقع التوصيل الخاص بك<br>(اسحبني بدقة فوق منزلك)</strong>").openPopup();
 
                 interactiveLocationMarker.on('dragend', function (event) {
                     const marker = event.target;
@@ -1337,12 +1436,12 @@
 
                 itemDiv.innerHTML = `
                     <div class="text-right">
-                        <span class="font-extrabold text-slate-800 text-xs">${item.name} (${item.quantity}x)</span>
+                        <span class="font-black text-slate-850 text-xs">${item.name} (${item.quantity}x)</span>
                         <span class="block text-[9px] text-slate-400 font-bold mt-0.5">${details}</span>
                     </div>
                     <div class="flex items-center space-x-2 space-x-reverse">
-                        <span class="font-bold text-slate-850">${item.price * item.quantity} د.ج</span>
-                        <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 p-1.5 transition"><i class="fa-regular fa-trash-can"></i></button>
+                        <span class="font-black text-slate-850">${item.price * item.quantity} د.ج</span>
+                        <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 p-1.5 transition-colors"><i class="fa-regular fa-trash-can text-sm"></i></button>
                     </div>
                 `;
                 list.appendChild(itemDiv);
@@ -1359,13 +1458,13 @@
         // Geolocation browser acquisition with fallback and high accuracy settings
         window.getCustomerLocation = function() {
             if ("geolocation" in navigator) {
-                document.getElementById('gpsStatus').innerText = "جاري الاتصال بالأقمار الصناعية...";
+                document.getElementById('gpsStatus').innerText = "جاري تتبع موقعك عبر GPS...";
                 navigator.geolocation.getCurrentPosition((pos) => {
                     customerCoordinates = {
                         lat: pos.coords.latitude,
                         lng: pos.coords.longitude
                     };
-                    document.getElementById('gpsStatus').innerText = "تم رصد موقعك بدقة عالية!";
+                    document.getElementById('gpsStatus').innerText = "تم رصد الإحداثيات بنجاح!";
                     document.getElementById('coordinatesText').innerText = `إحداثياتك الحالية: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
                     
                     // Center selection map on acquired coordinates and place pin
@@ -1374,20 +1473,20 @@
                         interactiveSelectMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
                     }
                 }, (err) => {
-                    document.getElementById('gpsStatus').innerText = "فشل رصد الـ GPS. يرجى سحب الدبوس يدوياً.";
+                    document.getElementById('gpsStatus').innerText = "تعذر التحديد التلقائي. يرجى سحب الدبوس يدوياً.";
                 }, {
                     enableHighAccuracy: true,
                     timeout: 8000,
                     maximumAge: 0
                 });
             } else {
-                Swal.fire('غير مدعوم', 'متصفحك لا يدعم تتبع المواقع.', 'warning');
+                Swal.fire('غير مدعوم', 'متصفحك الحالي لا يدعم ميزة رصد الموقع.', 'warning');
             }
         };
 
         window.submitOrder = async function() {
             if (customerCart.length === 0) {
-                Swal.fire('عذراً', 'لا يمكن إرسال سلة فارغة.', 'warning');
+                Swal.fire('سلة فارغة', 'الرجاء اختيار وجبة واحدة على الأقل لإتمام الطلب.', 'warning');
                 return;
             }
 
@@ -1412,10 +1511,10 @@
                 await setDoc(doc(db, "orders", orderId), orderData);
                 customerCart = [];
                 updateCartUI();
-                Swal.fire('تم إرسال طلبك!', 'تم إرسال طلبيتك إلى صاحب المطعم للتأكيد والتجهيز.', 'success');
+                Swal.fire('تم إرسال طلبك!', 'تلقى المطعم طلبك وهو بصدد المراجعة والتأكيد الآن.', 'success');
                 showOrderTracker(orderData);
             } catch(e) {
-                Swal.fire('خطأ', 'فشل إرسال الطلب، حاول مرة أخرى.', 'error');
+                Swal.fire('خطأ في الإرسال', 'يرجى التحقق من اتصال الشبكة والمحاولة مجدداً.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1433,7 +1532,7 @@
                 const el = document.getElementById(`step-${s}`);
                 if (el) {
                     el.className = "flex flex-col items-center text-slate-300";
-                    el.querySelector('div').className = "w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold border-2 border-transparent";
+                    el.querySelector('div').className = "w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-sm font-black border-2 border-transparent";
                 }
             });
 
@@ -1443,15 +1542,15 @@
             const activeEl = document.getElementById(currentStepId);
             if (activeEl) {
                 activeEl.className = "flex flex-col items-center text-orange-500";
-                activeEl.querySelector('div').className = "w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xs font-bold border-2 border-orange-500";
+                activeEl.querySelector('div').className = "w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-sm font-black border-2 border-orange-500 shadow-glow";
             }
 
             const statusMap = {
-                'pending': 'بانتظار قبول وموافقة المطعم',
-                'accepted': 'المطبخ يقوم بتحضير وجباتك حالياً',
-                'ready': 'الوجبة جاهزة وبانتظار موصل بالدراجة النارية',
-                'delivering': 'المندوب يتحرك بالدراجة النارية وموقعه يظهر أدناه',
-                'delivered': 'تم تسليم الوجبة بنجاح! بالهناء والشفاء.',
+                'pending': 'بانتظار موافقة المطعم ومراجعة الطلب',
+                'accepted': 'المطعم يقوم بتحضير طعامك الآن بشغف',
+                'ready': 'الوجبة جاهزة وبانتظار استلام مندوب التوصيل',
+                'delivering': 'المندوب يتحرك بالدراجة النارية وموقعه يظهر بالأسفل',
+                'delivered': 'تم تسليم الوجبة بنجاح! شكراً لاختيارك منصتنا.',
                 'cancelled': 'تم إلغاء هذه الطلبية.'
             };
             statusText.innerText = statusMap[order.status] || order.status;
@@ -1476,10 +1575,10 @@
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeTrackerMap);
                 
                 trackerDriverMarker = L.marker([driver.lat, driver.lng], { icon: motorcycleIcon }).addTo(activeTrackerMap)
-                    .bindPopup("<strong class='text-orange-600 font-extrabold'>المندوب يتحرك بالدراجة</strong>").openPopup();
+                    .bindPopup("<strong class='text-orange-600 font-extrabold'>المندوب قادم بالدراجة النارية</strong>").openPopup();
                 
                 L.marker([dest.lat, dest.lng]).addTo(activeTrackerMap)
-                    .bindPopup("<strong class='text-slate-800 font-extrabold'>موقع استلام الوجبة</strong>").openPopup();
+                    .bindPopup("<strong class='text-slate-800 font-extrabold'>نقطة استلام الوجبة</strong>").openPopup();
             } else {
                 trackerDriverMarker.setLatLng([driver.lat, driver.lng]);
                 activeTrackerMap.panTo([driver.lat, driver.lng]);
@@ -1502,11 +1601,11 @@
 
                     const btn = document.getElementById('restaurantStatusToggle');
                     if (data.isOpen) {
-                        btn.innerText = "مفتوح";
-                        btn.className = "px-5 py-2 rounded-full text-xs font-bold transition duration-300 bg-emerald-100 text-emerald-600";
+                        btn.innerText = "مفتوح للزبائن";
+                        btn.className = "px-5 py-2.5 rounded-full text-xs font-black transition duration-300 bg-emerald-100 text-emerald-600 shadow-glow-success";
                     } else {
-                        btn.innerText = "مغلق";
-                        btn.className = "px-5 py-2 rounded-full text-xs font-bold transition duration-300 bg-red-100 text-red-600";
+                        btn.innerText = "مغلق الآن";
+                        btn.className = "px-5 py-2.5 rounded-full text-xs font-black transition duration-300 bg-red-100 text-red-600";
                     }
 
                     document.getElementById('profileRestName').value = data.name;
@@ -1521,17 +1620,17 @@
                 snapshot.forEach((docSnap) => {
                     const dish = docSnap.data();
                     const div = document.createElement('div');
-                    div.className = "bg-slate-50 p-4 rounded-2xl flex items-center justify-between text-xs border border-slate-100";
+                    div.className = "bg-slate-50 p-5 rounded-2xl flex items-center justify-between text-xs border border-slate-100 shadow-sm hover:shadow-md transition-shadow";
                     div.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <img src="${dish.image}" class="w-12 h-12 rounded-xl object-cover shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <img src="${dish.image}" class="w-14 h-14 rounded-2xl object-cover shadow-sm">
                             <div class="text-right">
-                                <h4 class="font-extrabold text-slate-800">${dish.name}</h4>
-                                <span class="text-orange-600 font-extrabold block mt-0.5">${dish.price} د.ج</span>
+                                <h4 class="font-black text-slate-800 text-sm">${dish.name}</h4>
+                                <span class="text-orange-600 font-black block mt-1">${dish.price} د.ج</span>
                             </div>
                         </div>
-                        <button onclick="deleteDish('${dish.id}')" class="text-red-500 hover:text-red-700 bg-white p-2 rounded-xl border border-slate-100 shadow-sm transition">
-                            <i class="fa-regular fa-trash-can"></i>
+                        <button onclick="deleteDish('${dish.id}')" class="text-red-500 hover:text-red-700 bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm transition-colors active:scale-95">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
                         </button>
                     `;
                     list.appendChild(div);
@@ -1552,19 +1651,19 @@
                         
                         const itemsList = order.items.map(i => `<li>• ${i.name} (الكمية: ${i.quantity})</li>`).join('');
                         const orderCard = document.createElement('div');
-                        orderCard.className = "bg-orange-50/70 border-2 border-orange-200 rounded-3xl p-6 shadow-sm space-y-4 text-slate-800 text-right";
+                        orderCard.className = "bg-orange-50/70 border-2 border-orange-200 rounded-[2rem] p-6 shadow-sm space-y-4 text-slate-800 text-right";
                         orderCard.innerHTML = `
-                            <div class="flex justify-between items-center">
-                                <span class="font-extrabold text-sm text-orange-600 flex items-center gap-2 animate-pulse"><i class="fa-solid fa-receipt"></i> طلب جديد بانتظارك ${order.id}</span>
-                                <span class="text-[10px] text-slate-400 font-bold">${new Date(order.createdAt).toLocaleTimeString('ar-DZ')}</span>
+                            <div class="flex justify-between items-center border-b border-orange-100 pb-2">
+                                <span class="font-black text-base text-orange-600 flex items-center gap-2 animate-pulse"><i class="fa-solid fa-bell"></i> طلب جديد وارد ${order.id}</span>
+                                <span class="text-xs text-slate-400 font-bold">${new Date(order.createdAt).toLocaleTimeString('ar-DZ')}</span>
                             </div>
                             <div class="space-y-2 text-xs">
                                 <p><strong>اسم العميل:</strong> ${order.customerName} (${order.customerPhone})</p>
-                                <ul class="space-y-1 bg-white p-4 rounded-2xl border border-orange-100 font-semibold text-slate-700">${itemsList}</ul>
+                                <ul class="space-y-1 bg-white p-4 rounded-2xl border border-orange-100 font-bold text-slate-750">${itemsList}</ul>
                             </div>
                             <div class="flex gap-3">
-                                <button onclick="updateOrderStatus('${order.id}', 'accepted')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3 rounded-xl text-xs transition">موافقة وتجهيز</button>
-                                <button onclick="updateOrderStatus('${order.id}', 'cancelled')" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-extrabold py-3 rounded-xl text-xs transition">إلغاء ورفض</button>
+                                <button onclick="updateOrderStatus('${order.id}', 'accepted')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3.5 rounded-2xl text-xs transition shadow-md active:scale-95">موافقة وتجهيز</button>
+                                <button onclick="updateOrderStatus('${order.id}', 'cancelled')" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-black py-3.5 rounded-2xl text-xs transition active:scale-95">إلغاء ورفض</button>
                             </div>
                         `;
                         container.appendChild(orderCard);
@@ -1572,18 +1671,18 @@
                         countConf++;
                         const itemsList = order.items.map(i => `<li>• ${i.name} (الكمية: ${i.quantity})</li>`).join('');
                         const orderCard = document.createElement('div');
-                        orderCard.className = "bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-4 text-slate-800 text-right";
+                        orderCard.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-premium space-y-4 text-slate-800 text-right";
                         orderCard.innerHTML = `
-                            <div class="flex justify-between items-center">
-                                <span class="font-extrabold text-sm text-emerald-600 flex items-center gap-1.5"><i class="fa-solid fa-fire-burner animate-bounce"></i> جاري طبخ وتجهيز الطلب</span>
-                                <span class="text-[10px] text-slate-400 font-bold">${new Date(order.createdAt).toLocaleTimeString()}</span>
+                            <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                                <span class="font-black text-sm text-emerald-600 flex items-center gap-1.5"><i class="fa-solid fa-fire-burner animate-bounce"></i> جاري طبخ وتجهيز الوجبة حالياً</span>
+                                <span class="text-xs text-slate-400 font-bold">${new Date(order.createdAt).toLocaleTimeString()}</span>
                             </div>
                             <div class="space-y-2 text-xs">
-                                <p><strong>العميل:</strong> ${order.customerName}</p>
-                                <ul class="space-y-1 bg-slate-50 p-4 rounded-2xl font-semibold text-slate-600">${itemsList}</ul>
+                                <p><strong>العميل المستلم:</strong> ${order.customerName}</p>
+                                <ul class="space-y-1 bg-slate-50 p-4 rounded-2xl font-bold text-slate-600">${itemsList}</ul>
                             </div>
-                            <button onclick="updateOrderStatus('${order.id}', 'ready')" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-extrabold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-orange-600/10">
-                                الأكل جاهز! إخطار عمال التوصيل بالدراجات <i class="fa-solid fa-motorcycle"></i>
+                            <button onclick="updateOrderStatus('${order.id}', 'ready')" class="w-full bg-slate-950 hover:bg-slate-850 text-white font-black py-3.5 rounded-2xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95">
+                                الأكل جاهز تماماً! إخطار مناديب التوصيل <i class="fa-solid fa-motorcycle"></i>
                             </button>
                         `;
                         container.appendChild(orderCard);
@@ -1599,19 +1698,19 @@
                 document.getElementById('restStatCancelled').innerText = countCan;
 
                 if (container.children.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-slate-400 py-8 text-center font-bold">لا توجد طلبات واردة حالياً بانتظار التحضير.</p>`;
+                    container.innerHTML = `<p class="text-xs text-slate-400 py-8 text-center font-bold">لا توجد طلبات جارية بالطبخ أو التحضير حالياً.</p>`;
                 }
             });
         }
 
         window.switchRestTab = function(tabId) {
             document.querySelectorAll('.rest-tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.rest-tab-btn').forEach(btn => btn.className = "rest-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2");
+            document.querySelectorAll('.rest-tab-btn').forEach(btn => btn.className = "rest-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2.5 transition-all");
             
             document.getElementById(tabId).classList.remove('hidden');
             const activeBtn = Array.from(document.querySelectorAll('.rest-tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
             if(activeBtn) {
-                activeBtn.className = "rest-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs bg-orange-50 text-orange-600 flex items-center gap-2";
+                activeBtn.className = "rest-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs bg-orange-50 text-orange-600 flex items-center gap-2.5 transition-all";
             }
         };
 
@@ -1621,7 +1720,7 @@
             if (snap.exists()) {
                 const currentStatus = snap.data().isOpen;
                 await updateDoc(docRef, { isOpen: !currentStatus });
-                Swal.fire('تم تعديل الحالة', `أصبح مطعمك الآن ${!currentStatus ? 'مفتوحاً للزبائن' : 'مغلقاً وغير متاح'}`, 'success');
+                Swal.fire('تحديث الحالة', `مطعمك الآن ${!currentStatus ? 'مفتوح ومستعد لاستقبال الطلبات' : 'مغلق مؤقتاً في وجه الزبائن'}`, 'success');
             }
         };
 
@@ -1644,9 +1743,9 @@
                     createdAt: new Date().toISOString()
                 });
                 document.getElementById('dishForm').reset();
-                Swal.fire('نجاح الإضافة', 'تم إدراج وجبتك الجديدة في المنيو بنجاح.', 'success');
+                Swal.fire('تمت إضافة الطبق', 'تم إدراج الوجبة بنجاح في قائمة الطعام الخاصة بك.', 'success');
             } catch(err) {
-                Swal.fire('خطأ', 'فشل الإدراج.', 'error');
+                Swal.fire('خطأ في الإضافة', 'فشل حفظ الوجبة، يرجى إعادة المحاولة.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1655,17 +1754,17 @@
         window.deleteDish = async function(dishId) {
             Swal.fire({
                 title: 'تأكيد الحذف؟',
-                text: "سيتم إزالة الوجبة بالكامل من قائمة الطلب!",
+                text: "سيتم إزالة الوجبة بالكامل ولن تظهر للزبائن!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ea580c',
                 cancelButtonColor: '#94a3b8',
-                confirmButtonText: 'نعم، إزالة',
+                confirmButtonText: 'نعم، إزالة الطبق',
                 cancelButtonText: 'إلغاء'
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     await deleteDoc(doc(db, "dishes", dishId));
-                    Swal.fire('تم الإزالة!', 'تمت إزالة الوجبة بنجاح من المنيو.', 'success');
+                    Swal.fire('تم الحذف!', 'تمت إزالة الوجبة من المنيو بنجاح.', 'success');
                 }
             });
         };
@@ -1687,9 +1786,9 @@
                     name: rName,
                     phone: rPhone
                 });
-                Swal.fire('تم الحفظ', 'تم تحديث الملف التعريفي بنجاح.', 'success');
+                Swal.fire('تم الحفظ', 'تم تحديث الملف التعريفي والربط بنجاح.', 'success');
             } catch(e) {
-                Swal.fire('خطأ', 'فشل تحديث معلومات المتجر.', 'error');
+                Swal.fire('خطأ في الحفظ', 'فشل تحديث بيانات المطعم.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1698,9 +1797,9 @@
         window.updateOrderStatus = async function(orderId, nextStatus) {
             try {
                 await updateDoc(doc(db, "orders", orderId), { status: nextStatus });
-                Swal.fire('مزامنة ناجحة', `تم تحديث حالة تقدم الطلبية بنجاح.`, 'success');
+                Swal.fire('تحديث مجدول', `تم تحويل الطلبية إلى الحالة: ${nextStatus}.`, 'success');
             } catch(err) {
-                Swal.fire('خطأ', 'فشل المعالجة.', 'error');
+                Swal.fire('فشل التحديث', 'تعذر معالجة الطلب حالياً.', 'error');
             }
         };
 
@@ -1760,38 +1859,41 @@
                     }
 
                     if (order.status === 'ready') {
+                        // إظهار الإشعار العملاق فوراً لحجب الشاشة
+                        triggerDriverIncomingOverlay(order);
+
                         const itemsList = order.items.map(i => `<li>• ${i.name} (${i.quantity}x)</li>`).join('');
                         const card = document.createElement('div');
-                        card.className = "bg-orange-50/70 border-2 border-orange-200 rounded-3xl p-6 shadow-sm text-right space-y-4 text-slate-800";
+                        card.className = "bg-orange-50/70 border-2 border-orange-200 rounded-[2rem] p-6 shadow-sm text-right space-y-4 text-slate-800";
                         card.innerHTML = `
-                            <div class="flex justify-between items-center">
-                                <span class="font-extrabold text-sm text-orange-600 flex items-center gap-1.5 animate-pulse"><i class="fa-solid fa-bell"></i> طلب جاهز للتوصيل فوراً!</span>
+                            <div class="flex justify-between items-center border-b border-orange-100 pb-2">
+                                <span class="font-black text-sm text-orange-600 flex items-center gap-1.5 animate-pulse"><i class="fa-solid fa-bell"></i> طلب جاهز للتوصيل فوراً!</span>
                                 <span class="text-xs text-slate-400 font-bold">${order.id}</span>
                             </div>
                             <div class="space-y-1 text-xs">
                                 <p><strong>اسم المطعم:</strong> ${order.restaurantName}</p>
                                 <p><strong>الوجهة:</strong> ${order.customerName} - العفرون</p>
-                                <ul class="space-y-1 bg-white p-4 rounded-2xl border border-orange-100 font-semibold text-slate-700 mt-2">${itemsList}</ul>
+                                <ul class="space-y-1 bg-white p-4 rounded-2xl border border-orange-100 font-bold text-slate-700 mt-2">${itemsList}</ul>
                             </div>
-                            <button onclick="acceptDeliveryTask('${order.id}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3.5 rounded-2xl text-xs transition">
+                            <button onclick="acceptDeliveryTask('${order.id}')" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-black py-3.5 rounded-2xl text-xs transition shadow-md active:scale-95">
                                 قبول المهمة وبدء تتبع الدراجة النارية
                             </button>
                         `;
                         container.appendChild(card);
                     } else if (order.driverId === currentUser.uid && order.status === 'delivering') {
                         const card = document.createElement('div');
-                        card.className = "bg-white border border-slate-100 rounded-3xl p-6 shadow-sm text-right space-y-4 text-slate-800";
+                        card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-premium text-right space-y-4 text-slate-800";
                         card.innerHTML = `
-                            <div class="flex justify-between items-center">
-                                <span class="font-extrabold text-sm text-blue-600 flex items-center gap-1.5"><i class="fa-solid fa-spinner fa-spin"></i> التوصيل قيد التنفيذ حالياً</span>
+                            <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                                <span class="font-black text-sm text-blue-600 flex items-center gap-1.5"><i class="fa-solid fa-spinner fa-spin"></i> التوصيل قيد التنفيذ حالياً</span>
                                 <span class="text-xs text-orange-600 font-extrabold">${order.id}</span>
                             </div>
                             <div class="space-y-1 text-xs">
                                 <p><strong>العميل المستلم:</strong> ${order.customerName}</p>
-                                <p><strong>رقم العميل للاتصال:</strong> <a href="tel:${order.customerPhone}" class="text-blue-500 font-extrabold underline">${order.customerPhone}</a></p>
+                                <p><strong>رقم العميل للاتصال:</strong> <a href="tel:${order.customerPhone}" class="text-blue-500 font-black underline">${order.customerPhone}</a></p>
                                 <p><strong>المصدر:</strong> ${order.restaurantName}</p>
                             </div>
-                            <button onclick="completeDeliveryTask('${order.id}')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3.5 rounded-2xl text-xs transition">
+                            <button onclick="completeDeliveryTask('${order.id}')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3.5 rounded-2xl text-xs transition shadow-md active:scale-95">
                                 تم تسليم الوجبة للزبون بنجاح <i class="fa-solid fa-circle-check mr-1.5"></i>
                             </button>
                         `;
@@ -1811,19 +1913,47 @@
                 document.getElementById('driverStatTotal').innerText = totalRuns;
 
                 if (container.children.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-slate-400 py-8 text-center font-bold">لا توجد مهمات شاغرة بمدينة العفرون في الوقت الحالي.</p>`;
+                    container.innerHTML = `<p class="text-xs text-slate-400 py-8 text-center font-bold">لا توجد طلبات معروضة بالمدينة في الوقت الحالي.</p>`;
                 }
             });
         }
 
+        // تفعيل الإشعار الملحّ لحجب الشاشة بالكامل لمندوبي التوصيل
+        function triggerDriverIncomingOverlay(order) {
+            const overlay = document.getElementById('driverRequestOverlay');
+            if(!overlay) return;
+
+            document.getElementById('overlayOrderId').innerText = order.id;
+            document.getElementById('overlayRestName').innerText = order.restaurantName;
+            document.getElementById('overlayCustName').innerText = order.customerName;
+            document.getElementById('overlayCustPhone').href = `tel:${order.customerPhone}`;
+            document.getElementById('overlayCustPhoneText').innerText = order.customerPhone;
+
+            const listContainer = document.getElementById('overlayItemsList');
+            listContainer.innerHTML = order.items.map(i => `
+                <div class="flex justify-between items-center bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs">
+                    <span class="text-white font-bold">${i.name}</span>
+                    <span class="text-orange-500 font-black">الكمية: ${i.quantity}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('overlayAcceptBtn').onclick = function() {
+                acceptDeliveryTask(order.id);
+                overlay.classList.add('hidden');
+            };
+
+            playChimeAlert();
+            overlay.classList.remove('hidden');
+        }
+
         window.switchDeliveryTab = function(tabId) {
             document.querySelectorAll('.driver-tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.driver-tab-btn').forEach(btn => btn.className = "driver-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2");
+            document.querySelectorAll('.driver-tab-btn').forEach(btn => btn.className = "driver-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-2.5 transition-all");
             
             document.getElementById(tabId).classList.remove('hidden');
             const activeBtn = Array.from(document.querySelectorAll('.driver-tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
             if(activeBtn) {
-                activeBtn.className = "driver-tab-btn text-right px-4 py-3.5 rounded-2xl font-extrabold text-xs bg-orange-50 text-orange-600 flex items-center gap-2";
+                activeBtn.className = "driver-tab-btn text-right px-4 py-4 rounded-2xl font-black text-xs bg-orange-50 text-orange-600 flex items-center gap-2.5 transition-all";
             }
         };
 
@@ -1844,10 +1974,10 @@
                     driverPhone: currentUserData.phone,
                     driverLoc: { lat: 36.4694, lng: 2.6247 }
                 });
-                Swal.fire('تم قبول المهمة', 'يرجى التوجه للمطعم لاستلام الوجبات، تم بث وتتبع الدراجة النارية.', 'success');
+                Swal.fire('تم قبول المهمة', 'توجه للمطعم لاستلام الوجبات الساخنة، والخرائط الآن تبث موقعك.', 'success');
                 enableDriverGPS();
             } catch(e) {
-                Swal.fire('خطأ', 'فشل قبول طلبية التوصيل.', 'error');
+                Swal.fire('فشل القبول', 'تم التقاط المهمة من قِبل مندوب آخر.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1859,9 +1989,9 @@
                 await updateDoc(doc(db, "orders", orderId), { status: 'delivered' });
                 if (driverGpsInterval) clearInterval(driverGpsInterval);
                 if (driverSelfMarker) activeDriverMap.removeLayer(driverSelfMarker);
-                Swal.fire('عملية توصيل ناجحة', 'تم إنهاء المهمة وتسجيل التسليم بنجاح، شكراً لجهودك!', 'success');
+                Swal.fire('عملية توصيل ناجحة', 'تم إكمال التسجيل وإشعار العميل، بارك الله في جهودكم.', 'success');
             } catch(e) {
-                Swal.fire('خطأ', 'فشل تسجيل التسليم.', 'error');
+                Swal.fire('خطأ في الإنهاء', 'يرجى المحاولة مجدداً.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1897,7 +2027,7 @@
                 });
             }, 5000);
 
-            Swal.fire('تنشيط تتبع الدراجة', 'يتم بث موقع دراجتك النارية الآن للعميل بالزمن الفعلي على الخريطة.', 'info');
+            Swal.fire('تتبع الدراجة نشط', 'يتم بث موقع دراجتك النارية الآن للعميل بالزمن الفعلي على الخريطة.', 'info');
         };
 
         async function handleUpdateDriverProfile(e) {
@@ -1919,9 +2049,9 @@
                 document.getElementById('driverName').innerText = dName;
                 document.getElementById('driverPhone').innerText = dPhone;
                 document.getElementById('driverPic').src = dPic || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200';
-                Swal.fire('حفظ التعديلات', 'تم تحديث ملف المندوب بنجاح.', 'success');
+                Swal.fire('تحديث ناجح', 'تم تعديل الملف التعريفي والربط بالمنصة.', 'success');
             } catch(e) {
-                Swal.fire('خطأ', 'فشل الحفظ.', 'error');
+                Swal.fire('خطأ', 'فشل تحديث البيانات.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1970,14 +2100,14 @@
                     if(u.role === 'customer') customerCount++;
 
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 border-b border-slate-100 font-semibold";
+                    tr.className = "hover:bg-slate-50 border-b border-slate-100 font-semibold transition-colors";
                     tr.innerHTML = `
-                        <td class="py-3 font-bold text-slate-800">${u.name}</td>
-                        <td class="py-3 text-slate-500">${u.email}</td>
-                        <td class="py-3 text-slate-500">${u.phone || '--'}</td>
-                        <td class="py-3"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-xl font-black text-[10px] uppercase">${u.role}</span></td>
-                        <td class="py-3 text-center">
-                            <button onclick="toggleUserBan('${u.uid}', '${u.status}')" class="px-3 py-1.5 text-[10px] rounded-xl font-black transition ${u.status === 'banned' ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-slate-100 text-slate-700 hover:bg-red-50 hover:text-red-500'}">
+                        <td class="py-4 px-2 font-bold text-slate-800">${u.name}</td>
+                        <td class="py-4 px-2 text-slate-500">${u.email}</td>
+                        <td class="py-4 px-2 text-slate-500">${u.phone || '--'}</td>
+                        <td class="py-4 px-2"><span class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl font-black text-[10px] uppercase tracking-wider">${u.role}</span></td>
+                        <td class="py-4 px-2 text-center">
+                            <button onclick="toggleUserBan('${u.uid}', '${u.status}')" class="px-3.5 py-1.5 text-[10px] rounded-xl font-black transition-all ${u.status === 'banned' ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-slate-100 text-slate-700 hover:bg-red-50 hover:text-red-500'}">
                                 ${u.status === 'banned' ? 'فك الحظر' : 'حظر الحساب'}
                             </button>
                         </td>
@@ -1999,9 +2129,9 @@
             const nextStatus = currentStatus === 'banned' ? 'active' : 'banned';
             try {
                 await updateDoc(doc(db, "users", userId), { status: nextStatus });
-                Swal.fire('حالة المستخدم', `تم تحديث حالة المستخدم بنجاح إلى ${nextStatus === 'banned' ? 'محظور' : 'نشط'}.`, 'success');
+                Swal.fire('حالة الحساب', `تم تحويل حساب المستخدم بنجاح إلى ${nextStatus === 'banned' ? 'محظور' : 'نشط مفعّل'}.`, 'success');
             } catch(e) {
-                Swal.fire('خطأ', 'فشل الإجراء.', 'error');
+                Swal.fire('خطأ', 'فشل إتمام الإجراء.', 'error');
             }
         };
 
@@ -2011,9 +2141,9 @@
             const hText = document.getElementById('settingsHeroText').value.trim();
             try {
                 await setDoc(doc(db, "settings", "global"), { heroText: hText });
-                Swal.fire('تم الحفظ', 'تم تحديث واجهة الترحيب بنجاح.', 'success');
+                Swal.fire('تم الحفظ', 'تم تحديث الواجهة الترحيبية للزوار بنجاح.', 'success');
             } catch(err) {
-                Swal.fire('خطأ', 'فشل التعديل.', 'error');
+                Swal.fire('خطأ', 'فشل تحديث النص الرئيسي.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -2037,7 +2167,7 @@
                     createdAt: new Date().toISOString()
                 });
                 document.getElementById('adManagerForm').reset();
-                Swal.fire('نشر بنجاح', 'تم تفعيل ونشر الإعلان البرمجي المستهدف بنجاح.', 'success');
+                Swal.fire('نشر الإعلان', 'تم تفعيل ونشر الإعلان الموجه بنجاح بالمنصة.', 'success');
             } catch(err) {
                 Swal.fire('خطأ', 'فشل النشر.', 'error');
             } finally {

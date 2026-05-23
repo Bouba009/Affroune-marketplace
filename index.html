@@ -109,7 +109,7 @@
 <body class="min-h-screen flex flex-col">
 
     <!-- شاشة التحميل الكلية المحمية برمجياً ضد التعليق -->
-    <div id="loadingOverlay" class="fixed inset-0 z-50 bg-slate-950/90 flex flex-col items-center justify-center transition-all duration-300">
+    <div id="loadingOverlay" class="fixed inset-0 z-[9999] bg-slate-950/90 flex flex-col items-center justify-center transition-all duration-300">
         <div class="relative flex items-center justify-center">
             <div class="absolute w-24 h-24 rounded-full border-4 border-slate-800"></div>
             <div class="loader rounded-full border-4 border-transparent h-24 w-24"></div>
@@ -120,7 +120,7 @@
     </div>
 
     <!-- نافذة الإعلانات المنبثقة -->
-    <div id="adContainer" class="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center hidden p-4 animate-fade-in">
+    <div id="adContainer" class="fixed inset-0 bg-slate-950/80 z-[9990] flex items-center justify-center hidden p-4 animate-fade-in">
         <div class="bg-white rounded-[2.5rem] max-w-lg w-full p-8 shadow-2xl relative border border-slate-100 overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl"></div>
             <button id="closeAdBtn" class="absolute top-6 left-6 text-slate-400 hover:text-red-500 text-sm font-extrabold flex items-center gap-1.5 transition">
@@ -207,7 +207,7 @@
         </section>
 
         <!-- نافذة تسجيل الدخول وانشاء حساب -->
-        <div id="authModal" class="fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div id="authModal" class="fixed inset-0 bg-slate-950/70 z-[9980] flex items-center justify-center hidden p-4 transition-all duration-300">
             <div class="bg-white rounded-[2.5rem] max-w-md w-full p-8 shadow-2xl relative overflow-hidden border border-slate-100">
                 <button onclick="closeAuthModal()" class="absolute top-6 left-6 text-slate-400 hover:text-slate-600 transition">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -788,6 +788,7 @@
         let customerCart = [];
         let selectedRestaurantId = null;
         let selectedRestaurantData = null;
+        let customerCoordinates = null; // تفعيل المتغير بنطاق عام لمنع انهيار الـ JS
         
         let activeTrackerMap = null;
         let activeDriverMap = null;

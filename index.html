@@ -257,6 +257,72 @@
         </div>
     </div>
 
+    <!-- نافذة تسجيل الدخول وانشاء حساب (تمت استعادتها وحمايتها بالكامل) -->
+    <div id="authModal" class="fixed inset-0 bg-slate-950/80 z-[9980] flex items-center justify-center hidden p-4 transition-all duration-300 backdrop-blur-sm">
+        <div class="bg-white rounded-[2.5rem] max-w-md w-full p-6 md:p-8 shadow-2xl relative overflow-hidden border border-slate-100 transform transition-transform">
+            <button onclick="closeAuthModal()" class="absolute top-6 left-6 text-slate-400 hover:text-slate-600 transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="flex border-b border-slate-100 mb-8">
+                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-4 text-center border-b-2 border-orange-500 font-black text-slate-850 text-sm">تسجيل الدخول</button>
+                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 font-black hover:text-slate-600 text-sm">إنشاء حساب</button>
+            </div>
+
+            <form id="authForm" class="space-y-4">
+                <div id="registerFields" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 mb-1.5">الاسم الكامل</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"><i class="fa-regular fa-user"></i></span>
+                            <input type="text" id="regName" class="w-full pr-11 pl-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold" placeholder="أدخل اسمك الكامل">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 mb-1.5">رقم الهاتف</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"><i class="fa-solid fa-phone"></i></span>
+                            <input type="tel" id="regPhone" class="w-full pr-11 pl-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold" placeholder="مثال: 0550000000">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-black text-slate-600 mb-1.5">المدينة</label>
+                            <input type="text" id="regCity" value="العفرون" readonly class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-500 text-xs cursor-not-allowed font-black" title="الخدمة متوفرة حالياً في العفرون فقط">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-slate-600 mb-1.5">نوع الحساب</label>
+                            <select id="regRole" class="w-full px-3 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-bold">
+                                <option value="customer">زبون</option>
+                                <option value="restaurant">صاحب مطعم</option>
+                                <option value="delivery">عامل توصيل</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black text-slate-600 mb-1.5">البريد الإلكتروني</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"><i class="fa-regular fa-envelope"></i></span>
+                        <input type="email" id="authEmail" required class="w-full pr-11 pl-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold" placeholder="name@example.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-600 mb-1.5">كلمة المرور</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"><i class="fa-solid fa-lock"></i></span>
+                        <input type="password" id="authPassword" required class="w-full pr-11 pl-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:border-orange-500 text-xs font-semibold" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" id="authSubmitBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-4 rounded-2xl transition shadow-lg text-xs mt-4 active:scale-95">
+                    تسجيل الدخول
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- هيدر منصة العفرون أونلاين العصري -->
     <header class="glass-panel sticky top-0 z-40 border-b border-slate-100 shadow-sm">
         <div class="container mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
@@ -1137,12 +1203,12 @@
             const submitBtn = document.getElementById('authSubmitBtn');
 
             if (tab === 'login') {
-                tabLogin.className = "flex-1 py-4 text-center border-b-2 border-orange-500 font-black text-slate-800 text-sm";
+                tabLogin.className = "flex-1 py-4 text-center border-b-2 border-orange-500 font-black text-slate-850 text-sm";
                 tabRegister.className = "flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 font-black hover:text-slate-600 text-sm";
                 regFields.classList.add('hidden');
                 submitBtn.innerText = "تسجيل الدخول";
             } else {
-                tabRegister.className = "flex-1 py-4 text-center border-b-2 border-orange-500 font-black text-slate-800 text-sm";
+                tabRegister.className = "flex-1 py-4 text-center border-b-2 border-orange-500 font-black text-slate-850 text-sm";
                 tabLogin.className = "flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 font-black hover:text-slate-600 text-sm";
                 regFields.classList.remove('hidden');
                 submitBtn.innerText = "إنشاء حساب جديد";
@@ -1168,6 +1234,7 @@
 
                     if(!name || !phone) {
                         Swal.fire('حقول غير مكتملة', 'يرجى تزويدنا بالاسم ورقم الهاتف لإكمال العملية.', 'warning');
+                        showLoading(false);
                         return;
                     }
 
@@ -1279,7 +1346,7 @@
                     `;
                     grid.appendChild(card);
                 });
-            }, (err) => { console.warn("Firestore access rules or connection issue. Defaulting UI.", err); });
+            }, (err) => { console.warn("Restaurants fetching rules error.", err); });
 
             checkActiveOrders();
         }

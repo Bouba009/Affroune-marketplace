@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -302,6 +303,8 @@
                     <img id="menuRestImg" src="" class="w-24 h-24 rounded-2xl object-cover shadow-md" alt="Restaurant Image">
                     <div class="text-center md:text-right space-y-1.5">
                         <h2 id="menuRestName" class="text-2xl font-black text-slate-800"></h2>
+                        <!-- تم إضافة العنصر المفقود برمجياً الذي تسبب في انهيار الدالة مسبقاً -->
+                        <p id="menuRestPhone" class="text-xs text-slate-500 font-bold flex items-center justify-center md:justify-start gap-1.5 mt-1"></p>
                         <span class="inline-flex items-center gap-2 text-xs bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full font-bold">
                             <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> مفتوح وجاهز لاستلام طلبك
                         </span>
@@ -1138,6 +1141,7 @@
 
                 snapshot.forEach((docSnap) => {
                     const rest = docSnap.data();
+                    const restId = docSnap.id; // معرّف الوثيقة كبديل آمن لحماية المطاعم التي ليس بها حقل uid
                     const card = document.createElement('div');
                     card.className = "bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 flex flex-col justify-between";
                     card.innerHTML = `
@@ -1145,7 +1149,7 @@
                         <div class="p-6 space-y-4 text-right">
                             <h3 class="font-extrabold text-slate-900 text-lg">${rest.name}</h3>
                             <p class="text-xs text-slate-400 flex items-center gap-1.5 justify-start"><i class="fa-solid fa-phone text-orange-500"></i> الهاتف: ${rest.phone}</p>
-                            <button onclick="viewRestaurantMenu('${rest.uid}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3 rounded-2xl text-xs transition animate-fade-in">
+                            <button onclick="viewRestaurantMenu('${restId}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3 rounded-2xl text-xs transition animate-fade-in">
                                 تصفح الوجبات والطلب
                             </button>
                         </div>
@@ -1176,9 +1180,16 @@
                 const rSnap = await getDoc(doc(db, "restaurants", restaurantId));
                 if (rSnap.exists()) {
                     selectedRestaurantData = rSnap.data();
-                    document.getElementById('menuRestName').innerText = selectedRestaurantData.name;
-                    document.getElementById('menuRestPhone').innerText = selectedRestaurantData.phone;
-                    document.getElementById('menuRestImg').src = selectedRestaurantData.image;
+                    
+                    // استخدام فحص الأمان (Null Safety) لمنع توقف الدالة في حال عدم رصد المعرفات
+                    const nameEl = document.getElementById('menuRestName');
+                    if (nameEl) nameEl.innerText = selectedRestaurantData.name || '';
+                    
+                    const phoneEl = document.getElementById('menuRestPhone');
+                    if (phoneEl) phoneEl.innerText = selectedRestaurantData.phone || '';
+                    
+                    const imgEl = document.getElementById('menuRestImg');
+                    if (imgEl) imgEl.src = selectedRestaurantData.image || '';
                 }
 
                 onSnapshot(query(collection(db, "dishes"), where("restaurantId", "==", restaurantId)), (snapshot) => {
@@ -1265,7 +1276,10 @@
                     const marker = event.target;
                     const position = marker.getLatLng();
                     customerCoordinates = { lat: position.lat, lng: position.lng };
-                    document.getElementById('coordinatesText').innerText = `الموقع المحدد: ${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}`;
+                    const coordsTextEl = document.getElementById('coordinatesText');
+                    if (coordsTextEl) {
+                        coordsTextEl.innerText = `الموقع المحدد: ${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}`;
+                    }
                 });
             } else {
                 interactiveLocationMarker.setLatLng([defaultLat, defaultLng]);

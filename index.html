@@ -43,7 +43,7 @@
     </script>
 
     <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Leaflet.js CSS (Maps) -->
@@ -218,6 +218,36 @@
         </div>
     </div>
 
+    <!-- Restaurant Fullscreen Request Overlay -->
+    <div id="restaurantRequestOverlay" class="fixed inset-0 bg-stone-900/95 backdrop-blur-xl z-[9990] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="w-full max-w-lg bg-white rounded-[2rem] p-6 md:p-8 shadow-2xl text-center space-y-5 relative overflow-hidden">
+            <div class="relative flex items-center justify-center mx-auto w-16 h-16 bg-orange-100 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-orange-400/30 pulse-ring"></div>
+                <i class="fa-solid fa-store text-2xl text-orange-600"></i>
+            </div>
+            <div class="space-y-1">
+                <span class="bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-xs font-black tracking-wider inline-block">طلبية زبون جديدة</span>
+                <h2 class="text-xl font-black text-stone-900">طلب رقم <span id="restOverlayOrderId" class="text-orange-600">#--</span></h2>
+            </div>
+            <div class="bg-stone-50 rounded-2xl p-4 border border-stone-100 text-right space-y-2">
+                <p class="text-xs text-stone-600"><strong>الزبون:</strong> <span id="restOverlayCustName">--</span></p>
+                <p class="text-xs text-stone-600"><strong>الهاتف:</strong> <span id="restOverlayCustPhone">--</span></p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-stone-500 text-xs text-right font-bold">الوجبات المطلوبة:</h4>
+                <div id="restOverlayItemsList" class="max-h-36 overflow-y-auto space-y-2 pr-1 text-right text-xs bg-stone-50 p-3 rounded-xl border border-stone-100"></div>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button id="restOverlayAcceptBtn" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3.5 rounded-2xl text-sm transition-all shadow-lg active:scale-95">
+                    قبول وتجهيز
+                </button>
+                <button id="restOverlayRejectBtn" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-extrabold py-3.5 rounded-2xl text-sm transition-all shadow-lg active:scale-95">
+                    رفض الطلب
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Driver Request Overlay -->
     <div id="driverRequestOverlay" class="fixed inset-0 bg-stone-900/95 backdrop-blur-xl z-[9995] flex items-center justify-center hidden p-4 transition-all duration-300">
         <div class="w-full max-w-lg bg-white rounded-[2rem] p-6 md:p-8 shadow-2xl text-center space-y-5 relative overflow-hidden">
@@ -264,6 +294,30 @@
                     <i class="fa-solid fa-xmark ml-1.5"></i> رفض
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Driver Fullscreen Active Task Map View -->
+    <div id="driverActiveTaskContainer" class="fixed inset-0 bg-stone-100 z-[9900] hidden">
+        <!-- Fullscreen map -->
+        <div id="driverFullscreenMap" class="absolute inset-0 w-full h-full z-10"></div>
+        
+        <!-- Floating Header -->
+        <div class="absolute top-4 inset-x-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl z-20 border border-stone-100 flex items-center justify-between max-w-md mx-auto">
+            <div class="text-right">
+                <span class="text-[10px] text-orange-600 font-bold block">مهمة نشطة</span>
+                <h3 id="driverActiveTaskTitle" class="text-xs font-black text-stone-900">توصيل الطلب #--</h3>
+            </div>
+            <button onclick="completeActiveDeliveryTask()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-black transition shadow-md active:scale-95">
+                تم التسليم <i class="fa-solid fa-check mr-1"></i>
+            </button>
+        </div>
+
+        <!-- Customer Call Floating Button -->
+        <div class="absolute bottom-4 left-4 z-20">
+            <a id="driverActiveCallBtn" href="#" class="bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition active:scale-95 text-lg">
+                <i class="fa-solid fa-phone"></i>
+            </a>
         </div>
     </div>
 
@@ -375,7 +429,7 @@
             <div class="container mx-auto px-4 md:px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center py-12">
                 <div class="space-y-6 text-right">
                     <span class="bg-orange-500/20 text-orange-300 border border-orange-500/30 px-4 py-1.5 rounded-full text-xs font-black inline-block tracking-wider">السرعة والكفاءة في خدمتكم</span>
-                    <h1 class="text-3xl md:text-5xl font-black leading-tight tracking-tight">العفرون أونلاين <br><span class="text-orange-400">جسر طعامك السريع</span></h1>
+                    <h1 class="text-3xl md:text-5xl font-black leading-tight tracking-tight" id="landingHeroText">العفرون أونلاين <br><span class="text-orange-400">جسر طعامك السريع</span></h1>
                     <p class="text-stone-300 text-sm md:text-base max-w-lg leading-relaxed font-medium">
                         المنصة الأكثر سهولة وتطوراً بمدينة العفرون، مجهزة بخدمات الخرائط التفاعلية الذكية وبث مباشر لتتبع مسار مندوب التوصيل.
                     </p>
@@ -512,42 +566,34 @@
                 </div>
             </div>
 
-            <!-- Order Tracker -->
-            <div id="customerOrderTracker" class="hidden space-y-5">
-                <div class="bg-white rounded-[1.5rem] p-6 md:p-8 border border-stone-100 shadow-lg space-y-5 text-center">
-                    <span class="bg-orange-50 text-orange-600 px-4 py-1.5 rounded-full text-xs font-black inline-block">لوحة تتبع الطلب</span>
-                    <h2 class="text-lg md:text-xl font-black text-stone-900">حالة الطلب: <span id="customerOrderStatus" class="text-orange-600">--</span></h2>
+            <!-- Customer Order Tracker (Fullscreen Map Mode) -->
+            <div id="customerOrderTracker" class="hidden fixed inset-0 z-[9850] bg-stone-100">
+                <!-- Fullscreen Map -->
+                <div id="trackerMap" class="absolute inset-0 w-full h-full z-10"></div>
 
-                    <div class="grid grid-cols-4 gap-2 max-w-md mx-auto py-4">
+                <!-- Floating Status Bar Over Map -->
+                <div class="absolute top-4 inset-x-4 bg-white/95 backdrop-blur-md p-4 rounded-[1.5rem] shadow-2xl z-20 border border-stone-100 space-y-3 max-w-md mx-auto">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black text-stone-900">حالة طلبك: <span id="customerOrderStatus" class="text-orange-600">--</span></span>
+                        <button onclick="minimizeCustomerTracker()" class="text-[10px] font-bold text-stone-500 hover:text-stone-700 px-2.5 py-1 bg-stone-100 rounded-lg">تصغير</button>
+                    </div>
+                    <div class="grid grid-cols-4 gap-1 py-1 text-center">
                         <div id="step-pending" class="flex flex-col items-center text-orange-500">
-                            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xs font-black border-2 border-orange-500">1</div>
-                            <span class="text-[10px] mt-1.5 font-bold">بانتظار القبول</span>
+                            <div class="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-[10px] font-black border-2 border-orange-500">1</div>
+                            <span class="text-[8px] mt-1 font-bold">الانتظار</span>
                         </div>
                         <div id="step-accepted" class="flex flex-col items-center text-stone-300">
-                            <div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xs font-black border-2 border-transparent">2</div>
-                            <span class="text-[10px] mt-1.5 font-bold">التجهيز</span>
+                            <div class="w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-black border-2 border-transparent">2</div>
+                            <span class="text-[8px] mt-1 font-bold">التحضير</span>
                         </div>
                         <div id="step-delivering" class="flex flex-col items-center text-stone-300">
-                            <div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xs font-black border-2 border-transparent">3</div>
-                            <span class="text-[10px] mt-1.5 font-bold">في الطريق</span>
+                            <div class="w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-black border-2 border-transparent">3</div>
+                            <span class="text-[8px] mt-1 font-bold">الطريق</span>
                         </div>
                         <div id="step-delivered" class="flex flex-col items-center text-stone-300">
-                            <div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xs font-black border-2 border-transparent">4</div>
-                            <span class="text-[10px] mt-1.5 font-bold">تم التوصيل</span>
+                            <div class="w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-black border-2 border-transparent">4</div>
+                            <span class="text-[8px] mt-1 font-bold">التسليم</span>
                         </div>
-                    </div>
-                </div>
-
-                <div id="customerMapBox" class="hidden bg-white p-4 rounded-[1.5rem] border border-stone-100 shadow-lg space-y-3">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-black text-stone-800 flex items-center gap-2">
-                            <i class="fa-solid fa-map-location-dot text-orange-500"></i>
-                            تتبع المندوب مباشرة
-                        </h3>
-                        <span class="text-[10px] text-stone-400 font-bold bg-stone-100 px-2 py-1 rounded-full">تحديث تلقائي</span>
-                    </div>
-                    <div class="relative rounded-xl overflow-hidden border border-stone-200">
-                        <div id="trackerMap" class="h-64 md:h-80 w-full bg-stone-100 z-10"></div>
                     </div>
                 </div>
             </div>
@@ -882,6 +928,11 @@
         </section>
     </main>
 
+    <!-- Floating Tracker Reopen Button (Customer View only) -->
+    <button id="reopenTrackerBtn" onclick="reopenCustomerTracker()" class="hidden fixed bottom-20 md:bottom-6 right-6 bg-orange-600 hover:bg-orange-700 text-white px-5 py-3.5 rounded-full shadow-2xl z-40 flex items-center gap-2 font-black text-xs animate-bounce">
+        <i class="fa-solid fa-map-location-dot"></i> تتبع الطلب النشط
+    </button>
+
     <!-- Bottom Navigation (Mobile) -->
     <div class="md:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-stone-100 h-16 flex items-center justify-around z-30 px-4 shadow-lg">
         <button onclick="navigateHome()" class="flex flex-col items-center justify-center gap-1 text-stone-400 hover:text-orange-600 transition-colors">
@@ -931,44 +982,47 @@
         let customerCoordinates = null; 
         let activeTrackerMap = null;
         let activeDriverMap = null;
-        let interactiveSelectMap = null;
+        let activeFullscreenDriverMap = null;
         let trackerDriverMarker = null;
+        let driverFullscreenMarker = null;
         let driverSelfMarker = null;
         let interactiveLocationMarker = null;
+        let interactiveSelectMap = null;
         let driverGpsInterval = null;
         let selectedRestaurantRating = 0;
         let selectedDriverRating = 0;
         let ratingOrderId = null;
         let lastNotificationTime = 0;
+        let shownOverlayOrderId = null;
+        let shownDriverOverlayOrderId = null;
+        let activeDriverTaskOrder = null;
+        let trackingOrder = null;
 
-        // Audio notification
-        function playChimeAlert() {
+        // Alarm function with audio context
+        function playDistinctiveAlarm() {
             const now = Date.now();
-            if (now - lastNotificationTime < 3000) return;
+            if (now - lastNotificationTime < 5000) return;
             lastNotificationTime = now;
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.2);
-                setTimeout(() => {
-                    const osc2 = audioCtx.createOscillator();
-                    const gain2 = audioCtx.createGain();
-                    osc2.connect(gain2);
-                    gain2.connect(audioCtx.destination);
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(880, audioCtx.currentTime);
-                    gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                    osc2.start();
-                    osc2.stop(audioCtx.currentTime + 0.3);
-                }, 150);
-            } catch(e) {}
+                let time = audioCtx.currentTime;
+                // Alternating high pitch frequencies for a clear, loud siren alert (4 repeating iterations)
+                for (let i = 0; i < 4; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    osc.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(i % 2 === 0 ? 980 : 750, time);
+                    gainNode.gain.setValueAtTime(0.4, time);
+                    gainNode.gain.setValueAtTime(0, time + 0.25);
+                    osc.start(time);
+                    osc.stop(time + 0.3);
+                    time += 0.35;
+                }
+            } catch(e) {
+                console.warn("Audio Alert error: ", e);
+            }
         }
 
         function showLoading(show) {
@@ -1090,6 +1144,9 @@
             document.getElementById('restaurantView').classList.add('hidden');
             document.getElementById('deliveryView').classList.add('hidden');
             document.getElementById('adminView').classList.add('hidden');
+            document.getElementById('driverActiveTaskContainer').classList.add('hidden');
+            document.getElementById('customerOrderTracker').classList.add('hidden');
+            document.getElementById('reopenTrackerBtn').classList.add('hidden');
         }
 
         window.openAuthModal = function(tab) {
@@ -1268,7 +1325,6 @@
         }
 
         function triggerRatingSystem(order) {
-            // Prevent duplicate triggers
             const modal = document.getElementById('ratingModal');
             if (!modal.classList.contains('hidden')) return;
 
@@ -1276,7 +1332,6 @@
             selectedRestaurantRating = 0;
             selectedDriverRating = 0;
 
-            // Reset stars
             document.querySelectorAll('.star-rest').forEach(s => s.className = "cursor-pointer text-stone-300 hover:text-amber-400 transition-colors star-rest");
             document.querySelectorAll('.star-driver').forEach(s => s.className = "cursor-pointer text-stone-300 hover:text-amber-400 transition-colors star-driver");
 
@@ -1321,7 +1376,6 @@
                 if (orderSnap.exists()) {
                     const orderData = orderSnap.data();
 
-                    // Update restaurant rating
                     const restRef = doc(db, "restaurants", orderData.restaurantId);
                     const restSnap = await getDoc(restRef);
                     if (restSnap.exists()) {
@@ -1337,7 +1391,6 @@
                         });
                     }
 
-                    // Update driver rating
                     if (orderData.driverId) {
                         const driverRef = doc(db, "users", orderData.driverId);
                         const driverSnap = await getDoc(driverRef);
@@ -1599,9 +1652,11 @@
         };
 
         function showOrderTracker(order) {
+            trackingOrder = order;
             document.getElementById('customerHome').classList.add('hidden');
             document.getElementById('restaurantMenuDetail').classList.add('hidden');
             document.getElementById('customerOrderTracker').classList.remove('hidden');
+            document.getElementById('reopenTrackerBtn').classList.add('hidden');
 
             const statusText = document.getElementById('customerOrderStatus');
 
@@ -1610,7 +1665,7 @@
                 const el = document.getElementById(`step-${s}`);
                 if (el) {
                     el.className = "flex flex-col items-center text-stone-300";
-                    el.querySelector('div').className = "w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xs font-bold border-2 border-transparent";
+                    el.querySelector('div').className = "w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center text-[10px] font-black border-2 border-transparent";
                 }
             });
 
@@ -1620,7 +1675,7 @@
             const activeEl = document.getElementById(currentStepId);
             if (activeEl) {
                 activeEl.className = "flex flex-col items-center text-orange-500";
-                activeEl.querySelector('div').className = "w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xs font-bold border-2 border-orange-500";
+                activeEl.querySelector('div').className = "w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-[10px] font-bold border-2 border-orange-500";
             }
 
             const statusMap = {
@@ -1633,21 +1688,31 @@
             };
             statusText.innerText = statusMap[order.status] || order.status;
 
-            const mapBox = document.getElementById('customerMapBox');
-            if (order.status === 'delivering' && order.driverLoc) {
-                mapBox.classList.remove('hidden');
-                setTimeout(() => initTrackerMap(order), 400);
-            } else {
-                mapBox.classList.add('hidden');
-            }
+            setTimeout(() => {
+                initTrackerMap(order);
+            }, 350);
         }
+
+        window.minimizeCustomerTracker = function() {
+            document.getElementById('customerOrderTracker').classList.add('hidden');
+            document.getElementById('customerHome').classList.remove('hidden');
+            if (trackingOrder && trackingOrder.status !== 'delivered' && trackingOrder.status !== 'cancelled') {
+                document.getElementById('reopenTrackerBtn').classList.remove('hidden');
+            }
+        };
+
+        window.reopenCustomerTracker = function() {
+            if (trackingOrder) {
+                showOrderTracker(trackingOrder);
+            }
+        };
 
         function initTrackerMap(order) {
             const dest = order.customerLoc || { lat: 36.4694, lng: 2.6247 };
-            const driver = order.driverLoc || { lat: 36.4710, lng: 2.6200 };
+            const driverCoords = order.driverLoc || { lat: 36.4710, lng: 2.6200 };
 
             if (!activeTrackerMap) {
-                activeTrackerMap = L.map('trackerMap').setView([driver.lat, driver.lng], 15);
+                activeTrackerMap = L.map('trackerMap').setView([driverCoords.lat, driverCoords.lng], 15);
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeTrackerMap);
 
                 const motorcycleIcon = L.divIcon({
@@ -1657,14 +1722,15 @@
                     iconAnchor: [20, 20]
                 });
 
-                trackerDriverMarker = L.marker([driver.lat, driver.lng], { icon: motorcycleIcon }).addTo(activeTrackerMap)
+                trackerDriverMarker = L.marker([driverCoords.lat, driverCoords.lng], { icon: motorcycleIcon }).addTo(activeTrackerMap)
                     .bindPopup("<strong class='text-orange-600 font-bold'>المندوب</strong>").openPopup();
 
                 L.marker([dest.lat, dest.lng]).addTo(activeTrackerMap)
                     .bindPopup("<strong class='text-stone-800 font-bold'>وجهتك</strong>").openPopup();
             } else {
-                trackerDriverMarker.setLatLng([driver.lat, driver.lng]);
-                activeTrackerMap.panTo([driver.lat, driver.lng]);
+                trackerDriverMarker.setLatLng([driverCoords.lat, driverCoords.lng]);
+                activeTrackerMap.panTo([driverCoords.lat, driverCoords.lng]);
+                activeTrackerMap.invalidateSize();
             }
         }
 
@@ -1727,7 +1793,12 @@
 
                     if (order.status === 'pending') {
                         countNew++;
-                        playChimeAlert();
+                        
+                        // Fullscreen Overlay Alert for new restaurant orders
+                        if (shownOverlayOrderId !== order.id) {
+                            shownOverlayOrderId = order.id;
+                            showRestaurantOverlay(order);
+                        }
 
                         const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (×${i.quantity})</li>`).join('');
                         const orderCard = document.createElement('div');
@@ -1781,6 +1852,35 @@
                     container.innerHTML = `<p class="text-xs text-stone-400 py-6 text-center font-bold">لا توجد طلبات واردة.</p>`;
                 }
             }, (err) => { console.warn(err); });
+        }
+
+        function showRestaurantOverlay(order) {
+            playDistinctiveAlarm();
+            document.getElementById('restOverlayOrderId').innerText = order.id;
+            document.getElementById('restOverlayCustName').innerText = order.customerName;
+            document.getElementById('restOverlayCustPhone').innerText = order.customerPhone;
+
+            const list = document.getElementById('restOverlayItemsList');
+            list.innerHTML = order.items.map(i => `<div class="flex justify-between border-b border-stone-100 pb-1"><span>${i.name}</span><span class="font-bold">×${i.quantity}</span></div>`).join('');
+
+            const acceptBtn = document.getElementById('restOverlayAcceptBtn');
+            const rejectBtn = document.getElementById('restOverlayRejectBtn');
+
+            acceptBtn.onclick = async () => {
+                await updateOrderStatus(order.id, 'accepted');
+                closeRestaurantOverlay();
+            };
+            rejectBtn.onclick = async () => {
+                await updateOrderStatus(order.id, 'cancelled');
+                closeRestaurantOverlay();
+            };
+
+            document.getElementById('restaurantRequestOverlay').classList.remove('hidden');
+        }
+
+        function closeRestaurantOverlay() {
+            document.getElementById('restaurantRequestOverlay').classList.add('hidden');
+            shownOverlayOrderId = null;
         }
 
         window.switchRestTab = function(tabId) {
@@ -1922,7 +2022,6 @@
                 container.innerHTML = "";
                 let successfulCount = 0;
                 let totalRuns = 0;
-                let hasNewTask = false;
 
                 snapshot.forEach((docSnap) => {
                     const order = docSnap.data();
@@ -1933,7 +2032,12 @@
                     }
 
                     if (order.status === 'ready') {
-                        hasNewTask = true;
+                        // Fullscreen Overlay Alert for new delivery tasks
+                        if (shownDriverOverlayOrderId !== order.id) {
+                            shownDriverOverlayOrderId = order.id;
+                            showDriverRequestOverlay(order);
+                        }
+
                         const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (${i.quantity}x)</li>`).join('');
                         const card = document.createElement('div');
                         card.className = "bg-orange-50 border border-orange-200 rounded-2xl p-5 shadow-sm text-right space-y-3 text-stone-800";
@@ -1953,6 +2057,10 @@
                         `;
                         container.appendChild(card);
                     } else if (order.driverId === currentUser.uid && order.status === 'delivering') {
+                        // Fullscreen Active Task Map display
+                        activeDriverTaskOrder = order;
+                        showDriverFullscreenTask(order);
+
                         const card = document.createElement('div');
                         card.className = "bg-white border border-stone-100 rounded-2xl p-5 shadow-sm text-right space-y-3 text-stone-800";
                         card.innerHTML = `
@@ -1970,14 +2078,6 @@
                             </button>
                         `;
                         container.appendChild(card);
-
-                        if(activeDriverMap && order.customerLoc) {
-                            setTimeout(() => {
-                                activeDriverMap.invalidateSize();
-                                L.marker([order.customerLoc.lat, order.customerLoc.lng]).addTo(activeDriverMap)
-                                    .bindPopup("<strong class='text-stone-800 font-bold'>العميل</strong>").openPopup();
-                            }, 500);
-                        }
                     }
                 });
 
@@ -1985,13 +2085,82 @@
                 document.getElementById('driverStatTotal').innerText = totalRuns;
 
                 if (container.children.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-stone-400 py-6 text-center font-bold">لا توجد مهمات متاحة.</p>`;
+                    container.innerHTML = `<p class="text-xs text-stone-400 py-6 text-center font-bold">لا توجد مهمات توصيل نشطة.</p>`;
                 }
             }, (err) => { console.warn(err); });
         }
 
+        function showDriverRequestOverlay(order) {
+            playDistinctiveAlarm();
+            document.getElementById('overlayOrderId').innerText = order.id;
+            document.getElementById('overlayRestName').innerText = order.restaurantName;
+            document.getElementById('overlayCustName').innerText = order.customerName;
+            document.getElementById('overlayCustPhoneText').innerText = order.customerPhone;
+            document.getElementById('overlayCustPhone').href = `tel:${order.customerPhone}`;
+
+            const list = document.getElementById('overlayItemsList');
+            list.innerHTML = order.items.map(i => `<div class="flex justify-between border-b border-stone-100 pb-1"><span>${i.name}</span><span class="font-bold">×${i.quantity}</span></div>`).join('');
+
+            const acceptBtn = document.getElementById('overlayAcceptBtn');
+            acceptBtn.onclick = async () => {
+                await acceptDeliveryTask(order.id);
+                closeDriverOverlay();
+            };
+
+            document.getElementById('driverRequestOverlay').classList.remove('hidden');
+        }
+
         window.closeDriverOverlay = function() {
             document.getElementById('driverRequestOverlay').classList.add('hidden');
+            shownDriverOverlayOrderId = null;
+        };
+
+        function showDriverFullscreenTask(order) {
+            document.getElementById('driverActiveTaskContainer').classList.remove('hidden');
+            document.getElementById('driverActiveTaskTitle').innerText = `توصيل الطلب #${order.id}`;
+            document.getElementById('driverActiveCallBtn').href = `tel:${order.customerPhone}`;
+
+            setTimeout(() => {
+                initDriverFullscreenMap(order);
+            }, 300);
+        }
+
+        function initDriverFullscreenMap(order) {
+            const dest = order.customerLoc || { lat: 36.4694, lng: 2.6247 };
+            const driverCoords = order.driverLoc || { lat: 36.4694, lng: 2.6247 };
+
+            if (!activeFullscreenDriverMap) {
+                activeFullscreenDriverMap = L.map('driverFullscreenMap').setView([driverCoords.lat, driverCoords.lng], 15);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeFullscreenDriverMap);
+
+                const motorcycleIcon = L.divIcon({
+                    html: `<div class="relative flex items-center justify-center"><div class="absolute w-10 h-10 rounded-full bg-orange-400/30 animate-ping"></div><div class="relative bg-orange-600 text-white w-8 h-8 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
+                    className: 'custom-motorcycle-icon',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+
+                driverFullscreenMarker = L.marker([driverCoords.lat, driverCoords.lng], { icon: motorcycleIcon }).addTo(activeFullscreenDriverMap)
+                    .bindPopup("<strong class='text-orange-600 font-bold'>موقعي</strong>").openPopup();
+
+                L.marker([dest.lat, dest.lng]).addTo(activeFullscreenDriverMap)
+                    .bindPopup("<strong class='text-stone-800 font-bold'>الزبون</strong>").openPopup();
+            } else {
+                driverFullscreenMarker.setLatLng([driverCoords.lat, driverCoords.lng]);
+                activeFullscreenDriverMap.panTo([driverCoords.lat, driverCoords.lng]);
+                activeFullscreenDriverMap.invalidateSize();
+            }
+        }
+
+        window.completeActiveDeliveryTask = async function() {
+            if (activeDriverTaskOrder) {
+                await completeDeliveryTask(activeDriverTaskOrder.id);
+            }
+            document.getElementById('driverActiveTaskContainer').classList.add('hidden');
+            if (activeFullscreenDriverMap) {
+                activeFullscreenDriverMap.remove();
+                activeFullscreenDriverMap = null;
+            }
         };
 
         window.switchDeliveryTab = function(tabId) {
@@ -2022,7 +2191,7 @@
                     driverPhone: currentUserData.phone,
                     driverLoc: { lat: 36.4694, lng: 2.6247 }
                 });
-                Swal.fire('تم القبول', 'تم تفعيل تتبع الدراجة.', 'success');
+                Swal.fire('تم القبول', 'تم تفعيل تتبع الدراجة والخرائط الكاملة.', 'success');
                 enableDriverGPS();
             } catch(e) {
                 Swal.fire('خطأ', 'فشل قبول المهمة.', 'error');

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -43,15 +44,20 @@
     </script>
 
     <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Leaflet.js CSS (Maps) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    
     <!-- SweetAlert2 CSS & JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Leaflet.js JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
     <style>
         body {
@@ -67,6 +73,11 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* Hide Leaflet Routing Machine instruction panel to keep visual map clean like Uber */
+        .leaflet-routing-container {
+            display: none !important;
         }
 
         /* Smooth scrollbar */
@@ -431,7 +442,7 @@
                     <span class="bg-orange-500/20 text-orange-300 border border-orange-500/30 px-4 py-1.5 rounded-full text-xs font-black inline-block tracking-wider">السرعة والكفاءة في خدمتكم</span>
                     <h1 class="text-3xl md:text-5xl font-black leading-tight tracking-tight" id="landingHeroText">العفرون أونلاين <br><span class="text-orange-400">جسر طعامك السريع</span></h1>
                     <p class="text-stone-300 text-sm md:text-base max-w-lg leading-relaxed font-medium">
-                        المنصة الأكثر سهولة وتطوراً بمدينة العفرون، مجهزة بخدمات الخرائط التفاعلية الذكية وبث مباشر لتتبع مسار مندوب التوصيل.
+                        المنصة الأكثر سهولة وتطوراً بمدينة العفرون، مجهة بخدمات الخرائط التفاعلية الذكية وبث مباشر لتتبع مسار مندوب التوصيل.
                     </p>
                     <div class="flex flex-wrap gap-3 pt-2">
                         <button onclick="openAuthModal('register')" class="btn-primary text-white font-black px-8 py-3 rounded-xl shadow-xl shadow-orange-500/20 transition-all duration-300 flex items-center gap-2 active:scale-95 text-sm">
@@ -533,7 +544,7 @@
                     </div>
 
                     <!-- Cart & Map -->
-                    <div class="bg-white rounded-[1.5rem] p-5 md:p-6 border border-stone-100 shadow-lg h-fit space-y-5 sticky top-24">
+                    <div id="cartCheckoutContainer" class="bg-white rounded-[1.5rem] p-5 md:p-6 border border-stone-100 shadow-lg h-fit space-y-5 sticky top-24">
                         <div class="border-b border-stone-100 pb-3">
                             <h3 class="text-base font-black text-stone-900">سلتك</h3>
                             <p class="text-[10px] text-stone-400 font-medium">المأكولات المختارة</p>
@@ -664,9 +675,9 @@
                             </button>
                         </div>
 
-                        <div class="space-y-3">
+                        <div class="space-y-4">
                             <h3 class="text-sm font-black text-stone-800">الطلبيات النشطة</h3>
-                            <div id="restOrdersContainer" class="grid grid-cols-1 gap-3">
+                            <div id="restOrdersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Orders loaded dynamically -->
                             </div>
                         </div>
@@ -928,6 +939,20 @@
         </section>
     </main>
 
+    <!-- Mobile Sticky Cart Bar -->
+    <div id="mobileCartBar" class="hidden fixed bottom-20 inset-x-4 bg-stone-950 text-white py-3 px-5 rounded-2xl shadow-2xl z-40 flex items-center justify-between transition-all duration-300 transform translate-y-28">
+        <div class="flex items-center gap-3">
+            <div class="bg-orange-500 text-white px-2.5 py-1 rounded-lg text-xs font-black" id="mobileCartCount">0</div>
+            <div class="text-right">
+                <span class="text-[9px] text-stone-400 block font-bold">المجموع الفرعي</span>
+                <span class="text-xs font-black text-orange-400" id="mobileCartTotal">0 د.ج</span>
+            </div>
+        </div>
+        <button onclick="scrollToCartSection()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-1.5 transition active:scale-95">
+            إتمام الطلب <i class="fa-solid fa-arrow-left text-[9px]"></i>
+        </button>
+    </div>
+
     <!-- Floating Tracker Reopen Button (Customer View only) -->
     <button id="reopenTrackerBtn" onclick="reopenCustomerTracker()" class="hidden fixed bottom-20 md:bottom-6 right-6 bg-orange-600 hover:bg-orange-700 text-white px-5 py-3.5 rounded-full shadow-2xl z-40 flex items-center gap-2 font-black text-xs animate-bounce">
         <i class="fa-solid fa-map-location-dot"></i> تتبع الطلب النشط
@@ -1003,6 +1028,7 @@
         let interactiveLocationMarker = null;
         let interactiveSelectMap = null;
         let driverRoutingPolyline = null;
+        let customerRoutingPolyline = null;
         let selectedRestaurantRating = 0;
         let selectedDriverRating = 0;
         let ratingOrderId = null;
@@ -1014,6 +1040,7 @@
         let backgroundWorker = null;
         let workerSimulatedLat = 36.4694;
         let workerSimulatedLng = 2.6247;
+        let currentDishes = []; // Global list of currently active restaurant menu items
 
         // Alarm function with Audio Synthesis
         function playDistinctiveAlarm() {
@@ -1164,6 +1191,7 @@
             document.getElementById('driverActiveTaskContainer').classList.add('hidden');
             document.getElementById('customerOrderTracker').classList.add('hidden');
             document.getElementById('reopenTrackerBtn').classList.add('hidden');
+            document.getElementById('mobileCartBar').classList.add('translate-y-28');
         }
 
         window.openAuthModal = function(tab) {
@@ -1459,54 +1487,11 @@
                 }
 
                 onSnapshot(query(collection(db, "dishes"), where("restaurantId", "==", restaurantId)), (snapshot) => {
-                    const list = document.getElementById('dishesList');
-                    list.innerHTML = "";
-
-                    if (snapshot.empty) {
-                        list.innerHTML = `<p class="text-xs text-stone-400 text-center py-6">لا توجد وجبات متاحة.</p>`;
-                        return;
-                    }
-
+                    currentDishes = [];
                     snapshot.forEach((docSnap) => {
-                        const dish = docSnap.data();
-                        const card = document.createElement('div');
-                        card.className = "bg-white p-4 rounded-2xl shadow-sm border border-stone-100 flex gap-3 items-center justify-between hover:shadow-md transition-all";
-
-                        const sauces = dish.sauces ? dish.sauces.split(',') : [];
-                        const drinks = dish.drinks ? dish.drinks.split(',') : [];
-
-                        let extrasHtml = "";
-                        if(sauces.length > 0 || drinks.length > 0) {
-                            extrasHtml += `<div class="mt-2 space-y-1">`;
-                            if(sauces.length > 0) {
-                                extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px]"><span class="text-stone-500 font-bold">صلصات:</span>`;
-                                sauces.forEach(s => extrasHtml += `<label class="bg-stone-50 text-stone-600 px-2 py-0.5 rounded-lg border border-stone-100 cursor-pointer"><input type="checkbox" name="sauce-${dish.id}" value="${s.trim()}" class="ml-1 scale-90"> ${s.trim()}</label>`);
-                                extrasHtml += `</div>`;
-                            }
-                            if(drinks.length > 0) {
-                                extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px] mt-1"><span class="text-stone-500 font-bold">مشروب:</span>`;
-                                drinks.forEach(d => extrasHtml += `<label class="bg-stone-50 text-stone-600 px-2 py-0.5 rounded-lg border border-stone-100 cursor-pointer"><input type="radio" name="drink-${dish.id}" value="${d.trim()}" class="ml-1 scale-90"> ${d.trim()}</label>`);
-                                extrasHtml += `</div>`;
-                            }
-                            extrasHtml += `</div>`;
-                        }
-
-                        card.innerHTML = `
-                            <div class="flex gap-3 items-center flex-1">
-                                <img src="${dish.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=300'}" class="w-14 h-14 rounded-xl object-cover shadow-sm shrink-0" alt="${dish.name}">
-                                <div class="text-right flex-grow">
-                                    <h4 class="font-extrabold text-stone-900 text-sm">${dish.name}</h4>
-                                    <p class="text-[10px] text-stone-400 mt-0.5 leading-normal font-semibold">${dish.desc || ''}</p>
-                                    <span class="text-sm font-black text-orange-600 block mt-1">${dish.price} د.ج</span>
-                                    ${extrasHtml}
-                                </div>
-                            </div>
-                            <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price}, '${dish.image || ''}')" class="bg-orange-50 hover:bg-orange-100 text-orange-600 p-2.5 rounded-xl transition active:scale-90 shrink-0">
-                                <i class="fa-solid fa-plus text-sm"></i>
-                            </button>
-                        `;
-                        list.appendChild(card);
+                        currentDishes.push(docSnap.data());
                     });
+                    renderDishesList();
                 }, (err) => { console.warn("Dishes error:", err); });
 
                 document.getElementById('customerHome').classList.add('hidden');
@@ -1521,6 +1506,97 @@
             } finally {
                 showLoading(false);
             }
+        };
+
+        // Renders modern, highly organized dish list with integrated quantity control triggers
+        function renderDishesList() {
+            const list = document.getElementById('dishesList');
+            list.innerHTML = "";
+
+            if (currentDishes.length === 0) {
+                list.innerHTML = `<p class="text-xs text-stone-400 text-center py-6">لا توجد وجبات متاحة.</p>`;
+                return;
+            }
+
+            currentDishes.forEach((dish) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-2xl shadow-sm border border-stone-100 flex gap-4 items-center justify-between hover:shadow-md transition-all duration-300";
+
+                const sauces = dish.sauces ? dish.sauces.split(',') : [];
+                const drinks = dish.drinks ? dish.drinks.split(',') : [];
+
+                let extrasHtml = "";
+                if(sauces.length > 0 || drinks.length > 0) {
+                    extrasHtml += `<div class="mt-2 space-y-1.5 border-t border-stone-50 pt-2">`;
+                    if(sauces.length > 0) {
+                        extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px]"><span class="text-stone-500 font-bold">الصلصة:</span>`;
+                        sauces.forEach(s => extrasHtml += `<label class="bg-stone-50 text-stone-600 px-2 py-0.5 rounded-lg border border-stone-100 cursor-pointer flex items-center"><input type="checkbox" name="sauce-${dish.id}" value="${s.trim()}" class="ml-1 scale-90 accent-orange-600"> ${s.trim()}</label>`);
+                        extrasHtml += `</div>`;
+                    }
+                    if(drinks.length > 0) {
+                        extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px] mt-1"><span class="text-stone-500 font-bold">المشروب:</span>`;
+                        drinks.forEach(d => extrasHtml += `<label class="bg-stone-50 text-stone-600 px-2 py-0.5 rounded-lg border border-stone-100 cursor-pointer flex items-center"><input type="radio" name="drink-${dish.id}" value="${d.trim()}" class="ml-1 scale-90 accent-orange-600"> ${d.trim()}</label>`);
+                        extrasHtml += `</div>`;
+                    }
+                    extrasHtml += `</div>`;
+                }
+
+                // Detect current item quantity inside the cart
+                const cartQty = getQtyInCart(dish.id);
+                let quantityControlsHtml = "";
+
+                if (cartQty > 0) {
+                    quantityControlsHtml = `
+                        <div class="flex items-center gap-2 bg-orange-600 text-white rounded-xl p-1 shadow-md shrink-0">
+                            <button onclick="changeDishCartQuantity('${dish.id}', -1, '${dish.image || ''}')" class="w-7 h-7 rounded-lg bg-orange-500 hover:bg-orange-400 flex items-center justify-center font-black text-sm transition active:scale-90">-</button>
+                            <span class="text-xs font-black min-w-[14px] text-center">${cartQty}</span>
+                            <button onclick="changeDishCartQuantity('${dish.id}', 1, '${dish.image || ''}')" class="w-7 h-7 rounded-lg bg-orange-500 hover:bg-orange-400 flex items-center justify-center font-black text-sm transition active:scale-90">+</button>
+                        </div>
+                    `;
+                } else {
+                    quantityControlsHtml = `
+                        <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price}, '${dish.image || ''}')" class="bg-stone-900 hover:bg-orange-600 hover:text-white text-stone-300 p-2.5 rounded-xl transition-all duration-300 active:scale-90 shrink-0 shadow-sm flex items-center gap-1 font-bold text-xs">
+                            <i class="fa-solid fa-plus text-xs"></i> إضافة للطلب
+                        </button>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex gap-4 items-center flex-1 min-w-0">
+                        <img src="${dish.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=300'}" class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shadow-sm shrink-0 border border-stone-100" alt="${dish.name}">
+                        <div class="text-right flex-grow min-w-0">
+                            <h4 class="font-extrabold text-stone-900 text-xs sm:text-sm truncate">${dish.name}</h4>
+                            <p class="text-[10px] text-stone-400 mt-0.5 leading-normal font-semibold line-clamp-2">${dish.desc || ''}</p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-xs sm:text-sm font-black text-orange-600">${dish.price} د.ج</span>
+                                <span class="text-[9px] bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded font-bold">تحضير سريع</span>
+                            </div>
+                            ${extrasHtml}
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end justify-center pl-1">
+                        ${quantityControlsHtml}
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function getQtyInCart(dishId) {
+            const item = customerCart.find(i => i.dishId === dishId);
+            return item ? item.quantity : 0;
+        }
+
+        window.changeDishCartQuantity = function(dishId, change, image) {
+            const item = customerCart.find(i => i.dishId === dishId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    customerCart = customerCart.filter(i => i.dishId !== dishId);
+                }
+            }
+            updateCartUI();
+            renderDishesList();
         };
 
         function initInteractiveLocationMap() {
@@ -1570,6 +1646,7 @@
                 customerCart.push({ dishId, name, price, quantity: 1, sauces: checkedSauces, drink: selectedDrink, image: image });
             }
             updateCartUI();
+            renderDishesList();
         };
 
         function updateCartUI() {
@@ -1580,12 +1657,15 @@
             if (customerCart.length === 0) {
                 list.innerHTML = `<p class="text-xs text-stone-400 text-center py-4">السلة فارغة</p>`;
                 totalText.innerText = "0 د.ج";
+                updateMobileCartBar(0, 0);
                 return;
             }
 
             let total = 0;
+            let totalQty = 0;
             customerCart.forEach((item, index) => {
                 total += (item.price * item.quantity);
+                totalQty += item.quantity;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = "flex items-center justify-between text-xs border-b border-stone-50 pb-2";
 
@@ -1607,62 +1687,80 @@
             });
 
             totalText.innerText = `${total} د.ج`;
+            updateMobileCartBar(total, totalQty);
         }
+
+        function updateMobileCartBar(total, qty) {
+            const bar = document.getElementById('mobileCartBar');
+            if (qty > 0) {
+                bar.classList.remove('hidden', 'translate-y-28');
+                document.getElementById('mobileCartCount').innerText = qty;
+                document.getElementById('mobileCartTotal').innerText = `${total} د.ج`;
+            } else {
+                bar.classList.add('translate-y-28');
+                setTimeout(() => bar.classList.add('hidden'), 300);
+            }
+        }
+
+        window.scrollToCartSection = function() {
+            const container = document.getElementById('cartCheckoutContainer');
+            if(container) {
+                container.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
 
         window.removeFromCart = function(index) {
             customerCart.splice(index, 1);
             updateCartUI();
+            renderDishesList();
         };
 
-        // Resilient Geolocation with high accuracy options and IP-based API fallback
+        // Dual-Stage Location Resolver: GPS -> Network Fallback -> Town Center Fallback
         window.getCustomerLocation = function() {
-            if ("geolocation" in navigator) {
-                document.getElementById('gpsStatus').innerText = "جاري التحديد التلقائي...";
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    customerCoordinates = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                    document.getElementById('gpsStatus').innerText = "تم تحديد الموقع بنجاح!";
-                    document.getElementById('coordinatesText').innerText = `الموقع: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+            document.getElementById('gpsStatus').innerText = "جاري الاتصال بالقمر الصناعي...";
 
-                    if (interactiveSelectMap && interactiveLocationMarker) {
-                        interactiveLocationMarker.setLatLng([pos.coords.latitude, pos.coords.longitude]);
-                        interactiveSelectMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
-                        interactiveSelectMap.invalidateSize();
+            let ipFallbackCoords = null;
+            // Initiate IP Geolocation fallback query in parallel
+            fetch('https://ipapi.co/json/')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.latitude && data.longitude) {
+                        ipFallbackCoords = { lat: data.latitude, lng: data.longitude };
                     }
-                }, async (err) => {
-                    console.warn("GPS Access Failed/Blocked. Attempting Network Location Fallback...", err);
-                    document.getElementById('gpsStatus').innerText = "جاري التحديد عبر الشبكة...";
-                    
-                    try {
-                        // Resilient Fallback to IP Location Lookup if GPS is denied or unavailable
-                        const response = await fetch('https://ipapi.co/json/');
-                        const data = await response.json();
-                        if (data.latitude && data.longitude) {
-                            customerCoordinates = { lat: data.latitude, lng: data.longitude };
-                            document.getElementById('gpsStatus').innerText = "تم التحديد التقريبي!";
-                            document.getElementById('coordinatesText').innerText = `موقع تقريبي: ${data.latitude.toFixed(5)}, ${data.longitude.toFixed(5)}`;
-                            
-                            if (interactiveSelectMap && interactiveLocationMarker) {
-                                interactiveLocationMarker.setLatLng([data.latitude, data.longitude]);
-                                interactiveSelectMap.setView([data.latitude, data.longitude], 14);
-                                interactiveSelectMap.invalidateSize();
-                            }
-                        } else {
-                            throw new Error("No coordinate data");
-                        }
-                    } catch(fallbackErr) {
-                        document.getElementById('gpsStatus').innerText = "فشل التحديد. اسحب الدبوس يدوياً.";
-                        Swal.fire({
-                            title: 'تحديد الموقع يدوياً',
-                            text: 'تعذر تحديد موقعك تلقائياً. يرجى تفعيل الـ GPS وإعطاء الإذن للمتصفح، أو ببساطة اسحب الدبوس البرتقالي وضعه فوق منزلك على الخريطة.',
-                            icon: 'info',
-                            confirmButtonText: 'حسناً'
-                        });
+                }).catch(() => {});
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    applyLocationSuccess(pos.coords.latitude, pos.coords.longitude, "تم تحديد موقعك بدقة عالية (GPS)");
+                }, (err) => {
+                    console.warn("GPS lock failed, using IP lookup network fallback", err);
+                    if (ipFallbackCoords) {
+                        applyLocationSuccess(ipFallbackCoords.lat, ipFallbackCoords.lng, "تم تحديد موقعك التقريبي عبر الشبكة");
+                    } else {
+                        // Resilient Fallback to El Affroun center coordinate if all fail
+                        applyLocationSuccess(36.4694, 2.6247, "تم تعيين العفرون كمركز (يرجى تعديل الدبوس)");
                     }
-                }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                }, { enableHighAccuracy: false, timeout: 6000, maximumAge: 300000 });
             } else {
-                Swal.fire('غير مدعوم', 'المتصفح لا يدعم تحديد الموقع.', 'warning');
+                if (ipFallbackCoords) {
+                    applyLocationSuccess(ipFallbackCoords.lat, ipFallbackCoords.lng, "تم تحديد موقعك التقريبي عبر الشبكة");
+                } else {
+                    applyLocationSuccess(36.4694, 2.6247, "تم تعيين العفرون كمركز (يرجى تعديل الدبوس)");
+                }
             }
         };
+
+        function applyLocationSuccess(lat, lng, statusMessage) {
+            customerCoordinates = { lat, lng };
+            document.getElementById('gpsStatus').innerText = statusMessage;
+            document.getElementById('coordinatesText').innerText = `الموقع الحالي: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+            if (interactiveSelectMap && interactiveLocationMarker) {
+                interactiveLocationMarker.setLatLng([lat, lng]);
+                interactiveSelectMap.setView([lat, lng], 16);
+                setTimeout(() => interactiveSelectMap.invalidateSize(), 200);
+            }
+        }
 
         window.submitOrder = async function() {
             if (customerCart.length === 0) {
@@ -1707,6 +1805,7 @@
             document.getElementById('restaurantMenuDetail').classList.add('hidden');
             document.getElementById('customerOrderTracker').classList.remove('hidden');
             document.getElementById('reopenTrackerBtn').classList.add('hidden');
+            document.getElementById('mobileCartBar').classList.add('translate-y-28');
 
             const statusText = document.getElementById('customerOrderStatus');
 
@@ -1757,12 +1856,13 @@
             }
         };
 
+        // Customer Tracker Map showing Uber-like route line when delivery is active
         function initTrackerMap(order) {
             const dest = order.customerLoc || { lat: 36.4694, lng: 2.6247 };
             const driverCoords = order.driverLoc || { lat: 36.4710, lng: 2.6200 };
 
             if (!activeTrackerMap) {
-                activeTrackerMap = L.map('trackerMap').setView([driverCoords.lat, driverCoords.lng], 15);
+                activeTrackerMap = L.map('trackerMap', { zoomControl: false }).setView([driverCoords.lat, driverCoords.lng], 15);
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeTrackerMap);
 
                 const motorcycleIcon = L.divIcon({
@@ -1772,15 +1872,40 @@
                     iconAnchor: [20, 20]
                 });
 
-                trackerDriverMarker = L.marker([driverCoords.lat, driverCoords.lng], { icon: motorcycleIcon }).addTo(activeTrackerMap)
-                    .bindPopup("<strong class='text-orange-600 font-bold'>المندوب</strong>").openPopup();
-
-                L.marker([dest.lat, dest.lng]).addTo(activeTrackerMap)
-                    .bindPopup("<strong class='text-stone-800 font-bold'>وجهتك</strong>").openPopup();
+                trackerDriverMarker = L.marker([driverCoords.lat, driverCoords.lng], { icon: motorcycleIcon }).addTo(activeTrackerMap);
             } else {
                 trackerDriverMarker.setLatLng([driverCoords.lat, driverCoords.lng]);
-                activeTrackerMap.panTo([driverCoords.lat, driverCoords.lng]);
-                activeTrackerMap.invalidateSize();
+            }
+
+            // Draw real street route path for the customer tracking map
+            if (customerRoutingPolyline) {
+                activeTrackerMap.removeLayer(customerRoutingPolyline);
+                customerRoutingPolyline = null;
+            }
+
+            if (order.status === 'delivering') {
+                const startStr = `${driverCoords.lng},${driverCoords.lat}`;
+                const endStr = `${dest.lng},${dest.lat}`;
+                fetch(`https://router.project-osrm.org/route/v1/driving/${startStr};${endStr}?overview=full&geometries=geojson`)
+                    .then(res => res.json())
+                    .then(routeData => {
+                        if (routeData.routes && routeData.routes[0]) {
+                            const coords = routeData.routes[0].geometry.coordinates.map(pt => [pt[1], pt[0]]);
+                            customerRoutingPolyline = L.polyline(coords, {
+                                color: '#f97316',
+                                weight: 6,
+                                opacity: 0.8,
+                                lineJoin: 'round'
+                            }).addTo(activeTrackerMap);
+                            activeTrackerMap.fitBounds(customerRoutingPolyline.getBounds(), { padding: [50, 50] });
+                        }
+                    }).catch(() => {
+                        customerRoutingPolyline = L.polyline([[driverCoords.lat, driverCoords.lng], [dest.lat, dest.lng]], {
+                            color: '#f97316', weight: 4, dashArray: '5, 10'
+                        }).addTo(activeTrackerMap);
+                    });
+            } else {
+                activeTrackerMap.setView([dest.lat, dest.lng], 16);
             }
         }
 
@@ -1899,7 +2024,7 @@
                 document.getElementById('restStatCancelled').innerText = countCan;
 
                 if (container.children.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-stone-400 py-6 text-center font-bold">لا توجد طلبات واردة.</p>`;
+                    container.innerHTML = `<p class="text-xs text-stone-400 py-6 text-center font-bold col-span-full">لا توجد طلبات واردة.</p>`;
                 }
             }, (err) => { console.warn(err); });
         }
@@ -2187,66 +2312,58 @@
             }, 300);
         }
 
-        // Draws an Uber-like street route using the Open Source Routing Machine (OSRM)
+        // Draws an Uber-like street route using Leaflet Routing Machine
         function initDriverFullscreenMap(order) {
             const dest = order.customerLoc || { lat: 36.4694, lng: 2.6247 };
             const driverCoords = order.driverLoc || { lat: 36.4694, lng: 2.6247 };
 
             if (!activeFullscreenDriverMap) {
-                activeFullscreenDriverMap = L.map('driverFullscreenMap').setView([driverCoords.lat, driverCoords.lng], 15);
+                activeFullscreenDriverMap = L.map('driverFullscreenMap', { zoomControl: false }).setView([driverCoords.lat, driverCoords.lng], 15);
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeFullscreenDriverMap);
-
-                const motorcycleIcon = L.divIcon({
-                    html: `<div class="relative flex items-center justify-center"><div class="absolute w-10 h-10 rounded-full bg-orange-400/30 animate-ping"></div><div class="relative bg-orange-600 text-white w-8 h-8 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
-                    className: 'custom-motorcycle-icon',
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 20]
-                });
-
-                driverFullscreenMarker = L.marker([driverCoords.lat, driverCoords.lng], { icon: motorcycleIcon }).addTo(activeFullscreenDriverMap)
-                    .bindPopup("<strong class='text-orange-600 font-bold'>موقعي</strong>").openPopup();
-
-                L.marker([dest.lat, dest.lng]).addTo(activeFullscreenDriverMap)
-                    .bindPopup("<strong class='text-stone-800 font-bold'>الزبون</strong>").openPopup();
-            } else {
-                driverFullscreenMarker.setLatLng([driverCoords.lat, driverCoords.lng]);
             }
 
-            // Remove existing route line before drawing a new one
+            // Remove existing routing control path before redrawing
             if (driverRoutingPolyline) {
-                activeFullscreenDriverMap.removeLayer(driverRoutingPolyline);
+                activeFullscreenDriverMap.removeControl(driverRoutingPolyline);
                 driverRoutingPolyline = null;
             }
 
-            // Request route geometry via OSRM to construct real street routes (Uber-style)
-            const startStr = `${driverCoords.lng},${driverCoords.lat}`;
-            const endStr = `${dest.lng},${dest.lat}`;
-            fetch(`https://router.project-osrm.org/route/v1/driving/${startStr};${endStr}?overview=full&geometries=geojson`)
-                .then(res => res.json())
-                .then(routeData => {
-                    if (routeData.routes && routeData.routes[0]) {
-                        const geojsonCoordinates = routeData.routes[0].geometry.coordinates;
-                        // Map coordinates from [lng, lat] to [lat, lng] for Leaflet compatibility
-                        const leafletLatLngs = geojsonCoordinates.map(pt => [pt[1], pt[0]]);
-                        
-                        driverRoutingPolyline = L.polyline(leafletLatLngs, {
-                            color: '#3b82f6', // Uber blue line
-                            weight: 6,
-                            opacity: 0.85,
-                            lineJoin: 'round'
-                        }).addTo(activeFullscreenDriverMap);
-
-                        activeFullscreenDriverMap.fitBounds(driverRoutingPolyline.getBounds(), { padding: [40, 40] });
+            // High performance street level navigation path plotting
+            driverRoutingPolyline = L.Routing.control({
+                waypoints: [
+                    L.latLng(driverCoords.lat, driverCoords.lng),
+                    L.latLng(dest.lat, dest.lng)
+                ],
+                lineOptions: {
+                    styles: [{ color: '#f97316', opacity: 0.8, weight: 6 }]
+                },
+                createMarker: function(i, wp, nWps) {
+                    if (i === 0) {
+                        return L.marker(wp.latLng, {
+                            icon: L.divIcon({
+                                html: `<div class="relative bg-orange-600 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center border-2 border-white"><i class="fa-solid fa-motorcycle text-xs"></i></div>`,
+                                className: 'custom-driver-icon',
+                                iconSize: [32, 32],
+                                iconAnchor: [16, 16]
+                            })
+                        });
+                    } else {
+                        return L.marker(wp.latLng, {
+                            icon: L.divIcon({
+                                html: `<div class="relative bg-stone-900 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center border-2 border-white"><i class="fa-solid fa-house-chimney text-xs"></i></div>`,
+                                className: 'custom-customer-icon',
+                                iconSize: [32, 32],
+                                iconAnchor: [16, 16]
+                            })
+                        });
                     }
-                })
-                .catch(err => {
-                    console.warn("OSRM Routing failure, drawing direct line instead.", err);
-                    // Straight fallback polyline if routing service is offline
-                    driverRoutingPolyline = L.polyline([
-                        [driverCoords.lat, driverCoords.lng],
-                        [dest.lat, dest.lng]
-                    ], { color: '#ea580c', weight: 4, dashArray: '5, 10' }).addTo(activeFullscreenDriverMap);
-                });
+                },
+                show: false,
+                addWaypoints: false,
+                routeWhileDragging: false,
+                draggableWaypoints: false,
+                fitSelectedRoutes: true
+            }).addTo(activeFullscreenDriverMap);
         }
 
         window.completeActiveDeliveryTask = async function() {

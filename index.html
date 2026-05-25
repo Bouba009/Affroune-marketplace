@@ -13,23 +13,26 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#fff8f6',
-                            100: '#feece9',
-                            200: '#ffcfc7',
-                            300: '#ffa494',
-                            400: '#ff6f54',
-                            500: '#ff3e1d',
-                            600: '#ea2a0a',
-                            700: '#c41d05',
-                            800: '#a21a07',
-                            900: '#831a0c',
+                            50: '#fff5ed',
+                            100: '#ffe6d3',
+                            200: '#ffd0b0',
+                            300: '#ffaf7e',
+                            400: '#ff8243',
+                            500: '#ff6b00', /* Matches Template Orange */
+                            600: '#e04f00',
+                            700: '#b83900',
+                            800: '#912d00',
+                            900: '#752600',
+                        },
+                        accent: {
+                            500: '#ff2d55', /* Matches Template Pink/Red */
                         },
                         dark: {
-                            950: '#0b0a0a',
-                            900: '#141212',
-                            800: '#1d1a1a',
-                            700: '#2c2727',
-                            600: '#403939',
+                            950: '#080808',
+                            900: '#0f0f0f',
+                            800: '#151515',
+                            700: '#1d1d1d',
+                            600: '#282828',
                         }
                     },
                     fontFamily: {
@@ -39,11 +42,6 @@
                         '3xl': '1.5rem',
                         '4xl': '2rem',
                         '5xl': '2.5rem',
-                    },
-                    boxShadow: {
-                        'premium': '0 10px 30px -5px rgba(234, 42, 10, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03)',
-                        'premium-hover': '0 20px 40px -10px rgba(234, 42, 10, 0.15), 0 8px 16px -4px rgba(0, 0, 0, 0.05)',
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.04)',
                     }
                 }
             }
@@ -67,33 +65,212 @@
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
     <style>
+        /* Base Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: #fcfbfa;
-            color: #1d1a1a;
+            background: #0f0f0f;
+            color: #ffffff;
+            min-height: 100vh;
             overflow-x: hidden;
+            position: relative;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .glass-header {
-            background: rgba(255, 255, 255, 0.85);
+        /* Fixed Background Layout elements to prevent scroll freezing */
+        .fixed-bg-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -10;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* Animated Gradient Background from Template */
+        .gradient-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background:
+            radial-gradient(circle at top left, #ff6b00 0%, transparent 35%),
+            radial-gradient(circle at bottom right, #ff2d55 0%, transparent 35%),
+            radial-gradient(circle at center, #ff9500 0%, transparent 30%),
+            #0f0f0f;
+            filter: blur(40px);
+            animation: bgMove 12s infinite alternate ease-in-out;
+        }
+
+        @keyframes bgMove {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.15) rotate(8deg); }
+        }
+
+        /* Floating Blur Balls from Template */
+        .blur-ball {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.45;
+            animation: floatBall 8s infinite ease-in-out alternate;
+        }
+
+        .ball1 {
+            width: 320px;
+            height: 320px;
+            background: #ff6b00;
+            top: -60px;
+            left: -60px;
+        }
+
+        .ball2 {
+            width: 280px;
+            height: 280px;
+            background: #ff2d55;
+            bottom: -90px;
+            right: -60px;
+            animation-delay: 2s;
+        }
+
+        .ball3 {
+            width: 220px;
+            height: 220px;
+            background: #ff9500;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 4s;
+        }
+
+        @keyframes floatBall {
+            0% { transform: translateY(0px) translateX(0px); }
+            100% { transform: translateY(-40px) translateX(30px); }
+        }
+
+        /* Glass Layers from Template */
+        .glass-layer {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(244, 242, 240, 0.8);
+            border-radius: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+        }
+
+        .layer1 {
+            width: 380px;
+            height: 380px;
+            top: 8%;
+            left: 8%;
+            transform: rotate(20deg);
+        }
+
+        .layer2 {
+            width: 280px;
+            height: 280px;
+            bottom: 12%;
+            right: 8%;
+            transform: rotate(-15deg);
+        }
+
+        .layer3 {
+            width: 180px;
+            height: 180px;
+            top: 48%;
+            left: 48%;
+            transform: translate(-50%, -50%) rotate(10deg);
+        }
+
+        /* Animated Lines from Template */
+        .lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .lines span {
+            position: absolute;
+            display: block;
+            width: 2px;
+            height: 120px;
+            background: linear-gradient(transparent, #ffffff30, transparent);
+            animation: lineMove 7s linear infinite;
+        }
+
+        .lines span:nth-child(1) { left: 12%; animation-delay: 0s; }
+        .lines span:nth-child(2) { left: 32%; animation-delay: 1.5s; }
+        .lines span:nth-child(3) { left: 52%; animation-delay: 3s; }
+        .lines span:nth-child(4) { left: 72%; animation-delay: 4.5s; }
+        .lines span:nth-child(5) { left: 92%; animation-delay: 6s; }
+
+        @keyframes lineMove {
+            0% { top: -20%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 120%; opacity: 0; }
+        }
+
+        /* Application UI glassmorphic containers */
+        .glass-header {
+            background: rgba(15, 15, 15, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(25, 25, 25, 0.55);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
         }
 
+        .glass-card {
+            background: rgba(30, 30, 30, 0.45);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 0, 0.25);
+            box-shadow: 0 20px 40px -10px rgba(255, 107, 0, 0.12);
+            background: rgba(35, 35, 35, 0.55);
+        }
+
+        /* Special Dual-Gradient Buttons inspired by user color template */
+        .btn-brand-gradient {
+            background: linear-gradient(135deg, #ff6b00 0%, #ff2d55 100%);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            color: #ffffff;
+            font-weight: 800;
+        }
+        .btn-brand-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -6px rgba(255, 45, 85, 0.4);
+            filter: brightness(1.1);
+        }
+        .btn-brand-gradient:active {
+            transform: scale(0.97);
+        }
+
+        /* Leaflet Controls & Overrides */
         .leaflet-routing-container {
             display: none !important;
         }
 
-        /* Hide scrollbar for clean view */
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
@@ -103,165 +280,147 @@
         }
 
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.02);
         }
         ::-webkit-scrollbar-thumb {
-            background: #e5e2e0;
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #ccc9c6;
+            background: #ff6b00;
         }
 
-        /* Custom Leaflet popup standard integration */
+        /* Dynamic Map dark integration styling */
+        .leaflet-container {
+            background: #111111 !important;
+        }
+
         .leaflet-popup-content-wrapper {
-            background: rgba(20, 18, 18, 0.95) !important;
-            backdrop-filter: blur(12px);
+            background: rgba(15, 15, 15, 0.92) !important;
+            backdrop-filter: blur(15px);
             color: #ffffff !important;
-            border-radius: 18px !important;
-            padding: 6px !important;
-            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 20px !important;
+            padding: 5px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
         }
         .leaflet-popup-tip {
-            background: rgba(20, 18, 18, 0.95) !important;
-        }
-
-        /* Premium Micro-Interactions */
-        .card-hover-effect {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .card-hover-effect:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 22px 40px -10px rgba(234, 42, 10, 0.12);
-        }
-
-        .btn-brand-gradient {
-            background: linear-gradient(135deg, #ff5035 0%, #ea2a0a 100%);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .btn-brand-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px -6px rgba(234, 42, 10, 0.35);
-        }
-        .btn-brand-gradient:active {
-            transform: scale(0.97);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(1deg); }
-        }
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
+            background: rgba(15, 15, 15, 0.92) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
         @keyframes pulse-ring {
-            0% { transform: scale(0.85); opacity: 0.8; }
+            0% { transform: scale(0.8); opacity: 0.8; }
             100% { transform: scale(2.2); opacity: 0; }
         }
         .pulse-ring {
-            animation: pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-
-        .custom-active-dot::after {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #10b981;
-            border-radius: 50%;
-            margin-right: 6px;
-            animation: blink 1.5s infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
     </style>
-<base target="_blank">
 </head>
-<body class="min-h-screen flex flex-col bg-[#fbfaf8] pb-24 md:pb-0 font-cairo">
+<body class="min-h-screen flex flex-col pb-24 md:pb-0">
+
+    <!-- Fixed Background Elements Template -->
+    <div class="fixed-bg-container">
+        <div class="gradient-bg"></div>
+
+        <div class="blur-ball ball1"></div>
+        <div class="blur-ball ball2"></div>
+        <div class="blur-ball ball3"></div>
+
+        <div class="glass-layer layer1"></div>
+        <div class="glass-layer layer2"></div>
+        <div class="glass-layer layer3"></div>
+
+        <div class="lines">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="fixed inset-0 z-[9999] bg-dark-950/98 flex flex-col items-center justify-center transition-all duration-500">
         <div class="relative flex items-center justify-center">
-            <div class="absolute w-28 h-28 rounded-full border-[3px] border-dark-700/50"></div>
+            <div class="absolute w-28 h-28 rounded-full border-[3px] border-neutral-800"></div>
             <div class="absolute w-28 h-28 rounded-full border-[3px] border-transparent border-t-brand-500 animate-spin"></div>
-            <div class="w-16 h-16 bg-gradient-to-tr from-brand-600 to-brand-400 rounded-3xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+            <div class="w-16 h-16 bg-gradient-to-tr from-brand-500 to-accent-500 rounded-3xl flex items-center justify-center shadow-lg shadow-brand-500/20">
                 <i class="fa-solid fa-motorcycle text-2xl text-white"></i>
             </div>
         </div>
         <h2 class="text-white font-black text-2xl mt-8 tracking-wide">العفرون أونلاين</h2>
-        <p id="loadingStatusText" class="text-stone-400 text-xs mt-3 px-6 text-center font-semibold tracking-wider">جاري تحضير تجربة تصفح سريعة...</p>
+        <p id="loadingStatusText" class="text-neutral-400 text-xs mt-3 px-6 text-center font-semibold tracking-wider">جاري التجهيز بنمط زجاجي ذكي...</p>
     </div>
 
     <!-- Rating Modal -->
-    <div id="ratingModal" class="fixed inset-0 bg-dark-950/80 backdrop-blur-md z-[9985] flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="w-full max-w-md bg-white rounded-4xl p-6 md:p-8 shadow-2xl text-center space-y-6 border border-stone-100 relative">
-            <button onclick="closeRatingModal()" class="absolute top-5 left-5 text-stone-400 hover:text-stone-700 transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-50">
+    <div id="ratingModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[9985] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="w-full max-w-md glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative border border-white/10 shadow-2xl">
+            <button onclick="closeRatingModal()" class="absolute top-5 left-5 text-neutral-400 hover:text-white transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/5">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
-            <div class="w-20 h-20 bg-brand-50 rounded-full flex items-center justify-center mx-auto text-brand-500 text-3xl shadow-inner">
+            <div class="w-20 h-20 bg-brand-500/10 rounded-full flex items-center justify-center mx-auto text-brand-500 text-3xl shadow-inner border border-brand-500/20">
                 <i class="fa-solid fa-star-half-stroke"></i>
             </div>
             <div class="space-y-1">
-                <h3 class="text-xl font-black text-dark-900">كيف كانت تجربتك؟</h3>
-                <p class="text-xs text-stone-400 font-medium leading-relaxed">رأيك يهمنا لمواصلة تقديم أفضل خدمة توصيل في العفرون</p>
+                <h3 class="text-xl font-black text-white">كيف كانت تجربتك؟</h3>
+                <p class="text-xs text-neutral-400 font-semibold leading-relaxed">رأيك يساهم في رفع جودة الخدمات بالمدينة</p>
             </div>
 
             <!-- Restaurant Rating -->
-            <div class="bg-stone-50/75 p-4 rounded-2xl border border-stone-100/80 space-y-2">
-                <span class="text-xs font-bold text-dark-800 block text-right"><i class="fa-solid fa-store text-brand-500 ml-1.5"></i> تقييم المطعم:</span>
+            <div class="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2">
+                <span class="text-xs font-black text-neutral-300 block text-right"><i class="fa-solid fa-store text-brand-500 ml-1.5"></i> تقييم المطعم:</span>
                 <div class="flex justify-center gap-2 text-3xl" id="restaurantStars">
-                    <span onclick="setStarRating('restaurant', 1)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-rest">★</span>
-                    <span onclick="setStarRating('restaurant', 2)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-rest">★</span>
-                    <span onclick="setStarRating('restaurant', 3)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-rest">★</span>
-                    <span onclick="setStarRating('restaurant', 4)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-rest">★</span>
-                    <span onclick="setStarRating('restaurant', 5)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-rest">★</span>
+                    <span onclick="setStarRating('restaurant', 1)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-rest">★</span>
+                    <span onclick="setStarRating('restaurant', 2)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-rest">★</span>
+                    <span onclick="setStarRating('restaurant', 3)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-rest">★</span>
+                    <span onclick="setStarRating('restaurant', 4)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-rest">★</span>
+                    <span onclick="setStarRating('restaurant', 5)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-rest">★</span>
                 </div>
             </div>
 
             <!-- Driver Rating -->
-            <div class="bg-stone-50/75 p-4 rounded-2xl border border-stone-100/80 space-y-2">
-                <span class="text-xs font-bold text-dark-800 block text-right"><i class="fa-solid fa-motorcycle text-brand-500 ml-1.5"></i> تقييم مندوب التوصيل:</span>
+            <div class="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2">
+                <span class="text-xs font-black text-neutral-300 block text-right"><i class="fa-solid fa-motorcycle text-brand-500 ml-1.5"></i> تقييم المندوب:</span>
                 <div class="flex justify-center gap-2 text-3xl" id="driverStars">
-                    <span onclick="setStarRating('driver', 1)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-driver">★</span>
-                    <span onclick="setStarRating('driver', 2)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-driver">★</span>
-                    <span onclick="setStarRating('driver', 3)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-driver">★</span>
-                    <span onclick="setStarRating('driver', 4)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-driver">★</span>
-                    <span onclick="setStarRating('driver', 5)" class="cursor-pointer text-stone-300 hover:text-amber-400 transition-colors duration-150 star-driver">★</span>
+                    <span onclick="setStarRating('driver', 1)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-driver">★</span>
+                    <span onclick="setStarRating('driver', 2)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-driver">★</span>
+                    <span onclick="setStarRating('driver', 3)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-driver">★</span>
+                    <span onclick="setStarRating('driver', 4)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-driver">★</span>
+                    <span onclick="setStarRating('driver', 5)" class="cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-driver">★</span>
                 </div>
             </div>
 
-            <button onclick="submitUserRatings()" class="w-full btn-brand-gradient text-white font-black py-4 rounded-2xl text-sm shadow-lg shadow-brand-500/10">
-                إرسال التقييم المزدوج
+            <button onclick="submitUserRatings()" class="w-full btn-brand-gradient py-4 rounded-2xl text-sm shadow-lg">
+                إرسال التقييم
             </button>
         </div>
     </div>
 
     <!-- Restaurant Fullscreen Request Overlay -->
-    <div id="restaurantRequestOverlay" class="fixed inset-0 bg-dark-950/95 backdrop-blur-xl z-[9990] flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="w-full max-w-lg bg-white rounded-4xl p-6 md:p-8 shadow-2xl text-center space-y-6 relative overflow-hidden">
-            <div class="relative flex items-center justify-center mx-auto w-20 h-20 bg-brand-50 rounded-full shadow-inner">
-                <div class="absolute inset-0 rounded-full bg-brand-400/20 pulse-ring"></div>
-                <i class="fa-solid fa-store text-3xl text-brand-600"></i>
+    <div id="restaurantRequestOverlay" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[9990] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="w-full max-w-lg glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative overflow-hidden border border-white/10">
+            <div class="relative flex items-center justify-center mx-auto w-20 h-20 bg-brand-500/10 rounded-full border border-brand-500/20">
+                <div class="absolute inset-0 rounded-full bg-brand-500/20 pulse-ring"></div>
+                <i class="fa-solid fa-store text-3xl text-brand-500"></i>
             </div>
             <div class="space-y-1">
-                <span class="bg-brand-50 text-brand-600 px-4 py-1.5 rounded-full text-xs font-black tracking-wider inline-block">طلب عميل جديد ومباشر</span>
-                <h2 class="text-2xl font-black text-dark-900 mt-2">طلب رقم <span id="restOverlayOrderId" class="text-brand-600">#--</span></h2>
+                <span class="bg-brand-500/15 text-brand-400 px-4 py-1.5 rounded-full text-xs font-black tracking-wider inline-block">طلبية جديدة للمطعم</span>
+                <h2 class="text-2xl font-black text-white mt-2">طلب رقم <span id="restOverlayOrderId" class="text-brand-500">#--</span></h2>
             </div>
-            <div class="bg-stone-50 rounded-3xl p-5 border border-stone-100 text-right space-y-2">
-                <p class="text-xs text-stone-500 font-bold">معلومات العميل:</p>
-                <p class="text-sm text-dark-800 font-black"><i class="fa-regular fa-user ml-2 text-stone-400"></i><span id="restOverlayCustName">--</span></p>
-                <p class="text-sm text-dark-800 font-black"><i class="fa-solid fa-phone ml-2 text-stone-400"></i><span id="restOverlayCustPhone">--</span></p>
+            <div class="bg-white/5 rounded-3xl p-5 border border-white/5 text-right space-y-2">
+                <p class="text-xs text-neutral-400 font-bold">معلومات العميل:</p>
+                <p class="text-sm text-white font-black"><i class="fa-regular fa-user ml-2 text-neutral-500"></i><span id="restOverlayCustName">--</span></p>
+                <p class="text-sm text-white font-black"><i class="fa-solid fa-phone ml-2 text-neutral-500"></i><span id="restOverlayCustPhone">--</span></p>
             </div>
             <div class="space-y-3">
-                <h4 class="text-dark-600 text-xs text-right font-black flex items-center gap-1.5"><i class="fa-solid fa-utensils text-brand-500"></i> الوجبات والأطباق المطلوبة:</h4>
-                <div id="restOverlayItemsList" class="max-h-52 overflow-y-auto space-y-3 pr-1 text-right text-xs bg-stone-50/50 p-4 rounded-2xl border border-stone-100"></div>
+                <h4 class="text-neutral-400 text-xs text-right font-black flex items-center gap-1.5"><i class="fa-solid fa-utensils text-brand-500"></i> الوجبات والأطباق المطلوبة:</h4>
+                <div id="restOverlayItemsList" class="max-h-52 overflow-y-auto space-y-3 pr-1 text-right text-xs bg-white/5 p-4 rounded-2xl border border-white/5"></div>
             </div>
             <div class="flex gap-4 pt-2">
                 <button id="restOverlayAcceptBtn" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-4 rounded-2xl text-sm transition-all shadow-lg shadow-emerald-500/10 active:scale-95">
@@ -275,48 +434,48 @@
     </div>
 
     <!-- Driver Request Overlay -->
-    <div id="driverRequestOverlay" class="fixed inset-0 bg-dark-950/95 backdrop-blur-xl z-[9995] flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="w-full max-w-lg bg-white rounded-4xl p-6 md:p-8 shadow-2xl text-center space-y-6 relative overflow-hidden">
-            <div class="relative flex items-center justify-center mx-auto w-20 h-20 bg-brand-50 rounded-full shadow-inner">
-                <div class="absolute inset-0 rounded-full bg-brand-400/20 pulse-ring"></div>
-                <i class="fa-solid fa-bell text-3xl text-brand-600 animate-bounce"></i>
+    <div id="driverRequestOverlay" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[9995] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="w-full max-w-lg glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative overflow-hidden border border-white/10">
+            <div class="relative flex items-center justify-center mx-auto w-20 h-20 bg-brand-500/10 rounded-full border border-brand-500/20">
+                <div class="absolute inset-0 rounded-full bg-brand-500/20 pulse-ring"></div>
+                <i class="fa-solid fa-bell text-3xl text-brand-500 animate-bounce"></i>
             </div>
 
             <div class="space-y-1">
-                <span class="bg-brand-50 text-brand-600 px-4 py-1.5 rounded-full text-xs font-black tracking-wider inline-block">مهمة توصيل عاجلة</span>
-                <h2 class="text-2xl font-black text-dark-900 mt-2">طلب رقم <span id="overlayOrderId" class="text-brand-600">#--</span></h2>
+                <span class="bg-brand-500/15 text-brand-400 px-4 py-1.5 rounded-full text-xs font-black tracking-wider inline-block">مهمة توصيل جديدة للمندوب</span>
+                <h2 class="text-2xl font-black text-white mt-2">طلب رقم <span id="overlayOrderId" class="text-brand-500">#--</span></h2>
             </div>
 
-            <div class="bg-stone-50 rounded-3xl p-5 border border-stone-100 text-right space-y-4">
-                <div class="flex items-start gap-3.5 border-b border-stone-200/50 pb-4">
-                    <div class="w-11 h-11 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center shrink-0 shadow-sm"><i class="fa-solid fa-store text-base"></i></div>
+            <div class="bg-white/5 rounded-3xl p-5 border border-white/5 text-right space-y-4">
+                <div class="flex items-start gap-3.5 border-b border-white/5 pb-4">
+                    <div class="w-11 h-11 bg-brand-500/10 text-brand-500 rounded-2xl flex items-center justify-center shrink-0 border border-brand-500/10"><i class="fa-solid fa-store text-base"></i></div>
                     <div>
-                        <span class="text-[10px] text-stone-400 font-bold block mb-0.5">نقطة استلام الوجبة</span>
-                        <span id="overlayRestName" class="text-sm font-black text-dark-950">--</span>
+                        <span class="text-[10px] text-neutral-400 font-bold block mb-0.5">نقطة استلام الوجبة</span>
+                        <span id="overlayRestName" class="text-sm font-black text-white">--</span>
                     </div>
                 </div>
                 <div class="flex items-start gap-3.5">
-                    <div class="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shrink-0 shadow-sm"><i class="fa-solid fa-location-dot text-base"></i></div>
+                    <div class="w-11 h-11 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center shrink-0 border border-emerald-500/10"><i class="fa-solid fa-location-dot text-base"></i></div>
                     <div>
-                        <span class="text-[10px] text-stone-400 font-bold block mb-0.5">نقطة تسليم العميل</span>
-                        <span id="overlayCustName" class="text-sm font-black text-dark-950">--</span>
-                        <a id="overlayCustPhone" href="#" class="text-xs text-brand-600 font-bold block mt-1.5 flex items-center gap-1">
-                            <i class="fa-solid fa-phone text-[10px]"></i> الاتصال: <span id="overlayCustPhoneText">--</span>
+                        <span class="text-[10px] text-neutral-400 font-bold block mb-0.5">نقطة تسليم العميل</span>
+                        <span id="overlayCustName" class="text-sm font-black text-white">--</span>
+                        <a id="overlayCustPhone" href="#" class="text-xs text-brand-500 font-bold block mt-1.5 flex items-center gap-1">
+                            <i class="fa-solid fa-phone text-[10px]"></i> اتصال: <span id="overlayCustPhoneText">--</span>
                         </a>
                     </div>
                 </div>
             </div>
 
             <div class="space-y-2">
-                <h4 class="text-stone-500 text-xs text-right font-black flex items-center gap-1.5"><i class="fa-solid fa-burger text-brand-500"></i> الوجبات:</h4>
-                <div id="overlayItemsList" class="max-h-28 overflow-y-auto space-y-2 pr-1 text-right text-xs bg-stone-50/50 p-3 rounded-2xl border border-stone-100/60"></div>
+                <h4 class="text-neutral-400 text-xs text-right font-black flex items-center gap-1.5"><i class="fa-solid fa-burger text-brand-500"></i> الوجبات:</h4>
+                <div id="overlayItemsList" class="max-h-28 overflow-y-auto space-y-2 pr-1 text-right text-xs bg-white/5 p-3 rounded-2xl border border-white/5"></div>
             </div>
 
             <div class="flex gap-4 pt-2">
                 <button id="overlayAcceptBtn" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-4 rounded-2xl text-sm transition-all shadow-lg shadow-emerald-500/10 active:scale-95">
                     <i class="fa-solid fa-check ml-1.5"></i> قبول المهمة
                 </button>
-                <button onclick="closeDriverOverlay()" class="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-600 font-extrabold py-4 rounded-2xl text-sm transition-all active:scale-95">
+                <button onclick="closeDriverOverlay()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-extrabold py-4 rounded-2xl text-sm transition-all active:scale-95">
                     <i class="fa-solid fa-xmark ml-1.5"></i> رفض
                 </button>
             </div>
@@ -324,89 +483,89 @@
     </div>
 
     <!-- Driver Fullscreen Active Task Map View (Uber Style) -->
-    <div id="driverActiveTaskContainer" class="fixed inset-0 bg-stone-100 z-[9900] hidden">
+    <div id="driverActiveTaskContainer" class="fixed inset-0 bg-black z-[9900] hidden">
         <!-- Fullscreen map -->
         <div id="driverFullscreenMap" class="absolute inset-0 w-full h-full z-10"></div>
         
         <!-- Floating Header -->
-        <div class="absolute top-5 inset-x-5 bg-white/95 backdrop-blur-md p-5 rounded-3xl shadow-2xl z-20 border border-stone-100 flex items-center justify-between max-w-md mx-auto">
+        <div class="absolute top-5 inset-x-5 glass-panel p-5 rounded-3xl shadow-2xl z-20 border border-white/10 flex items-center justify-between max-w-md mx-auto">
             <div class="text-right">
-                <span class="text-[10px] text-brand-600 font-extrabold uppercase tracking-widest block mb-0.5">مهمة توصيل نشطة (مسار ذكي)</span>
-                <h3 id="driverActiveTaskTitle" class="text-xs font-black text-dark-900">توصيل الطلب #--</h3>
+                <span class="text-[10px] text-brand-500 font-extrabold uppercase tracking-widest block mb-0.5">مهمة نشطة (تتبع المسار)</span>
+                <h3 id="driverActiveTaskTitle" class="text-xs font-black text-white">توصيل الطلب #--</h3>
             </div>
-            <button onclick="completeActiveDeliveryTask()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-2xl text-xs font-black transition-all shadow-md shadow-emerald-500/10 active:scale-95">
+            <button onclick="completeActiveDeliveryTask()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-2xl text-xs font-black transition-all shadow-md active:scale-95">
                 تم التسليم للزبون <i class="fa-solid fa-check mr-1.5"></i>
             </button>
         </div>
 
         <!-- Customer Call Floating Button -->
         <div class="absolute bottom-6 left-6 z-20">
-            <a id="driverActiveCallBtn" href="#" class="bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-blue-500/25 transition active:scale-95 text-xl">
+            <a id="driverActiveCallBtn" href="#" class="bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition active:scale-95 text-xl">
                 <i class="fa-solid fa-phone"></i>
             </a>
         </div>
     </div>
 
     <!-- Auth Modal -->
-    <div id="authModal" class="fixed inset-0 bg-dark-950/80 z-[9980] flex items-center justify-center hidden p-4 transition-all duration-300 backdrop-blur-md">
-        <div class="bg-white rounded-4xl max-w-md w-full p-6 md:p-8 shadow-2xl relative overflow-hidden border border-stone-100">
-            <button onclick="closeAuthModal()" class="absolute top-5 left-5 text-stone-400 hover:text-stone-700 transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-50">
+    <div id="authModal" class="fixed inset-0 bg-black/85 z-[9980] flex items-center justify-center hidden p-4 transition-all duration-300 backdrop-blur-md">
+        <div class="glass-panel rounded-4xl max-w-md w-full p-6 md:p-8 shadow-2xl relative overflow-hidden border border-white/10">
+            <button onclick="closeAuthModal()" class="absolute top-5 left-5 text-neutral-400 hover:text-white transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/5">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <div class="flex border-b border-stone-100/80 mb-6">
-                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-4.5 text-center border-b-[3px] border-brand-500 font-black text-dark-950 text-sm transition-all">تسجيل الدخول</button>
-                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-4.5 text-center border-b-[3px] border-transparent text-stone-400 font-black hover:text-stone-600 text-sm transition-all">إنشاء حساب جديد</button>
+            <div class="flex border-b border-white/5 mb-6">
+                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-4 text-center border-b-[3px] border-brand-500 font-black text-white text-sm transition-all">تسجيل الدخول</button>
+                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-4 text-center border-b-[3px] border-transparent text-neutral-400 font-black hover:text-white text-sm transition-all">إنشاء حساب جديد</button>
             </div>
 
             <form id="authForm" class="space-y-4">
                 <div id="registerFields" class="hidden space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-stone-500 mb-1.5">الاسم الكامل</label>
+                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">الاسم الكامل</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-stone-400"><i class="fa-regular fa-user"></i></span>
-                            <input type="text" id="regName" class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-stone-200/80 focus:outline-none focus:border-brand-500 text-sm font-semibold bg-stone-50/50" placeholder="الاسم واللقب">
+                            <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-neutral-500"><i class="fa-regular fa-user"></i></span>
+                            <input type="text" id="regName" class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-white/10 focus:outline-none focus:border-brand-500 text-sm font-semibold bg-white/5 text-white" placeholder="الاسم الكامل">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-stone-500 mb-1.5">رقم الهاتف</label>
+                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">رقم الهاتف</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-stone-400"><i class="fa-solid fa-phone"></i></span>
-                            <input type="tel" id="regPhone" class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-stone-200/80 focus:outline-none focus:border-brand-500 text-sm font-semibold bg-stone-50/50" placeholder="05XXXXXXXX">
+                            <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-neutral-500"><i class="fa-solid fa-phone"></i></span>
+                            <input type="tel" id="regPhone" class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-white/10 focus:outline-none focus:border-brand-500 text-sm font-semibold bg-white/5 text-white" placeholder="05XXXXXXXX">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-bold text-stone-500 mb-1.5">المدينة</label>
-                            <input type="text" id="regCity" value="العفرون" readonly class="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-stone-100 text-stone-500 text-sm cursor-not-allowed font-black text-center">
+                            <label class="block text-xs font-bold text-neutral-300 mb-1.5">المدينة</label>
+                            <input type="text" id="regCity" value="العفرون" readonly class="w-full px-4 py-3.5 rounded-2xl border border-white/10 bg-white/5 text-neutral-400 text-sm cursor-not-allowed font-black text-center">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-stone-500 mb-1.5">نوع الحساب</label>
-                            <select id="regRole" class="w-full px-3 py-3.5 rounded-2xl border border-stone-200 focus:outline-none focus:border-brand-500 text-sm font-bold bg-stone-50/50">
-                                <option value="customer">زبون (طالب طعام)</option>
-                                <option value="restaurant">صاحب مطعم</option>
-                                <option value="delivery">سائق دراجة توصيل</option>
+                            <label class="block text-xs font-bold text-neutral-300 mb-1.5">نوع الحساب</label>
+                            <select id="regRole" class="w-full px-3 py-3.5 rounded-2xl border border-white/10 focus:outline-none focus:border-brand-500 text-sm font-bold bg-white/5 text-white">
+                                <option value="customer" class="bg-dark-900">زبون (طالب طعام)</option>
+                                <option value="restaurant" class="bg-dark-900">صاحب مطعم</option>
+                                <option value="delivery" class="bg-dark-900">سائق توصيل</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-stone-500 mb-1.5">البريد الإلكتروني</label>
+                    <label class="block text-xs font-bold text-neutral-300 mb-1.5">البريد الإلكتروني</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-stone-400"><i class="fa-regular fa-envelope"></i></span>
-                        <input type="email" id="authEmail" required class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-stone-200/80 focus:outline-none focus:border-brand-500 text-sm font-semibold bg-stone-50/50" placeholder="yourname@gmail.com">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-neutral-500"><i class="fa-regular fa-envelope"></i></span>
+                        <input type="email" id="authEmail" required class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-white/10 focus:outline-none focus:border-brand-500 text-sm font-semibold bg-white/5 text-white" placeholder="yourname@gmail.com">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-stone-500 mb-1.5">كلمة المرور</label>
+                    <label class="block text-xs font-bold text-neutral-300 mb-1.5">كلمة المرور</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-stone-400"><i class="fa-solid fa-lock"></i></span>
-                        <input type="password" id="authPassword" required class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-stone-200/80 focus:outline-none focus:border-brand-500 text-sm font-semibold bg-stone-50/50" placeholder="••••••••">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-neutral-500"><i class="fa-solid fa-lock"></i></span>
+                        <input type="password" id="authPassword" required class="w-full pr-11 pl-4 py-3.5 rounded-2xl border border-white/10 focus:outline-none focus:border-brand-500 text-sm font-semibold bg-white/5 text-white" placeholder="••••••••">
                     </div>
                 </div>
 
-                <button type="submit" id="authSubmitBtn" class="w-full btn-brand-gradient text-white font-black py-4 rounded-2xl transition shadow-xl shadow-brand-500/10 text-sm mt-3">
+                <button type="submit" id="authSubmitBtn" class="w-full btn-brand-gradient py-4 rounded-2xl transition shadow-xl text-sm mt-3">
                     تسجيل الدخول
                 </button>
             </form>
@@ -414,73 +573,68 @@
     </div>
 
     <!-- Header -->
-    <header class="glass-header sticky top-0 z-40">
+    <header class="glass-header sticky top-0 z-45">
         <div class="container mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3.5 cursor-pointer" onclick="navigateHome()">
-                <div class="bg-gradient-to-tr from-brand-600 to-brand-400 text-white w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/15">
+                <div class="bg-gradient-to-tr from-brand-500 to-accent-500 text-white w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg">
                     <i class="fa-solid fa-motorcycle text-xl"></i>
                 </div>
                 <div class="text-right">
-                    <span class="text-xl font-black text-dark-950 block leading-tight">العفرون <span class="text-brand-500">أونلاين</span></span>
-                    <span class="text-[10px] text-stone-400 font-bold block uppercase tracking-wider">منصة التوصيل الذكية الأولى</span>
+                    <span class="text-xl font-black text-white block leading-tight">العفرون <span class="text-brand-500">أونلاين</span></span>
+                    <span class="text-[10px] text-neutral-400 font-bold block uppercase tracking-wider">منصة التوصيل الذكية الأولى</span>
                 </div>
             </div>
 
             <nav class="flex items-center gap-3">
-                <div id="userProfileHeader" class="hidden flex items-center gap-3.5 bg-stone-50 border border-stone-200/60 px-4 py-1.5 rounded-2xl">
+                <div id="userProfileHeader" class="hidden flex items-center gap-3.5 bg-white/5 border border-white/10 px-4 py-1.5 rounded-2xl">
                     <div class="text-right">
-                        <span id="headerUserName" class="text-xs font-black text-dark-900 block">--</span>
+                        <span id="headerUserName" class="text-xs font-black text-white block">--</span>
                         <span id="headerUserRole" class="text-[9px] text-brand-500 font-extrabold uppercase tracking-widest block">--</span>
                     </div>
                 </div>
-                <button id="logoutBtn" class="hidden bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-2xl text-xs font-black transition-all">
-                    خروج <i class="fa-solid fa-arrow-right-from-bracket mr-1 text-[10px]"></i>
+                <button id="logoutBtn" class="hidden bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/25 px-4 py-2.5 rounded-2xl text-xs font-black transition-all">
+                    خروج <i class="fa-solid fa-arrow-right-from-bracket mr-1.5 text-[10px]"></i>
                 </button>
-                <button id="loginTriggerBtn" class="bg-dark-950 hover:bg-dark-900 text-white px-5 py-2.5 rounded-2xl text-xs font-black shadow-md transition-all active:scale-95 flex items-center gap-2">
+                <button id="loginTriggerBtn" class="bg-white/10 hover:bg-white/15 border border-white/10 text-white px-5 py-2.5 rounded-2xl text-xs font-black shadow-md transition-all active:scale-95 flex items-center gap-2">
                     <i class="fa-regular fa-user"></i> دخول / تسجيل
                 </button>
             </nav>
         </div>
     </header>
 
-    <main class="flex-grow">
+    <main class="flex-grow z-10 relative">
 
-        <!-- Landing Page -->
-        <section id="landingSection" class="relative overflow-hidden bg-dark-950 text-white min-h-[85vh] flex items-center">
-            <div class="absolute inset-0">
-                <img src="https://images.unsplash.com/photo-1526367790999-0150786486a9?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover opacity-25" alt="Delivery Rider Map">
-                <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/85 to-dark-950/45"></div>
-            </div>
-
+        <!-- Landing Page Hero -->
+        <section id="landingSection" class="relative overflow-hidden min-h-[85vh] flex items-center">
             <div class="container mx-auto px-4 md:px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16">
                 <div class="space-y-7 text-right">
-                    <span class="bg-brand-500/15 text-brand-300 border border-brand-500/30 px-4 py-2 rounded-full text-xs font-black inline-block tracking-widest"><i class="fa-solid fa-bolt ml-1.5 text-brand-400"></i> السرعة والكفاءة الأقرب إليك</span>
-                    <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tight" id="landingHeroText">العفرون أونلاين <br><span class="bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">جسر طعامك السريع</span></h1>
-                    <p class="text-stone-300 text-sm md:text-base max-w-xl leading-relaxed font-medium">
-                        المنصة الذكية الرائدة بمدينة العفرون، مجهزة بتقنية الخرائط التفاعلية الأحدث وبث مباشر فريد لتتبع مسار مندوبي التوصيل خطوة بخطوة.
+                    <span class="bg-brand-500/15 text-brand-400 border border-brand-500/30 px-4 py-2 rounded-full text-xs font-black inline-block tracking-widest"><i class="fa-solid fa-bolt ml-1.5 animate-pulse"></i> أسرع توصيل طعام بمدينة العفرون</span>
+                    <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tight text-white" id="landingHeroText">العفرون أونلاين <br><span class="bg-gradient-to-l from-brand-500 to-accent-500 bg-clip-text text-transparent">جسر طعامك السريع</span></h1>
+                    <p class="text-neutral-300 text-sm md:text-base max-w-xl leading-relaxed font-semibold">
+                        المنصة الأكثر سهولة وتطوراً بمدينة العفرون، مجهزة بخدمات الخرائط التفاعلية الذكية وبث مباشر لموقع المندوب بالخلفية لضمان تتبع حي ومباشر.
                     </p>
                     <div class="flex flex-wrap gap-4 pt-2">
-                        <button onclick="openAuthModal('register')" class="btn-brand-gradient text-white font-black px-9 py-4 rounded-2xl shadow-2xl shadow-brand-500/20 transition-all duration-300 flex items-center gap-3 text-sm">
+                        <button onclick="openAuthModal('register')" class="btn-brand-gradient px-9 py-4 rounded-2xl shadow-2xl transition-all duration-300 flex items-center gap-3 text-sm">
                             ابدأ طلب وجبتك المفضلة الآن 
-                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                            <i class="fa-solid fa-arrow-left text-xs animate-ping"></i>
                         </button>
                     </div>
                 </div>
                 <div class="hidden lg:flex justify-end relative">
-                    <div class="glass-panel p-7 rounded-4xl shadow-2xl w-88 text-center relative z-10 border border-white/10 bg-white/5 backdrop-blur-xl">
-                        <div class="w-16 h-16 bg-gradient-to-tr from-brand-500 to-brand-300 rounded-3xl mx-auto flex items-center justify-center shadow-lg shadow-brand-500/20 mb-5">
+                    <div class="glass-panel p-7 rounded-4xl shadow-2xl w-88 text-center relative z-10 border border-white/10">
+                        <div class="w-16 h-16 bg-gradient-to-tr from-brand-500 to-accent-500 rounded-3xl mx-auto flex items-center justify-center shadow-lg mb-5">
                             <i class="fa-solid fa-map-location-dot text-3xl text-white"></i>
                         </div>
                         <h3 class="font-extrabold text-lg text-white mb-2">تتبع الدراجة المباشر</h3>
-                        <p class="text-xs text-stone-300 leading-relaxed mb-5 font-semibold">شاهد المندوب وهو يقترب من منزلك على الخريطة المباشرة بدقة متناهية.</p>
-                        <div class="h-28 bg-dark-900/80 rounded-3xl p-4 flex flex-col justify-between text-right text-xs border border-white/5">
+                        <p class="text-xs text-neutral-300 leading-relaxed mb-5 font-semibold">شاهد المندوب وهو يقترب من موقعك على الخريطة المباشرة بدقة متناهية.</p>
+                        <div class="h-28 bg-black/50 rounded-3xl p-4 flex flex-col justify-between text-right text-xs border border-white/5">
                             <div class="flex justify-between items-center text-brand-400 font-black">
                                 <span>طلب نشط رقم #3942</span>
-                                <span class="bg-brand-500/25 px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-extrabold">جاري التوصيل</span>
+                                <span class="bg-brand-500/25 px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-extrabold text-white">جاري التوصيل</span>
                             </div>
-                            <div class="flex items-center gap-3 mt-1.5 text-stone-200">
-                                <i class="fa-solid fa-motorcycle text-brand-500 text-lg animate-float"></i>
-                                <span class="font-bold">المندوب على بعد دقيقتين</span>
+                            <div class="flex items-center gap-3 mt-1.5 text-neutral-200">
+                                <i class="fa-solid fa-motorcycle text-brand-500 text-lg animate-bounce"></i>
+                                <span class="font-bold">المندوب على بعد دقائق</span>
                             </div>
                         </div>
                     </div>
@@ -492,31 +646,31 @@
         <section id="customerView" class="hidden container mx-auto px-4 py-8 md:py-12">
             <div id="customerHome" class="space-y-10">
                 <!-- Hero Banner -->
-                <div class="bg-gradient-to-r from-brand-600 via-brand-500 to-brand-400 rounded-4xl p-6 md:p-12 text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl relative overflow-hidden">
+                <div class="bg-gradient-to-r from-brand-500 via-brand-600 to-accent-500 rounded-4xl p-6 md:p-12 text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl relative overflow-hidden">
                     <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
                     <div class="text-right space-y-3.5 relative z-10">
                         <span class="bg-white/15 px-3.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase inline-block">خدمة آمنة وسريعة</span>
                         <h2 class="text-2xl md:text-4xl font-black">طعامك المفضل في يدٍ أمينة</h2>
-                        <p class="text-xs md:text-sm text-brand-100 max-w-xl font-medium leading-relaxed">اختر وجبتك المفضلة وسنتكفل بكافة تفاصيل التحضير والتوصيل بعناية فائقة.</p>
+                        <p class="text-xs md:text-sm text-neutral-100 max-w-xl font-medium leading-relaxed">اختر وجبتك المفضلة وسنتولى الباقي بدقة متناهية عبر شبكة التوصيل الموثوقة.</p>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=400&auto=format&fit=crop" class="w-28 h-28 md:w-36 md:h-36 rounded-3xl object-cover border-4 border-white/20 shadow-2xl animate-float hidden md:block" alt="Delicious Food Burger Pizza">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=400&auto=format&fit=crop" class="w-28 h-28 md:w-36 md:h-36 rounded-3xl object-cover border-4 border-white/20 shadow-2xl animate-pulse hidden md:block" alt="Delicious Food">
                 </div>
 
                 <!-- Categories -->
                 <div class="flex gap-3 overflow-x-auto pb-3 scrollbar-hide">
-                    <button class="category-pill bg-white hover:bg-brand-500 hover:text-white border border-stone-200/80 px-6 py-3 rounded-full text-xs font-black text-dark-800 whitespace-nowrap shadow-sm flex items-center gap-2">
+                    <button class="category-pill bg-white/5 border border-white/10 px-6 py-3 rounded-full text-xs font-black text-white whitespace-nowrap shadow-sm hover:bg-brand-500 transition-all flex items-center gap-2">
                         <i class="fa-solid fa-fire text-brand-500"></i> الكل
                     </button>
-                    <button class="category-pill bg-white hover:bg-brand-500 hover:text-white border border-stone-200/80 px-6 py-3 rounded-full text-xs font-black text-dark-800 whitespace-nowrap shadow-sm flex items-center gap-2">
+                    <button class="category-pill bg-white/5 border border-white/10 px-6 py-3 rounded-full text-xs font-black text-white whitespace-nowrap shadow-sm hover:bg-brand-500 transition-all flex items-center gap-2">
                         <i class="fa-solid fa-burger text-brand-500"></i> برجر
                     </button>
-                    <button class="category-pill bg-white hover:bg-brand-500 hover:text-white border border-stone-200/80 px-6 py-3 rounded-full text-xs font-black text-dark-800 whitespace-nowrap shadow-sm flex items-center gap-2">
+                    <button class="category-pill bg-white/5 border border-white/10 px-6 py-3 rounded-full text-xs font-black text-white whitespace-nowrap shadow-sm hover:bg-brand-500 transition-all flex items-center gap-2">
                         <i class="fa-solid fa-pizza-slice text-brand-500"></i> بيتزا
                     </button>
-                    <button class="category-pill bg-white hover:bg-brand-500 hover:text-white border border-stone-200/80 px-6 py-3 rounded-full text-xs font-black text-dark-800 whitespace-nowrap shadow-sm flex items-center gap-2">
+                    <button class="category-pill bg-white/5 border border-white/10 px-6 py-3 rounded-full text-xs font-black text-white whitespace-nowrap shadow-sm hover:bg-brand-500 transition-all flex items-center gap-2">
                         <i class="fa-solid fa-drumstick-bite text-brand-500"></i> مشاوي
                     </button>
-                    <button class="category-pill bg-white hover:bg-brand-500 hover:text-white border border-stone-200/80 px-6 py-3 rounded-full text-xs font-black text-dark-800 whitespace-nowrap shadow-sm flex items-center gap-2">
+                    <button class="category-pill bg-white/5 border border-white/10 px-6 py-3 rounded-full text-xs font-black text-white whitespace-nowrap shadow-sm hover:bg-brand-500 transition-all flex items-center gap-2">
                         <i class="fa-solid fa-mug-hot text-brand-500"></i> مشروبات
                     </button>
                 </div>
@@ -524,11 +678,11 @@
                 <!-- Restaurants Grid -->
                 <div class="space-y-6">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xl md:text-2xl font-black text-dark-950 flex items-center gap-2">
-                            المطاعم المتوفرة حالياً
+                        <h3 class="text-xl md:text-2xl font-black text-white flex items-center gap-2">
+                            المطاعم المتاحة حالياً
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         </h3>
-                        <span class="text-[10px] font-extrabold text-stone-400 bg-stone-100 px-3.5 py-1.5 rounded-full uppercase tracking-wider">تحديث حي وتلقائي</span>
+                        <span class="text-[10px] font-extrabold text-neutral-400 bg-white/5 px-3.5 py-1.5 rounded-full uppercase tracking-wider border border-white/5">تحديث حي وتلقائي</span>
                     </div>
                     <div id="restaurantsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Restaurants loaded dynamically -->
@@ -538,58 +692,58 @@
 
             <!-- Restaurant Menu Detail -->
             <div id="restaurantMenuDetail" class="hidden space-y-8">
-                <button onclick="backToRestaurants()" class="text-brand-600 font-extrabold text-sm flex items-center gap-2 hover:underline transition-all group">
+                <button onclick="backToRestaurants()" class="text-brand-500 font-extrabold text-sm flex items-center gap-2 hover:underline transition-all group">
                     <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i> العودة لقائمة المطاعم الرئيسة
                 </button>
 
-                <div class="bg-white rounded-3xl p-6 shadow-premium border border-stone-100 flex flex-col sm:flex-row gap-5 items-center">
-                    <img id="menuRestImg" src="" class="w-24 h-24 rounded-2xl object-cover shadow-md border border-stone-100" alt="Restaurant Logo">
+                <div class="glass-panel rounded-3xl p-6 border border-white/10 flex flex-col sm:flex-row gap-5 items-center">
+                    <img id="menuRestImg" src="" class="w-24 h-24 rounded-2xl object-cover shadow-md border border-white/10 animate-pulse" alt="Restaurant Logo">
                     <div class="text-center sm:text-right space-y-1.5 flex-1">
                         <div class="flex flex-col sm:flex-row items-center sm:justify-start gap-2.5">
-                            <h2 id="menuRestName" class="text-2xl font-black text-dark-950">--</h2>
-                            <span id="menuRestRatingBadge" class="text-xs font-bold text-amber-500 bg-amber-50 px-2.5 py-1 rounded-xl"></span>
+                            <h2 id="menuRestName" class="text-2xl font-black text-white">--</h2>
+                            <span id="menuRestRatingBadge" class="text-xs font-bold text-amber-500 bg-amber-500/10 border border-amber-500/10 px-2.5 py-1 rounded-xl"></span>
                         </div>
-                        <p id="menuRestPhone" class="text-xs text-stone-400 font-bold flex items-center justify-center sm:justify-start gap-1.5"></p>
+                        <p id="menuRestPhone" class="text-xs text-neutral-400 font-bold flex items-center justify-center sm:justify-start gap-1.5"></p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Menu Items -->
                     <div class="lg:col-span-2 space-y-5">
-                        <h3 class="text-lg font-black text-dark-950 border-b border-stone-100 pb-3 flex items-center gap-2"><i class="fa-solid fa-utensils text-brand-500"></i> قائمة الطعام المتوفرة</h3>
+                        <h3 class="text-lg font-black text-white border-b border-white/10 pb-3 flex items-center gap-2"><i class="fa-solid fa-utensils text-brand-500"></i> قائمة الأطباق والوجبات المتاحة</h3>
                         <div id="dishesList" class="grid grid-cols-1 gap-4">
                             <!-- Dishes loaded dynamically -->
                         </div>
                     </div>
 
                     <!-- Cart & Map -->
-                    <div id="cartCheckoutContainer" class="bg-white rounded-3xl p-6 border border-stone-100 shadow-premium h-fit space-y-6 sticky top-24">
-                        <div class="border-b border-stone-100 pb-4">
-                            <h3 class="text-lg font-black text-dark-950">تفاصيل سلتك</h3>
-                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">الوجبات المضافة حالياً</p>
+                    <div id="cartCheckoutContainer" class="glass-panel rounded-3xl p-6 border border-white/10 shadow-premium h-fit space-y-6 sticky top-24">
+                        <div class="border-b border-white/10 pb-4">
+                            <h3 class="text-lg font-black text-white">تفاصيل سلتك</h3>
+                            <p class="text-[10px] text-neutral-400 font-bold uppercase tracking-wider">الوجبات المضافة حالياً</p>
                         </div>
                         <div id="cartItemsList" class="space-y-3 max-h-48 overflow-y-auto pr-1">
-                            <p class="text-xs text-stone-400 text-center py-5 font-semibold">السلة فارغة، أضف بعض الأطباق</p>
+                            <p class="text-xs text-neutral-400 text-center py-5 font-semibold">السلة فارغة، أضف بعض الأطباق</p>
                         </div>
 
                         <!-- Location -->
-                        <div class="bg-stone-50/70 p-4 rounded-2xl space-y-3.5 border border-stone-100/80">
-                            <span class="block text-xs font-black text-dark-900"><i class="fa-solid fa-map-pin text-brand-600 ml-1"></i> حدد موقع التوصيل المطلوب:</span>
+                        <div class="bg-white/5 p-4 rounded-2xl space-y-3.5 border border-white/5">
+                            <span class="block text-xs font-black text-white"><i class="fa-solid fa-map-pin text-brand-500 ml-1"></i> حدد موقع التوصيل المطلوب:</span>
                             <button type="button" onclick="getCustomerLocation()" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-brand-500/10 active:scale-95">
                                 <i class="fa-solid fa-location-crosshairs"></i>
-                                <span id="gpsStatus">البحث عن موقعي التلقائي</span>
+                                <span id="gpsStatus">تحديد موقعي التلقائي (GPS)</span>
                             </button>
-                            <div class="relative rounded-2xl overflow-hidden border border-stone-200">
+                            <div class="relative rounded-2xl overflow-hidden border border-white/10">
                                 <div id="interactiveLocationMap" class="h-44 w-full z-10"></div>
                             </div>
-                            <span id="coordinatesText" class="block text-[9px] text-stone-400 text-center font-extrabold uppercase tracking-wider bg-white py-1 rounded-lg border border-stone-100/60">الموقع الافتراضي: العفرون وسط المدينة</span>
+                            <span id="coordinatesText" class="block text-[9px] text-neutral-400 text-center font-extrabold uppercase tracking-wider bg-black/40 py-1.5 rounded-lg border border-white/5">الموقع الحالي: العفرون وسط المدينة</span>
                         </div>
 
-                        <div class="border-t border-stone-100 pt-4 flex justify-between items-center font-black text-dark-950">
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center font-black text-white">
                             <span class="text-sm">المجموع الكلي:</span>
-                            <span id="cartTotalPrice" class="text-2xl text-brand-600">0 د.ج</span>
+                            <span id="cartTotalPrice" class="text-2xl text-brand-500">0 د.ج</span>
                         </div>
-                        <button onclick="submitOrder()" class="w-full bg-dark-950 hover:bg-dark-900 text-white font-black py-4 rounded-xl text-sm transition shadow-lg active:scale-95">
+                        <button onclick="submitOrder()" class="w-full btn-brand-gradient py-4 rounded-xl text-sm transition shadow-lg active:scale-95">
                             إرسال الطلب للمطعم <i class="fa-solid fa-paper-plane mr-1.5 text-xs"></i>
                         </button>
                     </div>
@@ -597,31 +751,31 @@
             </div>
 
             <!-- Customer Order Tracker (Fullscreen Map Mode) -->
-            <div id="customerOrderTracker" class="hidden fixed inset-0 z-[9850] bg-stone-100">
+            <div id="customerOrderTracker" class="hidden fixed inset-0 z-[9850] bg-black">
                 <!-- Fullscreen Map -->
                 <div id="trackerMap" class="absolute inset-0 w-full h-full z-10"></div>
 
                 <!-- Floating Status Bar Over Map -->
-                <div class="absolute top-5 inset-x-5 bg-white/95 backdrop-blur-md p-5 rounded-3xl shadow-2xl z-20 border border-stone-100 space-y-4 max-w-md mx-auto">
+                <div class="absolute top-5 inset-x-5 glass-panel p-5 rounded-3xl shadow-2xl z-20 border border-white/10 space-y-4 max-w-md mx-auto">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-black text-dark-950">حالة طلبك: <span id="customerOrderStatus" class="text-brand-600">--</span></span>
-                        <button onclick="minimizeCustomerTracker()" class="text-[10px] font-black text-stone-500 hover:text-stone-700 px-3 py-1.5 bg-stone-100 rounded-xl transition-all">تصغير الخريطة</button>
+                        <span class="text-xs font-black text-white">حالة طلبك الحالي: <span id="customerOrderStatus" class="text-brand-500">--</span></span>
+                        <button onclick="minimizeCustomerTracker()" class="text-[10px] font-black text-neutral-300 hover:text-white px-3 py-1.5 bg-white/10 rounded-xl transition-all border border-white/5">تصغير الخريطة</button>
                     </div>
                     <div class="grid grid-cols-4 gap-1 py-1.5 text-center">
                         <div id="step-pending" class="flex flex-col items-center text-brand-500">
-                            <div class="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-[10px] font-black border-2 border-brand-500 shadow-sm">1</div>
+                            <div class="w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center text-[10px] font-black border-2 border-brand-500 shadow-sm">1</div>
                             <span class="text-[9px] mt-1.5 font-bold">الانتظار</span>
                         </div>
-                        <div id="step-accepted" class="flex flex-col items-center text-stone-300">
-                            <div class="w-8 h-8 rounded-full bg-stone-50 flex items-center justify-center text-[10px] font-black border-2 border-transparent">2</div>
+                        <div id="step-accepted" class="flex flex-col items-center text-neutral-600">
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black border-2 border-transparent">2</div>
                             <span class="text-[9px] mt-1.5 font-bold">التحضير</span>
                         </div>
-                        <div id="step-delivering" class="flex flex-col items-center text-stone-300">
-                            <div class="w-8 h-8 rounded-full bg-stone-50 flex items-center justify-center text-[10px] font-black border-2 border-transparent">3</div>
+                        <div id="step-delivering" class="flex flex-col items-center text-neutral-600">
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black border-2 border-transparent">3</div>
                             <span class="text-[9px] mt-1.5 font-bold">الطريق</span>
                         </div>
-                        <div id="step-delivered" class="flex flex-col items-center text-stone-300">
-                            <div class="w-8 h-8 rounded-full bg-stone-50 flex items-center justify-center text-[10px] font-black border-2 border-transparent">4</div>
+                        <div id="step-delivered" class="flex flex-col items-center text-neutral-600">
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black border-2 border-transparent">4</div>
                             <span class="text-[9px] mt-1.5 font-bold">التسليم</span>
                         </div>
                     </div>
@@ -634,24 +788,24 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- Sidebar -->
                 <div class="space-y-4">
-                    <div class="bg-white p-6 rounded-3xl border border-stone-100 shadow-premium text-center space-y-4">
-                        <img id="ownerRestPic" src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=200" class="w-20 h-20 rounded-2xl object-cover mx-auto shadow-md border-2 border-white" alt="My Restaurant Pic">
+                    <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-premium text-center space-y-4">
+                        <img id="ownerRestPic" src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=200" class="w-20 h-20 rounded-2xl object-cover mx-auto shadow-md border-2 border-white/10" alt="My Restaurant Pic">
                         <div class="space-y-1">
-                            <h3 id="ownerRestName" class="font-black text-dark-950 text-base">--</h3>
-                            <span class="text-xs text-stone-400 font-bold" id="ownerRestPhone">--</span>
+                            <h3 id="ownerRestName" class="font-black text-white text-base">--</h3>
+                            <span class="text-xs text-neutral-400 font-bold" id="ownerRestPhone">--</span>
                         </div>
-                        <div class="flex items-center justify-between border-t border-stone-100/80 pt-4">
-                            <span class="text-xs font-bold text-stone-500">حالة المطعم:</span>
-                            <button id="restaurantStatusToggle" onclick="toggleRestaurantStatus()" class="px-3.5 py-1.5 rounded-full text-xs font-black transition-all bg-red-50 text-red-600">
+                        <div class="flex items-center justify-between border-t border-white/5 pt-4">
+                            <span class="text-xs font-bold text-neutral-400">حالة المطعم:</span>
+                            <button id="restaurantStatusToggle" onclick="toggleRestaurantStatus()" class="px-3.5 py-1.5 rounded-full text-xs font-black transition-all bg-red-500/10 text-red-400 border border-red-500/10">
                                 مغلق حالياً
                             </button>
                         </div>
                     </div>
 
-                    <div class="bg-white p-2.5 rounded-3xl border border-stone-100 shadow-premium flex flex-col space-y-1">
-                        <button onclick="switchRestTab('restDashboard')" class="rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs bg-brand-50 text-brand-600 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-chart-pie"></i> لوحة الإحصائيات</button>
-                        <button onclick="switchRestTab('restMenu')" class="rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-stone-600 hover:bg-stone-50 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-utensils"></i> قائمة الطعام (المنيو)</button>
-                        <button onclick="switchRestTab('restInfo')" class="rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-stone-600 hover:bg-stone-50 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-user-gear"></i> الملف التعريفي</button>
+                    <div class="glass-panel p-2.5 rounded-3xl border border-white/10 shadow-premium flex flex-col space-y-1">
+                        <button onclick="switchRestTab('restDashboard')" class="rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs bg-white/5 text-brand-500 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-chart-pie text-brand-500"></i> لوحة الإحصائيات</button>
+                        <button onclick="switchRestTab('restMenu')" class="rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-neutral-300 hover:bg-white/5 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-utensils"></i> قائمة الطعام (المنيو)</button>
+                        <button onclick="switchRestTab('restInfo')" class="rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-neutral-300 hover:bg-white/5 flex items-center gap-2.5 transition-all"><i class="fa-solid fa-user-gear"></i> الملف التعريفي</button>
                     </div>
                 </div>
 
@@ -661,41 +815,41 @@
                     <!-- Dashboard -->
                     <div id="restDashboard" class="rest-tab-content space-y-6">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                            <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm flex items-center justify-between">
                                 <div class="space-y-1 text-right">
-                                    <span class="text-xs text-stone-400 font-extrabold uppercase">طلبات واردة</span>
-                                    <h4 id="restStatNew" class="text-3xl font-black text-dark-900">0</h4>
+                                    <span class="text-xs text-neutral-400 font-extrabold uppercase">طلبات واردة</span>
+                                    <h4 id="restStatNew" class="text-3xl font-black text-white">0</h4>
                                 </div>
-                                <div class="p-3.5 bg-brand-50 text-brand-500 rounded-2xl shadow-inner"><i class="fa-solid fa-receipt text-xl"></i></div>
+                                <div class="p-3.5 bg-brand-500/10 text-brand-500 rounded-2xl shadow-inner border border-brand-500/10"><i class="fa-solid fa-receipt text-xl"></i></div>
                             </div>
-                            <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm flex items-center justify-between">
                                 <div class="space-y-1 text-right">
-                                    <span class="text-xs text-stone-400 font-extrabold uppercase">مؤكدة ومكتملة</span>
-                                    <h4 id="restStatConfirmed" class="text-3xl font-black text-emerald-600">0</h4>
+                                    <span class="text-xs text-neutral-400 font-extrabold uppercase">مؤكدة ومكتملة</span>
+                                    <h4 id="restStatConfirmed" class="text-3xl font-black text-emerald-500">0</h4>
                                 </div>
-                                <div class="p-3.5 bg-emerald-50 text-emerald-500 rounded-2xl shadow-inner"><i class="fa-solid fa-circle-check text-xl"></i></div>
+                                <div class="p-3.5 bg-emerald-500/10 text-emerald-500 rounded-2xl shadow-inner border border-emerald-500/10"><i class="fa-solid fa-circle-check text-xl"></i></div>
                             </div>
-                            <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm flex items-center justify-between">
                                 <div class="space-y-1 text-right">
-                                    <span class="text-xs text-stone-400 font-extrabold uppercase">ملغية</span>
+                                    <span class="text-xs text-neutral-400 font-extrabold uppercase">ملغية</span>
                                     <h4 id="restStatCancelled" class="text-3xl font-black text-red-500">0</h4>
                                 </div>
-                                <div class="p-3.5 bg-red-50 text-red-500 rounded-2xl shadow-inner"><i class="fa-solid fa-circle-xmark text-xl"></i></div>
+                                <div class="p-3.5 bg-red-500/10 text-red-500 rounded-2xl shadow-inner border border-red-500/10"><i class="fa-solid fa-circle-xmark text-xl"></i></div>
                             </div>
                         </div>
 
-                        <div class="bg-white p-5 rounded-3xl border border-stone-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="glass-panel p-5 rounded-3xl border border-white/10 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div class="text-right">
-                                <h4 class="font-black text-dark-950 text-sm">أرشيف العمليات والتقارير</h4>
-                                <p class="text-xs text-stone-400 mt-0.5">تنزيل تقرير مبيعات المطعم التفصيلي بصيغة CSV لبرنامج Excel</p>
+                                <h4 class="font-black text-white text-sm">أرشيف العمليات والتقارير</h4>
+                                <p class="text-xs text-neutral-400 mt-0.5">تنزيل تقرير مبيعات المطعم التفصيلي بصيغة CSV لبرنامج Excel</p>
                             </div>
-                            <button onclick="exportRestaurantCSV()" class="w-full sm:w-auto bg-dark-950 hover:bg-dark-900 text-white font-black px-6 py-3 rounded-2xl text-xs transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
-                                <i class="fa-solid fa-download"></i> تصدير التقرير CSV
+                            <button onclick="exportRestaurantCSV()" class="w-full sm:w-auto bg-white/10 hover:bg-white/15 text-white border border-white/10 font-black px-6 py-3 rounded-2xl text-xs transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
+                                <i class="fa-solid fa-download"></i> تنزيل ملف CSV
                             </button>
                         </div>
 
                         <div class="space-y-4">
-                            <h3 class="text-sm font-black text-dark-950 flex items-center gap-2"><i class="fa-solid fa-spinner fa-spin text-brand-500"></i> الطلبيات النشطة والجديدة</h3>
+                            <h3 class="text-sm font-black text-white flex items-center gap-2"><i class="fa-solid fa-spinner fa-spin text-brand-500"></i> الطلبيات النشطة والجديدة</h3>
                             <div id="restOrdersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Orders loaded dynamically -->
                             </div>
@@ -704,47 +858,47 @@
 
                     <!-- Menu Management -->
                     <div id="restMenu" class="rest-tab-content hidden space-y-6">
-                        <div class="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
-                            <h3 class="text-sm font-black text-dark-950 mb-4 flex items-center gap-2 border-b border-stone-100 pb-3"><i class="fa-solid fa-plus-circle text-brand-500"></i> إضافة وجبة أو طبق جديد للعملاء</h3>
+                        <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-sm">
+                            <h3 class="text-sm font-black text-white mb-4 flex items-center gap-2 border-b border-white/5 pb-3"><i class="fa-solid fa-plus-circle text-brand-500"></i> إضافة وجبة أو طبق جديد للعملاء</h3>
                             <form id="dishForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="space-y-3.5">
                                     <div>
-                                        <label class="block text-xs font-bold text-stone-500 mb-1.5">اسم الطبق</label>
-                                        <input type="text" id="dishName" required class="w-full px-4 py-3 rounded-2xl border border-stone-200/80 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-stone-50/50">
+                                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">اسم الطبق</label>
+                                        <input type="text" id="dishName" required class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-white/5 text-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-stone-500 mb-1.5">الوصف والمكونات</label>
-                                        <textarea id="dishDesc" rows="2" class="w-full px-4 py-3 rounded-2xl border border-stone-200/80 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-stone-50/50" placeholder="مثال: لحم بقري طازج، جبنة شيدر، صلصة خاصة..."></textarea>
+                                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">الوصف والمكونات</label>
+                                        <textarea id="dishDesc" rows="2" class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-white/5 text-white" placeholder="مثال: لحم بقري طازج، جبنة شيدر، صلصة خاصة..."></textarea>
                                     </div>
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label class="block text-xs font-bold text-stone-500 mb-1.5">السعر (د.ج)</label>
-                                            <input type="number" id="dishPrice" required class="w-full px-4 py-3 rounded-2xl border border-stone-200/80 text-sm font-black focus:outline-none focus:border-brand-500 bg-stone-50/50">
+                                            <label class="block text-xs font-bold text-neutral-300 mb-1.5">السعر (د.ج)</label>
+                                            <input type="number" id="dishPrice" required class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-black focus:outline-none focus:border-brand-500 bg-white/5 text-white">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold text-stone-500 mb-1.5">رابط صورة الوجبة</label>
-                                            <input type="url" id="dishImg" required class="w-full px-4 py-3 rounded-2xl border border-stone-200/80 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-stone-50/50">
+                                            <label class="block text-xs font-bold text-neutral-300 mb-1.5">رابط صورة الوجبة</label>
+                                            <input type="url" id="dishImg" required class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-white/5 text-white">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="space-y-3.5 flex flex-col justify-between">
                                     <div>
-                                        <label class="block text-xs font-bold text-stone-500 mb-1.5">الصلصات الإضافية (افصل بفاصلة ,)</label>
-                                        <input type="text" id="dishSauces" class="w-full px-4 py-3 rounded-2xl border border-stone-200/80 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-stone-50/50" placeholder="كاتشب, مايونيز, صلصة ثوم">
+                                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">الصلصات الإضافية (افصل بفاصلة ,)</label>
+                                        <input type="text" id="dishSauces" class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-white/5 text-white" placeholder="كاتشب, مايونيز, صلصة ثوم">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-stone-500 mb-1.5">المشروبات المقترحة (افصل بفاصلة ,)</label>
-                                        <input type="text" id="dishDrinks" class="w-full px-4 py-3 rounded-2xl border border-stone-200/80 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-stone-50/50" placeholder="بيبسي, كوكاكولا, عصير برتقال">
+                                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">المشروبات المقترحة (افصل بفاصلة ,)</label>
+                                        <input type="text" id="dishDrinks" class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-white/5 text-white" placeholder="بيبسي, كوكاكولا, عصير برتقال">
                                     </div>
-                                    <button type="submit" class="w-full btn-brand-gradient text-white font-black py-3.5 rounded-2xl transition text-sm shadow-md shadow-brand-500/10">
+                                    <button type="submit" class="w-full btn-brand-gradient py-3.5 rounded-2xl transition text-sm shadow-md">
                                         حفظ وإدراج الوجبة في المنيو
                                     </button>
                                 </div>
                             </form>
                         </div>
 
-                        <div class="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm space-y-4">
-                            <h3 class="text-sm font-black text-dark-950">أطباق المطعم المسجلة</h3>
+                        <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-sm space-y-4">
+                            <h3 class="text-sm font-black text-white">أطباق المطعم المسجلة</h3>
                             <div id="restDishesManageList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <!-- Dishes loaded dynamically -->
                             </div>
@@ -753,24 +907,24 @@
 
                     <!-- Profile -->
                     <div id="restInfo" class="rest-tab-content hidden space-y-5">
-                        <div class="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
-                            <h3 class="text-sm font-black text-dark-950 mb-4 border-b border-stone-100 pb-3">الملف التعريفي الخاص بالمطعم</h3>
+                        <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-sm">
+                            <h3 class="text-sm font-black text-white mb-4 border-b border-white/5 pb-3">الملف التعريفي الخاص بالمطعم</h3>
                             <form id="restProfileForm" class="space-y-4">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-stone-500 mb-1.5">اسم المطعم التجاري</label>
-                                        <input type="text" id="profileRestName" required class="w-full px-4 py-3 rounded-2xl border border-stone-200 text-sm font-bold bg-stone-50">
+                                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">اسم المطعم التجاري</label>
+                                        <input type="text" id="profileRestName" required class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-bold bg-white/5 text-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-stone-500 mb-1.5">رقم الهاتف للتواصل</label>
-                                        <input type="tel" id="profileRestPhone" required class="w-full px-4 py-3 rounded-2xl border border-stone-200 text-sm font-bold bg-stone-50">
+                                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">رقم الهاتف للتواصل</label>
+                                        <input type="tel" id="profileRestPhone" required class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-bold bg-white/5 text-white">
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-stone-500 mb-1.5">رابط صورة الشعار/الواجهة الرئيسية</label>
-                                    <input type="url" id="profileRestPic" class="w-full px-4 py-3 rounded-2xl border border-stone-200 text-sm font-semibold bg-stone-50">
+                                    <label class="block text-xs font-bold text-neutral-300 mb-1.5">رابط صورة الشعار/الواجهة الرئيسية</label>
+                                    <input type="url" id="profileRestPic" class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-semibold bg-white/5 text-white">
                                 </div>
-                                <button type="submit" class="bg-dark-950 hover:bg-dark-900 text-white font-black px-7 py-3 rounded-2xl text-xs transition active:scale-95 shadow-md">
+                                <button type="submit" class="bg-white/10 hover:bg-white/15 text-white border border-white/10 font-black px-7 py-3 rounded-2xl text-xs transition active:scale-95 shadow-md">
                                     حفظ التعديلات والبيانات
                                 </button>
                             </form>
@@ -785,21 +939,21 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- Sidebar -->
                 <div class="space-y-4">
-                    <div class="bg-white p-6 rounded-3xl border border-stone-100 shadow-premium text-center space-y-4">
-                        <img id="driverPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" class="w-20 h-20 rounded-2xl object-cover mx-auto shadow-md border-2 border-white" alt="My Driver Driver Profile">
+                    <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-premium text-center space-y-4">
+                        <img id="driverPic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" class="w-20 h-20 rounded-2xl object-cover mx-auto shadow-md border-2 border-white/10" alt="My Driver Driver Profile">
                         <div class="space-y-1">
-                            <h3 id="driverName" class="font-black text-dark-950 text-sm">--</h3>
-                            <span id="driverPhone" class="text-xs text-stone-400 font-bold block">--</span>
+                            <h3 id="driverName" class="font-black text-white text-sm">--</h3>
+                            <span id="driverPhone" class="text-xs text-neutral-400 font-bold block">--</span>
                         </div>
-                        <div class="bg-amber-50 rounded-2xl p-2.5 flex items-center justify-center gap-2 text-xs font-bold text-amber-600 border border-amber-100">
+                        <div class="bg-amber-500/10 rounded-2xl p-2.5 flex items-center justify-center gap-2 text-xs font-bold text-amber-500 border border-amber-500/20">
                             <i class="fa-solid fa-star text-amber-400"></i> تقييمي: 
                             <span id="driverRatingVal" class="font-black">--</span>
                         </div>
                     </div>
 
-                    <div class="bg-white p-2.5 rounded-3xl border border-stone-100 shadow-premium flex flex-col space-y-1">
-                        <button onclick="switchDeliveryTab('driverDashboard')" class="driver-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs bg-brand-50 text-brand-600 flex items-center gap-2.5"><i class="fa-solid fa-map"></i> خريطة وبث الموقع</button>
-                        <button onclick="switchDeliveryTab('driverInfo')" class="driver-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-stone-600 hover:bg-stone-50 flex items-center gap-2.5"><i class="fa-solid fa-id-card"></i> حسابي الشخصي</button>
+                    <div class="glass-panel p-2.5 rounded-3xl border border-white/10 shadow-premium flex flex-col space-y-1">
+                        <button onclick="switchDeliveryTab('driverDashboard')" class="driver-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs bg-white/5 text-brand-500 flex items-center gap-2.5"><i class="fa-solid fa-map"></i> خريطة وبث الموقع</button>
+                        <button onclick="switchDeliveryTab('driverInfo')" class="driver-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-neutral-300 hover:bg-white/5 flex items-center gap-2.5"><i class="fa-solid fa-id-card"></i> حسابي الشخصي</button>
                     </div>
                 </div>
 
@@ -808,48 +962,48 @@
 
                     <div id="driverDashboard" class="driver-tab-content space-y-6">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm flex items-center justify-between">
                                 <div class="space-y-1 text-right">
-                                    <span class="text-xs text-stone-400 font-bold">تسليمات ناجحة</span>
-                                    <h4 id="driverStatDelivered" class="text-3xl font-black text-emerald-600">0</h4>
+                                    <span class="text-xs text-neutral-400 font-bold">تسليمات ناجحة</span>
+                                    <h4 id="driverStatDelivered" class="text-3xl font-black text-emerald-500">0</h4>
                                 </div>
-                                <div class="p-3 bg-emerald-50 text-emerald-500 rounded-2xl"><i class="fa-solid fa-circle-check text-xl"></i></div>
+                                <div class="p-3 bg-emerald-500/10 text-emerald-500 rounded-2xl"><i class="fa-solid fa-circle-check text-xl"></i></div>
                             </div>
-                            <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm flex items-center justify-between">
                                 <div class="space-y-1 text-right">
-                                    <span class="text-xs text-stone-400 font-bold">إجمالي المهام</span>
-                                    <h4 id="driverStatTotal" class="text-3xl font-black text-dark-950">0</h4>
+                                    <span class="text-xs text-neutral-400 font-bold">إجمالي المهام</span>
+                                    <h4 id="driverStatTotal" class="text-3xl font-black text-white">0</h4>
                                 </div>
-                                <div class="p-3 bg-blue-50 text-blue-500 rounded-2xl"><i class="fa-solid fa-route text-xl"></i></div>
+                                <div class="p-3 bg-blue-500/10 text-blue-500 rounded-2xl"><i class="fa-solid fa-route text-xl"></i></div>
                             </div>
-                            <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex items-center justify-between">
+                            <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm flex items-center justify-between">
                                 <div class="space-y-1 text-right">
-                                    <span class="text-xs text-stone-400 font-bold">سجل المهام</span>
-                                    <button onclick="exportDriverCSV()" class="text-xs text-brand-600 font-black hover:underline block mt-1">تحميل CSV <i class="fa-solid fa-download mr-1"></i></button>
+                                    <span class="text-xs text-neutral-400 font-bold">سجل المهام</span>
+                                    <button onclick="exportDriverCSV()" class="text-xs text-brand-500 font-black hover:underline block mt-1">تحميل CSV <i class="fa-solid fa-download mr-1"></i></button>
                                 </div>
-                                <div class="p-3 bg-stone-50 text-stone-600 rounded-2xl"><i class="fa-solid fa-file-csv text-xl"></i></div>
+                                <div class="p-3 bg-white/5 text-white rounded-2xl"><i class="fa-solid fa-file-csv text-xl"></i></div>
                             </div>
                         </div>
 
                         <!-- Driver Map -->
-                        <div class="bg-white p-5 rounded-3xl border border-stone-100 shadow-sm space-y-4">
+                        <div class="glass-panel p-5 rounded-3xl border border-white/10 shadow-sm space-y-4">
                             <div class="flex items-center justify-between flex-wrap gap-3">
                                 <div class="text-right">
-                                    <h3 class="font-black text-dark-950 text-sm">بث الموقع الجغرافي المباشر</h3>
-                                    <p class="text-[10px] text-stone-400 mt-0.5">بث موقع الدراجة النارية فورياً للزبائن في العفرون</p>
+                                    <h3 class="font-black text-white text-sm">بث الموقع الجغرافي المباشر</h3>
+                                    <p class="text-[10px] text-neutral-400 mt-0.5">بث موقع الدراجة النارية فورياً للزبائن في العفرون</p>
                                 </div>
-                                <button onclick="enableDriverGPS()" class="w-full sm:w-auto btn-brand-gradient text-white font-black px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-md">
+                                <button onclick="enableDriverGPS()" class="w-full sm:w-auto btn-brand-gradient px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-md">
                                     <i class="fa-solid fa-location-arrow animate-pulse"></i> تفعيل وبث الموقع المباشر
                                 </button>
                             </div>
-                            <div class="relative rounded-2xl overflow-hidden border border-stone-200">
-                                <div id="driverMap" class="h-72 md:h-96 w-full bg-stone-100 z-10"></div>
+                            <div class="relative rounded-2xl overflow-hidden border border-white/10">
+                                <div id="driverMap" class="h-72 md:h-96 w-full bg-neutral-900 z-10"></div>
                             </div>
                         </div>
 
                         <!-- Orders -->
                         <div class="space-y-3">
-                            <h3 class="text-sm font-black text-dark-950 flex items-center gap-2"><i class="fa-solid fa-bolt text-brand-500 animate-pulse"></i> المهمات والطلبات المتاحة حالياً للتوصيل</h3>
+                            <h3 class="text-sm font-black text-white flex items-center gap-2"><i class="fa-solid fa-bolt text-brand-500 animate-pulse"></i> المهمات والطلبات المتاحة حالياً للتوصيل</h3>
                             <div id="driverOrdersContainer" class="grid grid-cols-1 gap-4">
                                 <!-- Orders loaded dynamically -->
                             </div>
@@ -858,24 +1012,24 @@
 
                     <!-- Driver Info -->
                     <div id="driverInfo" class="driver-tab-content hidden space-y-5">
-                        <div class="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
-                            <h3 class="text-sm font-black text-dark-950 mb-4 border-b border-stone-100 pb-3">الملف التعريفي بمندوب التوصيل</h3>
+                        <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-sm">
+                            <h3 class="text-sm font-black text-white mb-4 border-b border-white/5 pb-3">الملف التعريفي بمندوب التوصيل</h3>
                             <form id="driverProfileForm" class="space-y-4">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-stone-500 mb-1.5">الاسم الكامل</label>
-                                        <input type="text" id="profileDriverName" required class="w-full px-4 py-3 rounded-2xl border border-stone-200 text-sm font-bold bg-stone-50">
+                                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">الاسم الكامل</label>
+                                        <input type="text" id="profileDriverName" required class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-bold bg-white/5 text-white">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-stone-500 mb-1.5">رقم الهاتف النشط</label>
-                                        <input type="tel" id="profileDriverPhone" required class="w-full px-4 py-3 rounded-2xl border border-stone-200 text-sm font-bold bg-stone-50">
+                                        <label class="block text-xs font-bold text-neutral-300 mb-1.5">رقم الهاتف النشط</label>
+                                        <input type="tel" id="profileDriverPhone" required class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-bold bg-white/5 text-white">
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-stone-500 mb-1.5">رابط الصورة الشخصية الرسمية</label>
-                                    <input type="url" id="profileDriverPic" class="w-full px-4 py-3 rounded-2xl border border-stone-200 text-sm font-semibold bg-stone-50">
+                                    <label class="block text-xs font-bold text-neutral-300 mb-1.5">رابط الصورة الشخصية الرسمية</label>
+                                    <input type="url" id="profileDriverPic" class="w-full px-4 py-3 rounded-2xl border border-white/10 text-sm font-semibold bg-white/5 text-white">
                                 </div>
-                                <button type="submit" class="bg-dark-950 hover:bg-dark-900 text-white font-black px-7 py-3 rounded-2xl text-xs transition active:scale-95 shadow-md">
+                                <button type="submit" class="bg-white/10 hover:bg-white/15 border border-white/10 text-white font-black px-7 py-3 rounded-2xl text-xs transition active:scale-95 shadow-md">
                                     حفظ البيانات والملف الشخصي
                                 </button>
                             </form>
@@ -887,46 +1041,46 @@
 
         <!-- Admin View -->
         <section id="adminView" class="hidden container mx-auto px-4 py-8 md:py-12 space-y-6">
-            <h2 class="text-2xl font-black text-dark-950 flex items-center gap-2 border-b border-stone-100 pb-4"><i class="fa-solid fa-shield-halved text-brand-500 animate-pulse"></i> لوحة تحكم الإدارة العامة للمنصة</h2>
+            <h2 class="text-2xl font-black text-white flex items-center gap-2 border-b border-white/5 pb-4"><i class="fa-solid fa-shield-halved text-brand-500 animate-pulse"></i> لوحة تحكم الإدارة العامة للمنصة</h2>
 
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
-                    <span class="text-[10px] text-stone-400 font-extrabold uppercase tracking-wider block">إجمالي الطلبات</span>
-                    <h4 id="adminStatOrders" class="text-2xl font-black text-dark-950 mt-1">0</h4>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm">
+                    <span class="text-[10px] text-neutral-400 font-extrabold uppercase tracking-wider block">إجمالي الطلبات</span>
+                    <h4 id="adminStatOrders" class="text-2xl font-black text-white mt-1">0</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
-                    <span class="text-[10px] text-stone-400 font-extrabold uppercase tracking-wider block">المطاعم الشريكة</span>
-                    <h4 id="adminStatRestaurants" class="text-2xl font-black text-dark-950 mt-1">0</h4>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm">
+                    <span class="text-[10px] text-neutral-400 font-extrabold uppercase tracking-wider block">المطاعم الشريكة</span>
+                    <h4 id="adminStatRestaurants" class="text-2xl font-black text-white mt-1">0</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
-                    <span class="text-[10px] text-stone-400 font-extrabold uppercase tracking-wider block">فريق التوصيل</span>
-                    <h4 id="adminStatDrivers" class="text-2xl font-black text-dark-950 mt-1">0</h4>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm">
+                    <span class="text-[10px] text-neutral-400 font-extrabold uppercase tracking-wider block">فريق التوصيل</span>
+                    <h4 id="adminStatDrivers" class="text-2xl font-black text-white mt-1">0</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
-                    <span class="text-[10px] text-stone-400 font-extrabold uppercase tracking-wider block">الزبائن المسجلين</span>
-                    <h4 id="adminStatCustomers" class="text-2xl font-black text-dark-950 mt-1">0</h4>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm">
+                    <span class="text-[10px] text-neutral-400 font-extrabold uppercase tracking-wider block">الزبائن المسجلين</span>
+                    <h4 id="adminStatCustomers" class="text-2xl font-black text-white mt-1">0</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
-                    <span class="text-[10px] text-stone-400 font-extrabold uppercase tracking-wider block text-brand-600">زيارات اليوم</span>
-                    <h4 id="adminStatDailyVisits" class="text-2xl font-black text-brand-600 mt-1">140</h4>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm border-brand-500/20">
+                    <span class="text-[10px] text-brand-500 font-extrabold uppercase tracking-wider block">زيارات اليوم</span>
+                    <h4 id="adminStatDailyVisits" class="text-2xl font-black text-brand-500 mt-1">140</h4>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
-                    <span class="text-[10px] text-stone-400 font-extrabold uppercase tracking-wider block">زيارات الشهر</span>
-                    <h4 id="adminStatMonthlyVisits" class="text-2xl font-black text-dark-950 mt-1">4,120</h4>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5 shadow-sm">
+                    <span class="text-[10px] text-neutral-400 font-extrabold uppercase tracking-wider block">زيارات الشهر</span>
+                    <h4 id="adminStatMonthlyVisits" class="text-2xl font-black text-white mt-1">4,120</h4>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Users Table -->
-                <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-stone-100 shadow-premium space-y-4">
-                    <div class="flex items-center justify-between flex-wrap gap-3 border-b border-stone-50 pb-3">
-                        <h3 class="font-black text-dark-950 text-sm flex items-center gap-2"><i class="fa-solid fa-users text-brand-500"></i> إدارة حسابات المستخدمين</h3>
-                        <button onclick="exportAllUsersCSV()" class="bg-dark-950 hover:bg-dark-900 text-white font-black px-4.5 py-2.5 rounded-xl text-xs transition shadow-md"><i class="fa-solid fa-download ml-1.5 text-[10px]"></i> تصدير كافة المستخدمين CSV</button>
+                <div class="lg:col-span-2 glass-panel p-6 rounded-3xl border border-white/10 shadow-premium space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-3 border-b border-white/5 pb-3">
+                        <h3 class="font-black text-white text-sm flex items-center gap-2"><i class="fa-solid fa-users text-brand-500"></i> إدارة حسابات المستخدمين</h3>
+                        <button onclick="exportAllUsersCSV()" class="bg-white/10 hover:bg-white/15 border border-white/10 text-white font-black px-4.5 py-2.5 rounded-xl text-xs transition shadow-md"><i class="fa-solid fa-download ml-1.5 text-[10px]"></i> تصدير كافة المستخدمين CSV</button>
                     </div>
                     <div class="overflow-x-auto w-full">
                         <table class="w-full text-right text-xs min-w-[500px]">
                             <thead>
-                                <tr class="border-b border-stone-100 text-stone-400 font-extrabold uppercase tracking-wider">
+                                <tr class="border-b border-white/5 text-neutral-400 font-extrabold uppercase tracking-wider">
                                     <th class="py-3.5">اسم المستخدم</th>
                                     <th class="py-3.5">البريد الإلكتروني</th>
                                     <th class="py-3.5">رقم الهاتف</th>
@@ -934,7 +1088,7 @@
                                     <th class="py-3.5 text-center">الإجراء والرقابة</th>
                                 </tr>
                             </thead>
-                            <tbody id="adminUsersTable" class="divide-y divide-stone-50/50">
+                            <tbody id="adminUsersTable" class="divide-y divide-white/5">
                                 <!-- Users loaded dynamically -->
                             </tbody>
                         </table>
@@ -943,14 +1097,14 @@
 
                 <!-- Settings -->
                 <div class="space-y-4">
-                    <div class="bg-white p-6 rounded-3xl border border-stone-100 shadow-premium space-y-4">
-                        <h3 class="font-black text-dark-950 text-sm border-b border-stone-100 pb-3 flex items-center gap-2"><i class="fa-solid fa-sliders text-brand-500"></i> الإعدادات العامة للموقع</h3>
+                    <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-premium space-y-4">
+                        <h3 class="font-black text-white text-sm border-b border-white/5 pb-3 flex items-center gap-2"><i class="fa-solid fa-sliders text-brand-500"></i> الإعدادات العامة للموقع</h3>
                         <form id="siteSettingsForm" class="space-y-3.5">
                             <div>
-                                <label class="block text-[10px] font-extrabold text-stone-400 uppercase mb-1.5">عنوان الواجهة الرئيسي (HTML مدعوم)</label>
-                                <input type="text" id="settingsHeroText" class="w-full px-3.5 py-2.5 border border-stone-200 rounded-xl text-xs font-bold bg-stone-50 focus:outline-none focus:border-brand-500" required>
+                                <label class="block text-[10px] font-extrabold text-neutral-400 uppercase mb-1.5">عنوان الواجهة الرئيسي (HTML مدعوم)</label>
+                                <input type="text" id="settingsHeroText" class="w-full px-3.5 py-2.5 border border-white/10 rounded-xl text-xs font-bold bg-white/5 text-white focus:outline-none focus:border-brand-500" required>
                             </div>
-                            <button type="submit" class="w-full btn-brand-gradient text-white font-black py-3 rounded-xl text-xs transition shadow-md shadow-brand-500/10">تحديث العنوان الرئيسي للمنصة</button>
+                            <button type="submit" class="w-full btn-brand-gradient py-3 rounded-xl text-xs transition shadow-md">تحديث العنوان الرئيسي للمنصة</button>
                         </form>
                     </div>
                 </div>
@@ -959,15 +1113,15 @@
     </main>
 
     <!-- Mobile Sticky Cart Bar -->
-    <div id="mobileCartBar" class="hidden fixed bottom-24 inset-x-4 bg-dark-950/95 backdrop-blur-md text-white py-4 px-5 rounded-2xl shadow-2xl z-40 flex items-center justify-between transition-all duration-300 transform translate-y-28 border border-white/5">
+    <div id="mobileCartBar" class="hidden fixed bottom-24 inset-x-4 bg-dark-950/95 backdrop-blur-md text-white py-4 px-5 rounded-2xl shadow-2xl z-40 flex items-center justify-between transition-all duration-300 transform translate-y-28 border border-white/10">
         <div class="flex items-center gap-3">
             <div class="bg-brand-500 text-white px-3 py-1.5 rounded-xl text-xs font-black shadow-md shadow-brand-500/20" id="mobileCartCount">0</div>
             <div class="text-right">
-                <span class="text-[9px] text-stone-400 block font-bold uppercase tracking-wider">المجموع الفرعي الحالي</span>
+                <span class="text-[9px] text-neutral-400 block font-bold uppercase tracking-wider">المجموع الفرعي الحالي</span>
                 <span class="text-sm font-black text-brand-400" id="mobileCartTotal">0 د.ج</span>
             </div>
         </div>
-        <button onclick="scrollToCartSection()" class="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition active:scale-95 shadow-md shadow-brand-500/15">
+        <button onclick="scrollToCartSection()" class="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition active:scale-95 shadow-md">
             تأكيد وإتمام الطلب <i class="fa-solid fa-arrow-left text-[10px]"></i>
         </button>
     </div>
@@ -978,21 +1132,21 @@
     </button>
 
     <!-- Bottom Navigation (Mobile) -->
-    <div class="md:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-stone-100 h-18 flex items-center justify-around z-30 px-4 shadow-2xl rounded-t-3xl">
-        <button onclick="navigateHome()" class="flex flex-col items-center justify-center gap-1 text-stone-400 hover:text-brand-500 transition-colors py-1">
+    <div class="md:hidden fixed bottom-0 inset-x-0 bg-dark-950/95 backdrop-blur-md border-t border-white/10 h-18 flex items-center justify-around z-30 px-4 shadow-2xl rounded-t-3xl">
+        <button onclick="navigateHome()" class="flex flex-col items-center justify-center gap-1 text-neutral-400 hover:text-brand-500 transition-colors py-1">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[9px] font-extrabold tracking-wide">الرئيسية</span>
         </button>
-        <button onclick="openAuthModal('login')" class="flex flex-col items-center justify-center gap-1 text-stone-400 hover:text-brand-500 transition-colors py-1">
+        <button onclick="openAuthModal('login')" class="flex flex-col items-center justify-center gap-1 text-neutral-400 hover:text-brand-500 transition-colors py-1">
             <i class="fa-solid fa-user text-lg"></i>
             <span class="text-[9px] font-extrabold tracking-wide">حسابي</span>
         </button>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark-950 text-stone-500 py-8 border-t border-stone-800 text-center text-xs hidden md:block">
+    <footer class="bg-dark-950/70 border-t border-white/5 text-neutral-500 py-8 text-center text-xs hidden md:block z-10 relative">
         <div class="container mx-auto px-6 space-y-2">
-            <p class="font-bold text-stone-400">العفرون أونلاين - نظام خرائط ومسارات وبث جغرافي ذكي لتوصيل الطعام</p>
+            <p class="font-bold text-neutral-400">العفرون أونلاين - نظام خرائط ومسارات وبث جغرافي ذكي لتوصيل الطعام</p>
             <p>© <span id="currentYear">2026</span> منصة العفرون أونلاين. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
@@ -1155,7 +1309,7 @@
             onSnapshot(doc(db, "settings", "global"), (snap) => {
                 if (snap.exists()) {
                     const data = snap.data();
-                    const heroText = data.heroText || 'العفرون أونلاين <br><span class="text-brand-400">جسر طعامك السريع</span>';
+                    const heroText = data.heroText || 'العفرون أونلاين <br><span class="text-brand-500">جسر طعامك السريع</span>';
                     document.getElementById('landingHeroText').innerHTML = heroText;
                     document.getElementById('settingsHeroText').value = data.heroText || "";
                 }
@@ -1230,13 +1384,13 @@
             const submitBtn = document.getElementById('authSubmitBtn');
 
             if (tab === 'login') {
-                tabLogin.className = "flex-1 py-4.5 text-center border-b-[3px] border-brand-500 font-black text-dark-950 text-sm transition-all";
-                tabRegister.className = "flex-1 py-4.5 text-center border-b-[3px] border-transparent text-stone-400 font-black hover:text-stone-600 text-sm transition-all";
+                tabLogin.className = "flex-1 py-4 text-center border-b-[3px] border-brand-500 font-black text-white text-sm transition-all";
+                tabRegister.className = "flex-1 py-4 text-center border-b-[3px] border-transparent text-neutral-400 font-black hover:text-white text-sm transition-all";
                 regFields.classList.add('hidden');
                 submitBtn.innerText = "تسجيل الدخول";
             } else {
-                tabRegister.className = "flex-1 py-4.5 text-center border-b-[3px] border-brand-500 font-black text-dark-950 text-sm transition-all";
-                tabLogin.className = "flex-1 py-4.5 text-center border-b-[3px] border-transparent text-stone-400 font-black hover:text-stone-600 text-sm transition-all";
+                tabRegister.className = "flex-1 py-4 text-center border-b-[3px] border-brand-500 font-black text-white text-sm transition-all";
+                tabLogin.className = "flex-1 py-4 text-center border-b-[3px] border-transparent text-neutral-400 font-black hover:text-white text-sm transition-all";
                 regFields.classList.remove('hidden');
                 submitBtn.innerText = "إنشاء حساب";
             }
@@ -1342,9 +1496,9 @@
 
                 if (snapshot.empty) {
                     grid.innerHTML = `
-                        <div class="col-span-full text-center py-16 bg-white rounded-3xl border border-stone-100/80 shadow-sm text-stone-400 font-medium">
-                            <i class="fa-solid fa-store-slash text-5xl mb-4 block text-stone-300"></i>
-                            لا تتوفر حالياً مطاعم مفتوحة في العفرون.
+                        <div class="col-span-full text-center py-16 bg-white/5 border border-white/5 rounded-3xl text-neutral-400 font-semibold">
+                            <i class="fa-solid fa-store-slash text-5xl mb-4 block text-neutral-500"></i>
+                            لا تتوفر حالياً مطاعم مفتوحة بمدينة العفرون.
                         </div>`;
                     return;
                 }
@@ -1354,23 +1508,23 @@
                     const restId = docSnap.id; 
                     const ratingVal = rest.rating ? rest.rating.toFixed(1) : 'جديد';
                     const ratingBadge = rest.rating ? 
-                        `<span class="text-xs font-black text-amber-500 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-1"><i class="fa-solid fa-star text-[10px] text-amber-400"></i> ${ratingVal}</span>` : 
-                        `<span class="text-[10px] font-black text-brand-600 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm">جديد</span>`;
+                        `<span class="text-xs font-black text-amber-500 bg-black/70 px-3 py-1.5 rounded-xl flex items-center gap-1 border border-white/5"><i class="fa-solid fa-star text-[10px] text-amber-500"></i> ${ratingVal}</span>` : 
+                        `<span class="text-[10px] font-black text-brand-500 bg-black/70 px-3 py-1.5 rounded-xl border border-white/5">جديد</span>`;
 
                     const card = document.createElement('div');
-                    card.className = "card-hover-effect bg-white rounded-3xl overflow-hidden shadow-premium border border-stone-100 flex flex-col";
+                    card.className = "glass-card rounded-3xl overflow-hidden shadow-premium flex flex-col";
                     card.innerHTML = `
-                        <div class="relative overflow-hidden group">
-                            <img src="${rest.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600'}" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" alt="${rest.name}">
+                        <div class="relative overflow-hidden">
+                            <img src="${rest.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600'}" class="w-full h-44 object-cover" alt="${rest.name}">
                             <div class="absolute top-3 left-3">${ratingBadge}</div>
                         </div>
                         <div class="p-5 space-y-4 text-right flex-1 flex flex-col">
                             <div>
-                                <h3 class="font-extrabold text-dark-950 text-sm leading-tight">${rest.name}</h3>
-                                <p class="text-[10px] text-stone-400 font-bold mt-1 inline-block bg-stone-50 px-2 py-0.5 rounded-md border border-stone-100">تحت الطلب</p>
+                                <h3 class="font-extrabold text-white text-sm leading-tight">${rest.name}</h3>
+                                <p class="text-[10px] text-neutral-400 font-bold mt-1 inline-block bg-white/5 px-2 py-0.5 rounded-md border border-white/5">نشط الآن</p>
                             </div>
-                            <p class="text-xs text-stone-400 flex items-center gap-2 justify-start font-bold"><i class="fa-solid fa-phone text-brand-500 text-[10px]"></i> ${rest.phone}</p>
-                            <button onclick="viewRestaurantMenu('${restId}')" class="w-full mt-auto bg-dark-950 hover:bg-brand-500 text-white font-black py-3 rounded-2xl text-xs transition-all active:scale-95 shadow-sm">
+                            <p class="text-xs text-neutral-400 flex items-center gap-2 justify-start font-bold"><i class="fa-solid fa-phone text-brand-500 text-[10px]"></i> ${rest.phone}</p>
+                            <button onclick="viewRestaurantMenu('${restId}')" class="w-full mt-auto btn-brand-gradient py-3 rounded-2xl text-xs transition-all active:scale-95 shadow-sm">
                                 تصفح قائمة الأطباق
                             </button>
                         </div>
@@ -1403,8 +1557,8 @@
             selectedRestaurantRating = 0;
             selectedDriverRating = 0;
 
-            document.querySelectorAll('.star-rest').forEach(s => s.className = "cursor-pointer text-stone-300 hover:text-amber-400 transition-colors star-rest");
-            document.querySelectorAll('.star-driver').forEach(s => s.className = "cursor-pointer text-stone-300 hover:text-amber-400 transition-colors star-driver");
+            document.querySelectorAll('.star-rest').forEach(s => s.className = "cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-rest");
+            document.querySelectorAll('.star-driver').forEach(s => s.className = "cursor-pointer text-neutral-600 hover:text-amber-400 transition-colors star-driver");
 
             modal.classList.remove('hidden');
         }
@@ -1420,7 +1574,7 @@
                     if (idx < rating) {
                         star.className = "cursor-pointer text-amber-400 text-3xl transition-colors star-rest";
                     } else {
-                        star.className = "cursor-pointer text-stone-300 text-3xl transition-colors star-rest";
+                        star.className = "cursor-pointer text-neutral-600 text-3xl transition-colors star-rest";
                     }
                 });
             } else {
@@ -1429,7 +1583,7 @@
                     if (idx < rating) {
                         star.className = "cursor-pointer text-amber-400 text-3xl transition-colors star-driver";
                     } else {
-                        star.className = "cursor-pointer text-stone-300 text-3xl transition-colors star-driver";
+                        star.className = "cursor-pointer text-neutral-600 text-3xl transition-colors star-driver";
                     }
                 });
             }
@@ -1437,7 +1591,7 @@
 
         window.submitUserRatings = async function() {
             if (selectedRestaurantRating === 0 || selectedDriverRating === 0) {
-                Swal.fire('تنبيه', 'الرجاء تقييم المطعم والمندوب.', 'warning');
+                Swal.fire('تنبيه', 'الرجاء تقييم المطعم والمندوب أولاً.', 'warning');
                 return;
             }
             showLoading(true);
@@ -1483,11 +1637,11 @@
                 }
 
                 closeRatingModal();
-                Swal.fire('تم', 'تم إرسال التقييم بنجاح.', 'success');
+                Swal.fire('تم', 'نشكرك على تقييمك القيّم!', 'success');
                 loadCustomerDashboard(); 
             } catch(err) {
                 console.error("Rating error:", err);
-                Swal.fire('خطأ', 'فشل إرسال التقييم.', 'error');
+                Swal.fire('خطأ', 'فشل تسجيل التقييم.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1537,28 +1691,28 @@
             list.innerHTML = "";
 
             if (currentDishes.length === 0) {
-                list.innerHTML = `<p class="text-xs text-stone-400 text-center py-6 font-semibold">لا تتوفر وجبات مسجلة في هذا المطعم.</p>`;
+                list.innerHTML = `<p class="text-xs text-neutral-400 text-center py-6 font-semibold">لا تتوفر وجبات مسجلة حالياً.</p>`;
                 return;
             }
 
             currentDishes.forEach((dish) => {
                 const card = document.createElement('div');
-                card.className = "bg-white p-4.5 rounded-3xl shadow-sm border border-stone-100 flex gap-4 items-center justify-between hover:shadow-premium transition-all duration-300";
+                card.className = "bg-white/5 p-4.5 rounded-3xl border border-white/5 flex gap-4 items-center justify-between hover:border-brand-500/20 hover:bg-white/10 transition-all duration-300";
 
                 const sauces = dish.sauces ? dish.sauces.split(',') : [];
                 const drinks = dish.drinks ? dish.drinks.split(',') : [];
 
                 let extrasHtml = "";
                 if(sauces.length > 0 || drinks.length > 0) {
-                    extrasHtml += `<div class="mt-2.5 space-y-2 border-t border-stone-100 pt-2.5">`;
+                    extrasHtml += `<div class="mt-2.5 space-y-2 border-t border-white/5 pt-2.5">`;
                     if(sauces.length > 0) {
-                        extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px]"><span class="text-stone-400 font-extrabold ml-1">الصلصات:</span>`;
-                        sauces.forEach(s => extrasHtml += `<label class="bg-stone-50 text-stone-600 px-2 py-0.5 rounded-lg border border-stone-200/50 cursor-pointer flex items-center select-none"><input type="checkbox" name="sauce-${dish.id}" value="${s.trim()}" class="ml-1 scale-90 accent-brand-600"> ${s.trim()}</label>`);
+                        extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px]"><span class="text-neutral-400 font-extrabold ml-1">الصلصات:</span>`;
+                        sauces.forEach(s => extrasHtml += `<label class="bg-white/5 text-neutral-300 px-2 py-0.5 rounded-lg border border-white/5 cursor-pointer flex items-center select-none"><input type="checkbox" name="sauce-${dish.id}" value="${s.trim()}" class="ml-1 scale-90 accent-brand-500"> ${s.trim()}</label>`);
                         extrasHtml += `</div>`;
                     }
                     if(drinks.length > 0) {
-                        extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px] mt-1.5"><span class="text-stone-400 font-extrabold ml-1">المشروب:</span>`;
-                        drinks.forEach(d => extrasHtml += `<label class="bg-stone-50 text-stone-600 px-2 py-0.5 rounded-lg border border-stone-200/50 cursor-pointer flex items-center select-none"><input type="radio" name="drink-${dish.id}" value="${d.trim()}" class="ml-1 scale-90 accent-brand-600"> ${d.trim()}</label>`);
+                        extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px] mt-1.5"><span class="text-neutral-400 font-extrabold ml-1">المشروب:</span>`;
+                        drinks.forEach(d => extrasHtml += `<label class="bg-white/5 text-neutral-300 px-2 py-0.5 rounded-lg border border-white/5 cursor-pointer flex items-center select-none"><input type="radio" name="drink-${dish.id}" value="${d.trim()}" class="ml-1 scale-90 accent-brand-500"> ${d.trim()}</label>`);
                         extrasHtml += `</div>`;
                     }
                     extrasHtml += `</div>`;
@@ -1578,7 +1732,7 @@
                     `;
                 } else {
                     quantityControlsHtml = `
-                        <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price}, '${dish.image || ''}')" class="bg-dark-950 hover:bg-brand-500 hover:text-white text-stone-200 p-3 rounded-2xl transition-all duration-300 active:scale-90 shrink-0 shadow-sm flex items-center gap-1.5 font-bold text-xs">
+                        <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price}, '${dish.image || ''}')" class="bg-white/10 hover:bg-brand-500 text-white p-3 rounded-2xl transition-all duration-300 active:scale-90 shrink-0 shadow-sm flex items-center gap-1.5 font-bold text-xs border border-white/10">
                             <i class="fa-solid fa-plus text-[10px]"></i> إضافة للطلب
                         </button>
                     `;
@@ -1586,13 +1740,13 @@
 
                 card.innerHTML = `
                     <div class="flex gap-4 items-center flex-1 min-w-0">
-                        <img src="${dish.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=300'}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-sm shrink-0 border border-stone-100" alt="${dish.name}">
+                        <img src="${dish.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=300'}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-sm shrink-0 border border-white/5" alt="${dish.name}">
                         <div class="text-right flex-grow min-w-0">
-                            <h4 class="font-extrabold text-dark-950 text-xs sm:text-sm truncate">${dish.name}</h4>
-                            <p class="text-[10px] text-stone-400 mt-0.5 leading-relaxed font-semibold line-clamp-2">${dish.desc || ''}</p>
+                            <h4 class="font-extrabold text-white text-xs sm:text-sm truncate">${dish.name}</h4>
+                            <p class="text-[10px] text-neutral-400 mt-0.5 leading-relaxed font-semibold line-clamp-2">${dish.desc || ''}</p>
                             <div class="flex items-center gap-2 mt-1.5">
-                                <span class="text-xs sm:text-sm font-black text-brand-600">${dish.price} د.ج</span>
-                                <span class="text-[9px] bg-brand-50 text-brand-600 px-2 py-0.5 rounded-lg border border-brand-100/50 font-bold uppercase">تحضير فوري</span>
+                                <span class="text-xs sm:text-sm font-black text-brand-500">${dish.price} د.ج</span>
+                                <span class="text-[9px] bg-brand-500/10 text-brand-500 px-2 py-0.5 rounded-lg border border-brand-500/10 font-bold uppercase">تحضير طازج</span>
                             </div>
                             ${extrasHtml}
                         </div>
@@ -1632,7 +1786,7 @@
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(interactiveSelectMap);
 
                 interactiveLocationMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(interactiveSelectMap)
-                    .bindPopup("<strong class='text-brand-600 font-bold'>اسحب الدبوس فوق موقعك بدقة</strong>").openPopup();
+                    .bindPopup("<strong class='text-brand-500 font-bold'>اسحبني فوق موقعك بدقة</strong>").openPopup();
 
                 interactiveLocationMarker.on('dragend', function (event) {
                     const marker = event.target;
@@ -1678,7 +1832,7 @@
             list.innerHTML = "";
 
             if (customerCart.length === 0) {
-                list.innerHTML = `<p class="text-xs text-stone-400 text-center py-5 font-semibold">السلة فارغة، أضف بعض الأطباق</p>`;
+                list.innerHTML = `<p class="text-xs text-neutral-400 text-center py-5 font-semibold">السلة فارغة، أضف بعض الأطباق</p>`;
                 totalText.innerText = "0 د.ج";
                 updateMobileCartBar(0, 0);
                 return;
@@ -1690,7 +1844,7 @@
                 total += (item.price * item.quantity);
                 totalQty += item.quantity;
                 const itemDiv = document.createElement('div');
-                itemDiv.className = "flex items-center justify-between text-xs border-b border-stone-50 pb-2.5";
+                itemDiv.className = "flex items-center justify-between text-xs border-b border-white/5 pb-2.5";
 
                 let details = "";
                 if(item.sauces.length > 0) details += ` [${item.sauces.join(', ')}]`;
@@ -1698,12 +1852,12 @@
 
                 itemDiv.innerHTML = `
                     <div class="text-right">
-                        <span class="font-extrabold text-dark-900">${item.name} ×${item.quantity}</span>
-                        <span class="block text-[9px] text-stone-400 font-bold">${details}</span>
+                        <span class="font-extrabold text-white">${item.name} ×${item.quantity}</span>
+                        <span class="block text-[9px] text-neutral-400 font-bold">${details}</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="font-black text-dark-950">${item.price * item.quantity} د.ج</span>
-                        <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded-lg transition"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        <span class="font-black text-white">${item.price * item.quantity} د.ج</span>
+                        <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-500 p-1.5 hover:bg-white/5 rounded-lg transition"><i class="fa-solid fa-trash text-[10px]"></i></button>
                     </div>
                 `;
                 list.appendChild(itemDiv);
@@ -1740,7 +1894,7 @@
 
         // Dual-Stage Location Resolver: GPS -> Network Fallback -> Town Center Fallback
         window.getCustomerLocation = function() {
-            document.getElementById('gpsStatus').innerText = "جاري الاتصال بالأقمار الصناعية...";
+            document.getElementById('gpsStatus').innerText = "جاري الاتصال بالقمر الصناعي...";
 
             let ipFallbackCoords = null;
             // Initiate IP Geolocation fallback query in parallel
@@ -1754,7 +1908,7 @@
 
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
-                    applyLocationSuccess(pos.coords.latitude, pos.coords.longitude, "تم تحديد الموقع الجغرافي بنجاح (GPS)");
+                    applyLocationSuccess(pos.coords.latitude, pos.coords.longitude, "تم تحديد موقعك بدقة عالية (GPS)");
                 }, (err) => {
                     console.warn("GPS lock failed, using IP lookup network fallback", err);
                     if (ipFallbackCoords) {
@@ -1813,7 +1967,7 @@
                 await setDoc(doc(db, "orders", orderId), orderData);
                 customerCart = [];
                 updateCartUI();
-                Swal.fire('تم!', 'تم إرسال طلبك للمطعم.', 'success');
+                Swal.fire('تم!', 'تم إرسال طلبك بنجاح للمطعم.', 'success');
                 showOrderTracker(orderData);
             } catch(e) {
                 Swal.fire('خطأ', 'فشل إرسال الطلب.', 'error');
@@ -1836,8 +1990,8 @@
             steps.forEach(s => {
                 const el = document.getElementById(`step-${s}`);
                 if (el) {
-                    el.className = "flex flex-col items-center text-stone-300";
-                    el.querySelector('div').className = "w-8 h-8 rounded-full bg-stone-50 flex items-center justify-center text-[10px] font-black border-2 border-transparent";
+                    el.className = "flex flex-col items-center text-neutral-600";
+                    el.querySelector('div').className = "w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black border-2 border-transparent";
                 }
             });
 
@@ -1847,16 +2001,16 @@
             const activeEl = document.getElementById(currentStepId);
             if (activeEl) {
                 activeEl.className = "flex flex-col items-center text-brand-500";
-                activeEl.querySelector('div').className = "w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-[10px] font-bold border-2 border-brand-500";
+                activeEl.querySelector('div').className = "w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center text-[10px] font-bold border-2 border-brand-500";
             }
 
             const statusMap = {
-                'pending': 'بانتظار قبول وتأكيد المطعم',
-                'accepted': 'جاري تحضير الوجبة',
+                'pending': 'بانتظار قبول المطعم للطلب',
+                'accepted': 'جاري تحضير الوجبة الآن',
                 'ready': 'الوجبة جاهزة وبانتظار المندوب',
-                'delivering': 'المندوب يقترب من موقعك الآن',
-                'delivered': 'تم التوصيل بنجاح، شهية طيبة',
-                'cancelled': 'تم إلغاء الطلب من المطعم'
+                'delivering': 'المندوب في مسار التوصيل الآن',
+                'delivered': 'تم التسليم بنجاح، شهية طيبة!',
+                'cancelled': 'تم إلغاء الطلب من قبل المطعم'
             };
             statusText.innerText = statusMap[order.status] || order.status;
 
@@ -1889,7 +2043,7 @@
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeTrackerMap);
 
                 const motorcycleIcon = L.divIcon({
-                    html: `<div class="relative flex items-center justify-center"><div class="absolute w-12 h-12 rounded-full bg-brand-400/30 animate-ping"></div><div class="relative bg-brand-600 text-white w-9 h-9 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
+                    html: `<div class="relative flex items-center justify-center"><div class="absolute w-12 h-12 rounded-full bg-brand-500/30 animate-ping"></div><div class="relative bg-brand-500 text-white w-9 h-9 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
                     className: 'custom-motorcycle-icon',
                     iconSize: [40, 40],
                     iconAnchor: [20, 20]
@@ -1915,7 +2069,7 @@
                         if (routeData.routes && routeData.routes[0]) {
                             const coords = routeData.routes[0].geometry.coordinates.map(pt => [pt[1], pt[0]]);
                             customerRoutingPolyline = L.polyline(coords, {
-                                color: '#ff3e1d',
+                                color: '#ff6b00',
                                 weight: 6,
                                 opacity: 0.8,
                                 lineJoin: 'round'
@@ -1924,7 +2078,7 @@
                         }
                     }).catch(() => {
                         customerRoutingPolyline = L.polyline([[driverCoords.lat, driverCoords.lng], [dest.lat, dest.lng]], {
-                            color: '#ff3e1d', weight: 4, dashArray: '5, 10'
+                            color: '#ff6b00', weight: 4, dashArray: '5, 10'
                         }).addTo(activeTrackerMap);
                     });
             } else {
@@ -1946,10 +2100,10 @@
                     const btn = document.getElementById('restaurantStatusToggle');
                     if (data.isOpen) {
                         btn.innerText = "مفتوح الآن";
-                        btn.className = "px-3.5 py-1.5 rounded-full text-xs font-black transition bg-emerald-100 text-emerald-600 custom-active-dot";
+                        btn.className = "px-3.5 py-1.5 rounded-full text-xs font-black transition bg-emerald-500/15 text-emerald-400 border border-emerald-500/20";
                     } else {
                         btn.innerText = "مغلق حالياً";
-                        btn.className = "px-3.5 py-1.5 rounded-full text-xs font-black transition bg-red-100 text-red-600";
+                        btn.className = "px-3.5 py-1.5 rounded-full text-xs font-black transition bg-red-500/15 text-red-400 border border-red-500/20";
                     }
 
                     document.getElementById('profileRestName').value = data.name;
@@ -1964,16 +2118,16 @@
                 snapshot.forEach((docSnap) => {
                     const dish = docSnap.data();
                     const div = document.createElement('div');
-                    div.className = "bg-stone-50 p-4 rounded-2xl flex items-center justify-between text-xs border border-stone-100 shadow-sm";
+                    div.className = "bg-white/5 p-4 rounded-2xl flex items-center justify-between text-xs border border-white/5 shadow-sm";
                     div.innerHTML = `
                         <div class="flex items-center gap-3">
-                            <img src="${dish.image}" class="w-12 h-12 rounded-xl object-cover shadow-sm">
+                            <img src="${dish.image}" class="w-12 h-12 rounded-xl object-cover shadow-sm border border-white/5">
                             <div class="text-right">
-                                <h4 class="font-bold text-dark-900">${dish.name}</h4>
-                                <span class="text-brand-600 font-extrabold block mt-0.5">${dish.price} د.ج</span>
+                                <h4 class="font-bold text-white">${dish.name}</h4>
+                                <span class="text-brand-500 font-extrabold block mt-0.5">${dish.price} د.ج</span>
                             </div>
                         </div>
-                        <button onclick="deleteDish('${dish.id}')" class="text-red-500 hover:text-red-700 bg-white p-2.5 rounded-xl border border-stone-100 shadow-sm transition">
+                        <button onclick="deleteDish('${dish.id}')" class="text-red-400 hover:text-red-500 bg-white/5 p-2.5 rounded-xl border border-white/5 shadow-sm transition">
                             <i class="fa-solid fa-trash text-xs"></i>
                         </button>
                     `;
@@ -2000,15 +2154,15 @@
 
                         const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (×${i.quantity})</li>`).join('');
                         const orderCard = document.createElement('div');
-                        orderCard.className = "bg-brand-50/70 border border-brand-200/60 rounded-3xl p-5 shadow-sm space-y-3.5 text-dark-950 text-right";
+                        orderCard.className = "bg-brand-500/10 border border-brand-500/20 rounded-3xl p-5 shadow-sm space-y-3.5 text-white text-right";
                         orderCard.innerHTML = `
-                            <div class="flex justify-between items-center border-b border-brand-200/30 pb-2">
-                                <span class="font-extrabold text-sm text-brand-600 flex items-center gap-2"><i class="fa-solid fa-receipt"></i> ${order.id}</span>
-                                <span class="text-[10px] text-stone-400 font-bold">${new Date(order.createdAt).toLocaleTimeString('ar-DZ')}</span>
+                            <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                                <span class="font-extrabold text-sm text-brand-500 flex items-center gap-2"><i class="fa-solid fa-receipt"></i> ${order.id}</span>
+                                <span class="text-[10px] text-neutral-400 font-bold">${new Date(order.createdAt).toLocaleTimeString('ar-DZ')}</span>
                             </div>
                             <div class="text-xs space-y-1.5">
-                                <p class="text-stone-500"><strong>الزبون:</strong> ${order.customerName}</p>
-                                <ul class="space-y-1 bg-white p-3 rounded-2xl border border-brand-100 font-semibold text-stone-600">${itemsList}</ul>
+                                <p class="text-neutral-300"><strong>الزبون:</strong> ${order.customerName}</p>
+                                <ul class="space-y-1 bg-black/40 p-3 rounded-2xl border border-white/5 font-semibold text-neutral-300">${itemsList}</ul>
                             </div>
                             <div class="flex gap-2">
                                 <button onclick="updateOrderStatus('${order.id}', 'accepted')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3 rounded-xl text-xs transition-all">موافقة وقبول</button>
@@ -2020,17 +2174,17 @@
                         countConf++;
                         const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (×${i.quantity})</li>`).join('');
                         const orderCard = document.createElement('div');
-                        orderCard.className = "bg-white border border-stone-100 rounded-3xl p-5 shadow-sm space-y-3.5 text-dark-950 text-right";
+                        orderCard.className = "bg-white/5 border border-white/10 rounded-3xl p-5 shadow-sm space-y-3.5 text-white text-right";
                         orderCard.innerHTML = `
-                            <div class="flex justify-between items-center border-b border-stone-50 pb-2">
-                                <span class="font-extrabold text-sm text-emerald-600 flex items-center gap-2"><i class="fa-solid fa-fire-burner"></i> قيد التحضير والتجهيز</span>
-                                <span class="text-[10px] text-stone-400 font-bold">${order.id}</span>
+                            <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                                <span class="font-extrabold text-sm text-emerald-500 flex items-center gap-2"><i class="fa-solid fa-fire-burner"></i> قيد التحضير والتجهيز</span>
+                                <span class="text-[10px] text-neutral-400 font-bold">${order.id}</span>
                             </div>
                             <div class="text-xs space-y-1.5">
-                                <p class="text-stone-500"><strong>الزبون:</strong> ${order.customerName}</p>
-                                <ul class="space-y-1 bg-stone-50/70 p-3 rounded-2xl font-semibold text-stone-600">${itemsList}</ul>
+                                <p class="text-neutral-300"><strong>الزبون:</strong> ${order.customerName}</p>
+                                <ul class="space-y-1 bg-black/40 p-3 rounded-2xl font-semibold text-neutral-400">${itemsList}</ul>
                             </div>
-                            <button onclick="updateOrderStatus('${order.id}', 'ready')" class="w-full bg-dark-950 hover:bg-brand-500 text-white font-black py-3 rounded-xl text-xs transition shadow-sm">
+                            <button onclick="updateOrderStatus('${order.id}', 'ready')" class="w-full btn-brand-gradient py-3.5 rounded-xl text-xs transition shadow-sm">
                                 الوجبة جاهزة! استدعاء مندوب التوصيل <i class="fa-solid fa-motorcycle mr-1.5"></i>
                             </button>
                         `;
@@ -2047,7 +2201,7 @@
                 document.getElementById('restStatCancelled').innerText = countCan;
 
                 if (container.children.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-stone-400 py-6 text-center font-bold col-span-full">لا تتوفر أي طلبات نشطة حالياً.</p>`;
+                    container.innerHTML = `<p class="text-xs text-neutral-400 py-6 text-center font-bold col-span-full">لا تتوفر أي طلبات نشطة حالياً.</p>`;
                 }
             }, (err) => { console.warn(err); });
         }
@@ -2061,12 +2215,12 @@
             const list = document.getElementById('restOverlayItemsList');
             // Formatted organized list including food images
             list.innerHTML = order.items.map(i => `
-                <div class="flex items-center gap-3 border-b border-stone-200/60 pb-2">
-                    <img src="${i.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=150'}" class="w-12 h-12 rounded-xl object-cover shadow-sm shrink-0 border border-stone-200">
+                <div class="flex items-center gap-3 border-b border-white/5 pb-2">
+                    <img src="${i.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=150'}" class="w-12 h-12 rounded-xl object-cover shadow-sm shrink-0 border border-white/10">
                     <div class="text-right flex-grow">
-                        <span class="font-black text-xs text-stone-800 block">${i.name}</span>
-                        <div class="flex items-center justify-between text-[10px] text-stone-500 mt-1">
-                            <span>الكمية: <strong class="text-brand-600 text-xs font-black">×${i.quantity}</strong></span>
+                        <span class="font-black text-xs text-white block">${i.name}</span>
+                        <div class="flex items-center justify-between text-[10px] text-neutral-400 mt-1">
+                            <span>الكمية: <strong class="text-brand-500 text-xs font-black">×${i.quantity}</strong></span>
                             <span>السعر: ${i.price} د.ج</span>
                         </div>
                     </div>
@@ -2095,12 +2249,12 @@
 
         window.switchRestTab = function(tabId) {
             document.querySelectorAll('.rest-tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.rest-tab-btn').forEach(btn => btn.className = "rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-stone-600 hover:bg-stone-50 flex items-center gap-2.5");
+            document.querySelectorAll('.rest-tab-btn').forEach(btn => btn.className = "rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-neutral-300 hover:bg-white/5 flex items-center gap-2.5");
 
             document.getElementById(tabId).classList.remove('hidden');
             const activeBtn = Array.from(document.querySelectorAll('.rest-tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
             if(activeBtn) {
-                activeBtn.className = "rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs bg-brand-50 text-brand-600 flex items-center gap-2.5";
+                activeBtn.className = "rest-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs bg-white/5 text-brand-500 flex items-center gap-2.5";
             }
         };
 
@@ -2110,7 +2264,7 @@
             if (snap.exists()) {
                 const currentStatus = snap.data().isOpen;
                 await updateDoc(docRef, { isOpen: !currentStatus });
-                Swal.fire('تم', `المطعم الآن ${!currentStatus ? 'مفتوح' : 'مغلق'}`, 'success');
+                Swal.fire('تم التعديل', `حالة المطعم الآن: ${!currentStatus ? 'مفتوح للطلبات' : 'مغلق'}`, 'success');
             }
         };
 
@@ -2133,7 +2287,7 @@
                     createdAt: new Date().toISOString()
                 });
                 document.getElementById('dishForm').reset();
-                Swal.fire('نجاح', 'تمت إضافة الوجبة للمنيو.', 'success');
+                Swal.fire('نجاح', 'تمت إضافة الوجبة بنجاح.', 'success');
             } catch(err) {
                 Swal.fire('خطأ', 'فشل إضافة الوجبة.', 'error');
             } finally {
@@ -2144,17 +2298,17 @@
         window.deleteDish = async function(dishId) {
             Swal.fire({
                 title: 'تأكيد الحذف؟',
-                text: "سيتم إزالة الوجبة من قائمة العرض نهائياً!",
+                text: "سيتم حذف الوجبة من قائمة العرض نهائياً!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ff3e1d',
+                confirmButtonColor: '#ff2d55',
                 cancelButtonColor: '#94a3b8',
                 confirmButtonText: 'حذف',
                 cancelButtonText: 'إلغاء'
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     await deleteDoc(doc(db, "dishes", dishId));
-                    Swal.fire('تم الحذف', 'تم إزالة الطبق بنجاح.', 'success');
+                    Swal.fire('تم', 'تم إزالة الطبق بنجاح.', 'success');
                 }
             });
         };
@@ -2169,9 +2323,9 @@
             try {
                 await updateDoc(doc(db, "restaurants", currentUser.uid), { name: rName, phone: rPhone, image: rPic });
                 await updateDoc(doc(db, "users", currentUser.uid), { name: rName, phone: rPhone });
-                Swal.fire('تم', 'تم تحديث البيانات بنجاح.', 'success');
+                Swal.fire('تم', 'تم تحديث ملف المطعم بنجاح.', 'success');
             } catch(e) {
-                Swal.fire('خطأ', 'فشل تحديث البيانات.', 'error');
+                Swal.fire('خطأ', 'فشل تحديث الملف.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -2182,7 +2336,7 @@
                 await updateDoc(doc(db, "orders", orderId), { status: nextStatus });
                 Swal.fire('تم', 'تم تحديث حالة الطلب.', 'success');
             } catch(err) {
-                Swal.fire('خطأ', 'فشل التحديث.', 'error');
+                Swal.fire('خطأ', 'فشل التحديث للطلب.', 'error');
             }
         };
 
@@ -2250,19 +2404,19 @@
 
                         const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (${i.quantity}x)</li>`).join('');
                         const card = document.createElement('div');
-                        card.className = "bg-brand-50/70 border border-brand-200/60 rounded-3xl p-5 shadow-sm text-right space-y-3.5 text-dark-950";
+                        card.className = "bg-brand-500/10 border border-brand-500/20 rounded-3xl p-5 shadow-sm text-right space-y-3.5 text-white";
                         card.innerHTML = `
-                            <div class="flex justify-between items-center border-b border-brand-200/30 pb-2">
-                                <span class="font-extrabold text-sm text-brand-600 flex items-center gap-1.5"><i class="fa-solid fa-bell"></i> مهمة جديدة متاحة!</span>
-                                <span class="text-xs text-stone-400 font-bold">${order.id}</span>
+                            <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                                <span class="font-extrabold text-sm text-brand-500 flex items-center gap-1.5"><i class="fa-solid fa-bell animate-bounce"></i> مهمة توصيل جديدة!</span>
+                                <span class="text-xs text-neutral-400 font-bold">${order.id}</span>
                             </div>
                             <div class="text-xs space-y-1.5">
                                 <p><strong>المطعم:</strong> ${order.restaurantName}</p>
                                 <p><strong>الزبون:</strong> ${order.customerName}</p>
-                                <ul class="space-y-1 bg-white p-3 rounded-2xl border border-brand-100 font-semibold text-stone-700 mt-2">${itemsList}</ul>
+                                <ul class="space-y-1 bg-black/40 p-3 rounded-2xl border border-white/5 font-semibold text-neutral-300 mt-2">${itemsList}</ul>
                             </div>
-                            <button onclick="acceptDeliveryTask('${order.id}')" class="w-full bg-dark-950 hover:bg-brand-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition active:scale-95">
-                                قبول مهمة التوصيل وتنشيط الخريطة
+                            <button onclick="acceptDeliveryTask('${order.id}')" class="w-full btn-brand-gradient py-3.5 rounded-2xl text-xs transition active:scale-95">
+                                قبول المهمة وبث الـ GPS
                             </button>
                         `;
                         container.appendChild(card);
@@ -2272,15 +2426,15 @@
                         showDriverFullscreenTask(order);
 
                         const card = document.createElement('div');
-                        card.className = "bg-white border border-stone-100 rounded-3xl p-5 shadow-sm text-right space-y-3.5 text-dark-950";
+                        card.className = "bg-white/5 border border-white/10 rounded-3xl p-5 shadow-sm text-right space-y-3.5 text-white";
                         card.innerHTML = `
-                            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
-                                <span class="font-extrabold text-sm text-blue-600 flex items-center gap-2"><i class="fa-solid fa-spinner fa-spin"></i> جاري التوصيل حالياً</span>
-                                <span class="text-xs text-brand-600 font-bold">${order.id}</span>
+                            <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                                <span class="font-extrabold text-sm text-blue-400 flex items-center gap-2"><i class="fa-solid fa-spinner fa-spin"></i> جاري التوصيل الآن</span>
+                                <span class="text-xs text-brand-500 font-bold">${order.id}</span>
                             </div>
                             <div class="text-xs space-y-1.5">
                                 <p><strong>الزبون:</strong> ${order.customerName}</p>
-                                <p><strong>الهاتف:</strong> <a href="tel:${order.customerPhone}" class="text-blue-500 font-black underline">${order.customerPhone}</a></p>
+                                <p><strong>الهاتف:</strong> <a href="tel:${order.customerPhone}" class="text-blue-400 font-black underline">${order.customerPhone}</a></p>
                                 <p><strong>المصدر:</strong> ${order.restaurantName}</p>
                             </div>
                             <button onclick="completeDeliveryTask('${order.id}')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3.5 rounded-2xl text-xs transition active:scale-95">
@@ -2295,7 +2449,7 @@
                 document.getElementById('driverStatTotal').innerText = totalRuns;
 
                 if (container.children.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-stone-400 py-6 text-center font-bold">لا تتوفر أي مهمات حالياً.</p>`;
+                    container.innerHTML = `<p class="text-xs text-neutral-400 py-6 text-center font-bold">لا تتوفر أي مهمات توصيل حالياً.</p>`;
                 }
             }, (err) => { console.warn(err); });
         }
@@ -2309,7 +2463,7 @@
             document.getElementById('overlayCustPhone').href = `tel:${order.customerPhone}`;
 
             const list = document.getElementById('overlayItemsList');
-            list.innerHTML = order.items.map(i => `<div class="flex justify-between border-b border-stone-100 pb-1"><span>${i.name}</span><span class="font-bold">×${i.quantity}</span></div>`).join('');
+            list.innerHTML = order.items.map(i => `<div class="flex justify-between border-b border-white/5 pb-1"><span>${i.name}</span><span class="font-bold">×${i.quantity}</span></div>`).join('');
 
             const acceptBtn = document.getElementById('overlayAcceptBtn');
             acceptBtn.onclick = async () => {
@@ -2358,13 +2512,13 @@
                     L.latLng(dest.lat, dest.lng)
                 ],
                 lineOptions: {
-                    styles: [{ color: '#ff3e1d', opacity: 0.8, weight: 6 }]
+                    styles: [{ color: '#ff6b00', opacity: 0.8, weight: 6 }]
                 },
                 createMarker: function(i, wp, nWps) {
                     if (i === 0) {
                         return L.marker(wp.latLng, {
                             icon: L.divIcon({
-                                html: `<div class="relative bg-brand-600 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center border-2 border-white"><i class="fa-solid fa-motorcycle text-xs"></i></div>`,
+                                html: `<div class="relative bg-brand-500 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center border-2 border-white"><i class="fa-solid fa-motorcycle text-xs"></i></div>`,
                                 className: 'custom-driver-icon',
                                 iconSize: [32, 32],
                                 iconAnchor: [16, 16]
@@ -2373,7 +2527,7 @@
                     } else {
                         return L.marker(wp.latLng, {
                             icon: L.divIcon({
-                                html: `<div class="relative bg-stone-900 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center border-2 border-white"><i class="fa-solid fa-house-chimney text-xs"></i></div>`,
+                                html: `<div class="relative bg-neutral-900 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center border-2 border-white"><i class="fa-solid fa-house-chimney text-xs"></i></div>`,
                                 className: 'custom-customer-icon',
                                 iconSize: [32, 32],
                                 iconAnchor: [16, 16]
@@ -2402,12 +2556,12 @@
 
         window.switchDeliveryTab = function(tabId) {
             document.querySelectorAll('.driver-tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.driver-tab-btn').forEach(btn => btn.className = "driver-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-stone-600 hover:bg-stone-50 flex items-center gap-2.5");
+            document.querySelectorAll('.driver-tab-btn').forEach(btn => btn.className = "driver-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs text-neutral-300 hover:bg-white/5 flex items-center gap-2.5");
 
             document.getElementById(tabId).classList.remove('hidden');
             const activeBtn = Array.from(document.querySelectorAll('.driver-tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
             if(activeBtn) {
-                activeBtn.className = "driver-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs bg-brand-50 text-brand-600 flex items-center gap-2.5";
+                activeBtn.className = "driver-tab-btn text-right px-4.5 py-3.5 rounded-2xl font-black text-xs bg-white/5 text-brand-500 flex items-center gap-2.5";
             }
         };
 
@@ -2428,7 +2582,7 @@
                     driverPhone: currentUserData.phone,
                     driverLoc: { lat: 36.4694, lng: 2.6247 }
                 });
-                Swal.fire('تم القبول', 'تم تفعيل مسار التتبع المباشر وتنشيط الـ GPS بالخلفية.', 'success');
+                Swal.fire('تم القبول', 'تم تفعيل مسار الخرائط وجاري تتبع موقعك بالخلفية.', 'success');
                 enableDriverGPS();
             } catch(e) {
                 Swal.fire('خطأ', 'فشل قبول المهمة.', 'error');
@@ -2446,9 +2600,9 @@
                 }
                 if (driverSelfMarker) activeDriverMap.removeLayer(driverSelfMarker);
                 driverSelfMarker = null;
-                Swal.fire('تم التوصيل', 'تم إنهاء المهمة وتسجيل التسليم بنجاح.', 'success');
+                Swal.fire('تم!', 'تم إنهاء المهمة وتسليمها للعميل.', 'success');
             } catch(e) {
-                Swal.fire('خطأ', 'فشل تسجيل التسليم.', 'error');
+                Swal.fire('خطأ', 'فشل تحديث الحالة.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -2487,7 +2641,7 @@
             };
 
             backgroundWorker.postMessage('start');
-            Swal.fire('بث نشط', 'يتم تحديث موقعك للزبون بالخلفية حتى عند إغلاق الشاشة لضمان تجربة حية.', 'info');
+            Swal.fire('بث نشط', 'جاري تحديث موقعك المباشر للزبائن بنجاح في الخلفية.', 'info');
         };
 
         async function updateDriverLocationTick() {
@@ -2497,7 +2651,7 @@
 
             if(activeDriverMap) {
                 const motorcycleIcon = L.divIcon({
-                    html: `<div class="relative flex items-center justify-center"><div class="absolute w-12 h-12 rounded-full bg-brand-400/30 animate-ping"></div><div class="relative bg-brand-600 text-white w-9 h-9 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
+                    html: `<div class="relative flex items-center justify-center"><div class="absolute w-12 h-12 rounded-full bg-brand-500/30 animate-ping"></div><div class="relative bg-brand-500 text-white w-9 h-9 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
                     className: 'custom-motorcycle-icon',
                     iconSize: [40, 40],
                     iconAnchor: [20, 20]
@@ -2505,7 +2659,7 @@
 
                 if (!driverSelfMarker) {
                     driverSelfMarker = L.marker([workerSimulatedLat, workerSimulatedLng], { icon: motorcycleIcon }).addTo(activeDriverMap)
-                        .bindPopup("<strong class='text-brand-600 font-bold'>موقعي الحالي</strong>").openPopup();
+                        .bindPopup("<strong class='text-brand-500 font-bold'>موقعي الحالي</strong>").openPopup();
                 } else {
                     driverSelfMarker.setLatLng([workerSimulatedLat, workerSimulatedLng]);
                 }
@@ -2538,7 +2692,7 @@
                 document.getElementById('driverPic').src = dPic || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200';
                 Swal.fire('تم', 'تم تحديث الملف الشخصي بنجاح.', 'success');
             } catch(e) {
-                Swal.fire('خطأ', 'فشل حفظ التغييرات.', 'error');
+                Swal.fire('خطأ', 'فشل حفظ التعديلات.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -2586,15 +2740,15 @@
                     const scoreVal = u.rating ? `<i class="fa-solid fa-star text-amber-500 text-[10px]"></i> ${u.rating.toFixed(1)}` : '--';
 
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-stone-50/50 border-b border-stone-100/80 transition-colors";
+                    tr.className = "hover:bg-white/5 border-b border-white/5 transition-colors";
                     tr.innerHTML = `
-                        <td class="py-4 font-bold text-dark-900">${u.name} <span class="block text-[9px] text-amber-500 mt-0.5">${scoreVal}</span></td>
-                        <td class="py-4 text-stone-500">${u.email}</td>
-                        <td class="py-4 text-stone-500">${u.phone || '--'}</td>
-                        <td class="py-4"><span class="bg-stone-100 text-stone-600 px-3 py-1 rounded-full font-black text-[9px] uppercase tracking-wide border border-stone-200/50">${u.role}</span></td>
+                        <td class="py-4 font-bold text-white">${u.name} <span class="block text-[9px] text-amber-500 mt-0.5">${scoreVal}</span></td>
+                        <td class="py-4 text-neutral-400">${u.email}</td>
+                        <td class="py-4 text-neutral-400">${u.phone || '--'}</td>
+                        <td class="py-4"><span class="bg-white/5 text-neutral-300 px-3 py-1 rounded-full font-black text-[9px] uppercase tracking-wide border border-white/5">${u.role}</span></td>
                         <td class="py-4 text-center">
-                            <button onclick="toggleUserBan('${u.uid}', '${u.status}')" class="px-3 py-1.5 text-[10px] rounded-lg font-bold transition ${u.status === 'banned' ? 'bg-red-100 text-red-600' : 'bg-stone-100 text-stone-700 hover:bg-red-50 hover:text-red-500'}">
-                                ${u.status === 'banned' ? 'فك حظر الحساب' : 'حظر العضو'}
+                            <button onclick="toggleUserBan('${u.uid}', '${u.status}')" class="px-3 py-1.5 text-[10px] rounded-lg font-bold transition ${u.status === 'banned' ? 'bg-red-500/10 text-red-400' : 'bg-white/5 text-neutral-300 hover:bg-red-500/10 hover:text-red-400'}">
+                                ${u.status === 'banned' ? 'فك الحظر' : 'حظر العضو'}
                             </button>
                         </td>
                     `;
@@ -2615,9 +2769,9 @@
             const nextStatus = currentStatus === 'banned' ? 'active' : 'banned';
             try {
                 await updateDoc(doc(db, "users", userId), { status: nextStatus });
-                Swal.fire('تم الإجراء', `حالة الحساب الحالية: ${nextStatus === 'banned' ? 'محظور من المنصة' : 'مفعّل ونشط'}`, 'success');
+                Swal.fire('تم', `حالة الحساب الآن: ${nextStatus === 'banned' ? 'محظور' : 'نشط'}`, 'success');
             } catch(e) {
-                Swal.fire('خطأ', 'فشل تغيير حالة الحظر.', 'error');
+                Swal.fire('خطأ', 'فشل تعديل الحالة.', 'error');
             }
         };
 
@@ -2627,7 +2781,7 @@
             const hText = document.getElementById('settingsHeroText').value.trim();
             try {
                 await setDoc(doc(db, "settings", "global"), { heroText: hText });
-                Swal.fire('تم', 'تم تحديث عنوان الواجهة بنجاح.', 'success');
+                Swal.fire('تم', 'تم تحديث العنوان الرئيسي بنجاح.', 'success');
             } catch(err) {
                 Swal.fire('خطأ', 'فشل التعديل.', 'error');
             } finally {

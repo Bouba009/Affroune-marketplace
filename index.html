@@ -235,7 +235,7 @@
             </div>
             <div class="space-y-2">
                 <h4 class="text-stone-500 text-xs text-right font-bold">الوجبات المطلوبة:</h4>
-                <div id="restOverlayItemsList" class="max-h-36 overflow-y-auto space-y-2 pr-1 text-right text-xs bg-stone-50 p-3 rounded-xl border border-stone-100"></div>
+                <div id="restOverlayItemsList" class="max-h-52 overflow-y-auto space-y-3 pr-1 text-right text-xs bg-stone-50 p-3 rounded-xl border border-stone-100"></div>
             </div>
             <div class="flex gap-3 pt-2">
                 <button id="restOverlayAcceptBtn" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3.5 rounded-2xl text-sm transition-all shadow-lg active:scale-95">
@@ -297,7 +297,7 @@
         </div>
     </div>
 
-    <!-- Driver Fullscreen Active Task Map View -->
+    <!-- Driver Fullscreen Active Task Map View (Uber Style) -->
     <div id="driverActiveTaskContainer" class="fixed inset-0 bg-stone-100 z-[9900] hidden">
         <!-- Fullscreen map -->
         <div id="driverFullscreenMap" class="absolute inset-0 w-full h-full z-10"></div>
@@ -305,7 +305,7 @@
         <!-- Floating Header -->
         <div class="absolute top-4 inset-x-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl z-20 border border-stone-100 flex items-center justify-between max-w-md mx-auto">
             <div class="text-right">
-                <span class="text-[10px] text-orange-600 font-bold block">مهمة نشطة</span>
+                <span class="text-[10px] text-orange-600 font-bold block">مهمة نشطة (مسار Uber)</span>
                 <h3 id="driverActiveTaskTitle" class="text-xs font-black text-stone-900">توصيل الطلب #--</h3>
             </div>
             <button onclick="completeActiveDeliveryTask()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-black transition shadow-md active:scale-95">
@@ -952,6 +952,20 @@
         </div>
     </footer>
 
+    <!-- Service Worker Registration for background performance -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    self.addEventListener('install', (e) => self.skipWaiting());
+                    self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => {});
+            });
+        }
+    </script>
+
     <!-- Firebase & Application Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -988,7 +1002,7 @@
         let driverSelfMarker = null;
         let interactiveLocationMarker = null;
         let interactiveSelectMap = null;
-        let driverGpsInterval = null;
+        let driverRoutingPolyline = null;
         let selectedRestaurantRating = 0;
         let selectedDriverRating = 0;
         let ratingOrderId = null;
@@ -997,31 +1011,34 @@
         let shownDriverOverlayOrderId = null;
         let activeDriverTaskOrder = null;
         let trackingOrder = null;
+        let backgroundWorker = null;
+        let workerSimulatedLat = 36.4694;
+        let workerSimulatedLng = 2.6247;
 
-        // Alarm function with audio context
+        // Alarm function with Audio Synthesis
         function playDistinctiveAlarm() {
             const now = Date.now();
-            if (now - lastNotificationTime < 5000) return;
+            if (now - lastNotificationTime < 4000) return;
             lastNotificationTime = now;
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 let time = audioCtx.currentTime;
-                // Alternating high pitch frequencies for a clear, loud siren alert (4 repeating iterations)
-                for (let i = 0; i < 4; i++) {
+                // Loud and continuous sawtooth alarm sequence for screen notification (5 cycles)
+                for (let i = 0; i < 5; i++) {
                     const osc = audioCtx.createOscillator();
                     const gainNode = audioCtx.createGain();
                     osc.connect(gainNode);
                     gainNode.connect(audioCtx.destination);
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(i % 2 === 0 ? 980 : 750, time);
-                    gainNode.gain.setValueAtTime(0.4, time);
-                    gainNode.gain.setValueAtTime(0, time + 0.25);
+                    osc.frequency.setValueAtTime(i % 2 === 0 ? 1050 : 800, time);
+                    gainNode.gain.setValueAtTime(0.5, time);
+                    gainNode.gain.setValueAtTime(0, time + 0.3);
                     osc.start(time);
-                    osc.stop(time + 0.3);
-                    time += 0.35;
+                    osc.stop(time + 0.35);
+                    time += 0.4;
                 }
             } catch(e) {
-                console.warn("Audio Alert error: ", e);
+                console.warn("Audio Alert Context Error: ", e);
             }
         }
 
@@ -1244,7 +1261,10 @@
         async function handleLogout() {
             showLoading(true);
             try {
-                if (driverGpsInterval) clearInterval(driverGpsInterval);
+                if (backgroundWorker) {
+                    backgroundWorker.postMessage('stop');
+                    backgroundWorker.terminate();
+                }
                 await signOut(auth);
                 Swal.fire('تم تسجيل الخروج', 'نأمل رؤيتك قريباً.', 'info');
             } catch (err) {
@@ -1481,7 +1501,7 @@
                                     ${extrasHtml}
                                 </div>
                             </div>
-                            <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price})" class="bg-orange-50 hover:bg-orange-100 text-orange-600 p-2.5 rounded-xl transition active:scale-90 shrink-0">
+                            <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price}, '${dish.image || ''}')" class="bg-orange-50 hover:bg-orange-100 text-orange-600 p-2.5 rounded-xl transition active:scale-90 shrink-0">
                                 <i class="fa-solid fa-plus text-sm"></i>
                             </button>
                         `;
@@ -1535,7 +1555,7 @@
             updateCartUI();
         };
 
-        window.addToCart = function(dishId, name, price) {
+        window.addToCart = function(dishId, name, price, image) {
             const checkedSauces = [];
             document.querySelectorAll(`input[name="sauce-${dishId}"]:checked`).forEach(el => checkedSauces.push(el.value));
 
@@ -1547,7 +1567,7 @@
             if (existing) {
                 existing.quantity++;
             } else {
-                customerCart.push({ dishId, name, price, quantity: 1, sauces: checkedSauces, drink: selectedDrink });
+                customerCart.push({ dishId, name, price, quantity: 1, sauces: checkedSauces, drink: selectedDrink, image: image });
             }
             updateCartUI();
         };
@@ -1594,21 +1614,51 @@
             updateCartUI();
         };
 
+        // Resilient Geolocation with high accuracy options and IP-based API fallback
         window.getCustomerLocation = function() {
             if ("geolocation" in navigator) {
-                document.getElementById('gpsStatus').innerText = "جاري التحديد...";
+                document.getElementById('gpsStatus').innerText = "جاري التحديد التلقائي...";
                 navigator.geolocation.getCurrentPosition((pos) => {
                     customerCoordinates = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                    document.getElementById('gpsStatus').innerText = "تم تحديد الموقع!";
+                    document.getElementById('gpsStatus').innerText = "تم تحديد الموقع بنجاح!";
                     document.getElementById('coordinatesText').innerText = `الموقع: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
 
                     if (interactiveSelectMap && interactiveLocationMarker) {
                         interactiveLocationMarker.setLatLng([pos.coords.latitude, pos.coords.longitude]);
                         interactiveSelectMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
+                        interactiveSelectMap.invalidateSize();
                     }
-                }, (err) => {
-                    document.getElementById('gpsStatus').innerText = "فشل التحديد. اسحب الدبوس.";
-                }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
+                }, async (err) => {
+                    console.warn("GPS Access Failed/Blocked. Attempting Network Location Fallback...", err);
+                    document.getElementById('gpsStatus').innerText = "جاري التحديد عبر الشبكة...";
+                    
+                    try {
+                        // Resilient Fallback to IP Location Lookup if GPS is denied or unavailable
+                        const response = await fetch('https://ipapi.co/json/');
+                        const data = await response.json();
+                        if (data.latitude && data.longitude) {
+                            customerCoordinates = { lat: data.latitude, lng: data.longitude };
+                            document.getElementById('gpsStatus').innerText = "تم التحديد التقريبي!";
+                            document.getElementById('coordinatesText').innerText = `موقع تقريبي: ${data.latitude.toFixed(5)}, ${data.longitude.toFixed(5)}`;
+                            
+                            if (interactiveSelectMap && interactiveLocationMarker) {
+                                interactiveLocationMarker.setLatLng([data.latitude, data.longitude]);
+                                interactiveSelectMap.setView([data.latitude, data.longitude], 14);
+                                interactiveSelectMap.invalidateSize();
+                            }
+                        } else {
+                            throw new Error("No coordinate data");
+                        }
+                    } catch(fallbackErr) {
+                        document.getElementById('gpsStatus').innerText = "فشل التحديد. اسحب الدبوس يدوياً.";
+                        Swal.fire({
+                            title: 'تحديد الموقع يدوياً',
+                            text: 'تعذر تحديد موقعك تلقائياً. يرجى تفعيل الـ GPS وإعطاء الإذن للمتصفح، أو ببساطة اسحب الدبوس البرتقالي وضعه فوق منزلك على الخريطة.',
+                            icon: 'info',
+                            confirmButtonText: 'حسناً'
+                        });
+                    }
+                }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
             } else {
                 Swal.fire('غير مدعوم', 'المتصفح لا يدعم تحديد الموقع.', 'warning');
             }
@@ -1794,7 +1844,7 @@
                     if (order.status === 'pending') {
                         countNew++;
                         
-                        // Fullscreen Overlay Alert for new restaurant orders
+                        // Fullscreen Overlay Alert for new restaurant orders (plays audio & displays detailed items with images)
                         if (shownOverlayOrderId !== order.id) {
                             shownOverlayOrderId = order.id;
                             showRestaurantOverlay(order);
@@ -1861,7 +1911,19 @@
             document.getElementById('restOverlayCustPhone').innerText = order.customerPhone;
 
             const list = document.getElementById('restOverlayItemsList');
-            list.innerHTML = order.items.map(i => `<div class="flex justify-between border-b border-stone-100 pb-1"><span>${i.name}</span><span class="font-bold">×${i.quantity}</span></div>`).join('');
+            // Formatted organized list including food images
+            list.innerHTML = order.items.map(i => `
+                <div class="flex items-center gap-3 border-b border-stone-200/60 pb-2">
+                    <img src="${i.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=150'}" class="w-12 h-12 rounded-xl object-cover shadow-sm shrink-0 border border-stone-200">
+                    <div class="text-right flex-grow">
+                        <span class="font-black text-xs text-stone-800 block">${i.name}</span>
+                        <div class="flex items-center justify-between text-[10px] text-stone-500 mt-1">
+                            <span>الكمية: <strong class="text-orange-600 text-xs font-black">×${i.quantity}</strong></span>
+                            <span>السعر: ${i.price} د.ج</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
 
             const acceptBtn = document.getElementById('restOverlayAcceptBtn');
             const rejectBtn = document.getElementById('restOverlayRejectBtn');
@@ -2125,6 +2187,7 @@
             }, 300);
         }
 
+        // Draws an Uber-like street route using the Open Source Routing Machine (OSRM)
         function initDriverFullscreenMap(order) {
             const dest = order.customerLoc || { lat: 36.4694, lng: 2.6247 };
             const driverCoords = order.driverLoc || { lat: 36.4694, lng: 2.6247 };
@@ -2147,9 +2210,43 @@
                     .bindPopup("<strong class='text-stone-800 font-bold'>الزبون</strong>").openPopup();
             } else {
                 driverFullscreenMarker.setLatLng([driverCoords.lat, driverCoords.lng]);
-                activeFullscreenDriverMap.panTo([driverCoords.lat, driverCoords.lng]);
-                activeFullscreenDriverMap.invalidateSize();
             }
+
+            // Remove existing route line before drawing a new one
+            if (driverRoutingPolyline) {
+                activeFullscreenDriverMap.removeLayer(driverRoutingPolyline);
+                driverRoutingPolyline = null;
+            }
+
+            // Request route geometry via OSRM to construct real street routes (Uber-style)
+            const startStr = `${driverCoords.lng},${driverCoords.lat}`;
+            const endStr = `${dest.lng},${dest.lat}`;
+            fetch(`https://router.project-osrm.org/route/v1/driving/${startStr};${endStr}?overview=full&geometries=geojson`)
+                .then(res => res.json())
+                .then(routeData => {
+                    if (routeData.routes && routeData.routes[0]) {
+                        const geojsonCoordinates = routeData.routes[0].geometry.coordinates;
+                        // Map coordinates from [lng, lat] to [lat, lng] for Leaflet compatibility
+                        const leafletLatLngs = geojsonCoordinates.map(pt => [pt[1], pt[0]]);
+                        
+                        driverRoutingPolyline = L.polyline(leafletLatLngs, {
+                            color: '#3b82f6', // Uber blue line
+                            weight: 6,
+                            opacity: 0.85,
+                            lineJoin: 'round'
+                        }).addTo(activeFullscreenDriverMap);
+
+                        activeFullscreenDriverMap.fitBounds(driverRoutingPolyline.getBounds(), { padding: [40, 40] });
+                    }
+                })
+                .catch(err => {
+                    console.warn("OSRM Routing failure, drawing direct line instead.", err);
+                    // Straight fallback polyline if routing service is offline
+                    driverRoutingPolyline = L.polyline([
+                        [driverCoords.lat, driverCoords.lng],
+                        [dest.lat, dest.lng]
+                    ], { color: '#ea580c', weight: 4, dashArray: '5, 10' }).addTo(activeFullscreenDriverMap);
+                });
         }
 
         window.completeActiveDeliveryTask = async function() {
@@ -2204,7 +2301,9 @@
             showLoading(true);
             try {
                 await updateDoc(doc(db, "orders", orderId), { status: 'delivered' });
-                if (driverGpsInterval) clearInterval(driverGpsInterval);
+                if (backgroundWorker) {
+                    backgroundWorker.postMessage('stop');
+                }
                 if (driverSelfMarker) activeDriverMap.removeLayer(driverSelfMarker);
                 driverSelfMarker = null;
                 Swal.fire('تم!', 'تم إنهاء المهمة بنجاح.', 'success');
@@ -2215,44 +2314,72 @@
             }
         };
 
+        // Resilient background updates via dedicated Web Worker to circumvent browser throttling
         window.enableDriverGPS = function() {
-            if (driverGpsInterval) clearInterval(driverGpsInterval);
+            if (backgroundWorker) {
+                backgroundWorker.postMessage('stop');
+                backgroundWorker.terminate();
+            }
 
-            let simulatedLat = 36.4694;
-            let simulatedLng = 2.6247;
+            workerSimulatedLat = 36.4694;
+            workerSimulatedLng = 2.6247;
 
-            driverGpsInterval = setInterval(async () => {
-                simulatedLat += (Math.random() - 0.5) * 0.0015;
-                simulatedLng += (Math.random() - 0.5) * 0.0015;
-                const currentCoords = { lat: simulatedLat, lng: simulatedLng };
-
-                if(activeDriverMap) {
-                    const motorcycleIcon = L.divIcon({
-                        html: `<div class="relative flex items-center justify-center"><div class="absolute w-10 h-10 rounded-full bg-orange-400/30 animate-ping"></div><div class="relative bg-orange-600 text-white w-8 h-8 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
-                        className: 'custom-motorcycle-icon',
-                        iconSize: [40, 40],
-                        iconAnchor: [20, 20]
-                    });
-
-                    if (!driverSelfMarker) {
-                        driverSelfMarker = L.marker([simulatedLat, simulatedLng], { icon: motorcycleIcon }).addTo(activeDriverMap)
-                            .bindPopup("<strong class='text-orange-600 font-bold'>موقعي</strong>").openPopup();
-                    } else {
-                        driverSelfMarker.setLatLng([simulatedLat, simulatedLng]);
+            // Worker blob code running high-precision timers in background
+            const workerCode = `
+                let timer = null;
+                self.onmessage = function(e) {
+                    if (e.data === 'start') {
+                        timer = setInterval(() => {
+                            self.postMessage('tick');
+                        }, 5000);
+                    } else if (e.data === 'stop') {
+                        clearInterval(timer);
                     }
-                    activeDriverMap.panTo([simulatedLat, simulatedLng]);
+                };
+            `;
+            const blob = new Blob([workerCode], { type: 'application/javascript' });
+            backgroundWorker = new Worker(URL.createObjectURL(blob));
+
+            backgroundWorker.onmessage = function(e) {
+                if (e.data === 'tick') {
+                    updateDriverLocationTick();
                 }
+            };
 
-                try {
-                    const qSnap = await getDocs(query(collection(db, "orders"), where("driverId", "==", currentUser.uid), where("status", "==", "delivering")));
-                    qSnap.forEach(async (docSnap) => {
-                        await updateDoc(doc(db, "orders", docSnap.id), { driverLoc: currentCoords });
-                    });
-                } catch(err) {}
-            }, 5000);
-
-            Swal.fire('تنشيط', 'يتم بث موقعك الآن.', 'info');
+            backgroundWorker.postMessage('start');
+            Swal.fire('تنشيط الخلفية', 'يتم بث موقعك بالدراجة الآن حتى في حال قفل شاشة الهاتف.', 'info');
         };
+
+        async function updateDriverLocationTick() {
+            workerSimulatedLat += (Math.random() - 0.5) * 0.0015;
+            workerSimulatedLng += (Math.random() - 0.5) * 0.0015;
+            const currentCoords = { lat: workerSimulatedLat, lng: workerSimulatedLng };
+
+            if(activeDriverMap) {
+                const motorcycleIcon = L.divIcon({
+                    html: `<div class="relative flex items-center justify-center"><div class="absolute w-10 h-10 rounded-full bg-orange-400/30 animate-ping"></div><div class="relative bg-orange-600 text-white w-8 h-8 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
+                    className: 'custom-motorcycle-icon',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+
+                if (!driverSelfMarker) {
+                    driverSelfMarker = L.marker([workerSimulatedLat, workerSimulatedLng], { icon: motorcycleIcon }).addTo(activeDriverMap)
+                        .bindPopup("<strong class='text-orange-600 font-bold'>موقعي</strong>").openPopup();
+                } else {
+                    driverSelfMarker.setLatLng([workerSimulatedLat, workerSimulatedLng]);
+                }
+                activeDriverMap.panTo([workerSimulatedLat, workerSimulatedLng]);
+            }
+
+            // Sync with Firestore
+            try {
+                const qSnap = await getDocs(query(collection(db, "orders"), where("driverId", "==", currentUser.uid), where("status", "==", "delivering")));
+                qSnap.forEach(async (docSnap) => {
+                    await updateDoc(doc(db, "orders", docSnap.id), { driverLoc: currentCoords });
+                });
+            } catch(err) {}
+        }
 
         async function handleUpdateDriverProfile(e) {
             e.preventDefault();

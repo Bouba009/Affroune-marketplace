@@ -316,6 +316,9 @@
             color: #d1d5db !important;
             transition: color 0.2s;
         }
+        .star-rest:hover, .star-driver:hover {
+            color: #fbbf24 !important;
+        }
 
         #loadingOverlay {
             background: #ffffff !important;
@@ -336,8 +339,60 @@
                 <i class="fa-solid fa-motorcycle text-2xl text-white"></i>
             </div>
         </div>
-        <h2 class="text-neutral-900 font-black text-2xl mt-8 tracking-wide">FoodGo</h2>
+        <h2 class="text-neutral-900 font-black text-2xl mt-8 tracking-wide">El Affroun Online</h2>
         <p id="loadingStatusText" class="text-neutral-500 text-xs mt-3 px-6 text-center font-semibold tracking-wider">جاري تجهيز تجربتك اللذيذة بنمط فاخر...</p>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-black/40 z-[9981] flex items-center justify-center hidden p-4 transition-all duration-300 backdrop-blur-md">
+        <div class="glass-panel rounded-4xl max-w-md w-full p-6 md:p-8 shadow-2xl relative overflow-hidden border border-brand-100 bg-white">
+            <button onclick="closeProfileModal()" class="absolute top-5 left-5 text-neutral-400 hover:text-brand-500 transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-brand-50">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center space-y-4">
+                <div class="w-20 h-20 bg-brand-500 text-white rounded-full flex items-center justify-center text-3xl font-black mx-auto shadow-md" id="profileModalAvatar">U</div>
+                <div class="space-y-1">
+                    <h3 id="profileModalName" class="text-xl font-black text-neutral-900">--</h3>
+                    <span id="profileModalRole" class="text-xs bg-brand-50 text-brand-500 px-3 py-1 rounded-full border border-brand-100 inline-block">--</span>
+                </div>
+            </div>
+            <div class="space-y-4 mt-6 text-right">
+                <div class="bg-brand-50 p-4 rounded-2xl border border-brand-100 space-y-1">
+                    <p class="text-[10px] text-neutral-500 font-bold">البريد الإلكتروني:</p>
+                    <p id="profileModalEmail" class="text-sm font-black text-neutral-900">--</p>
+                </div>
+                <div class="bg-brand-50 p-4 rounded-2xl border border-brand-100 space-y-1">
+                    <p class="text-[10px] text-neutral-500 font-bold">رقم الهاتف:</p>
+                    <p id="profileModalPhone" class="text-sm font-black text-neutral-900">--</p>
+                </div>
+                <div class="bg-brand-50 p-4 rounded-2xl border border-brand-100 space-y-1">
+                    <p class="text-[10px] text-neutral-500 font-bold">المدينة والمنطقة:</p>
+                    <p id="profileModalCity" class="text-sm font-black text-neutral-900">العفرون</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Reporting Modal -->
+    <div id="reportModal" class="fixed inset-0 bg-black/40 backdrop-blur-md z-[9997] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="w-full max-w-md glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative border border-brand-100 bg-white">
+            <button onclick="closeReportModal()" class="absolute top-5 left-5 text-neutral-400 hover:text-brand-500 transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-brand-50">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto text-red-500 text-3xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 id="reportModalTitle" class="text-lg font-black text-neutral-900">تقديم بلاغ رسمي</h3>
+                <p class="text-xs text-neutral-500 font-semibold leading-relaxed">يرجى كتابة تفاصيل المشكلة بوضوح وسنقوم بالتحقق الفوري منها واتخاذ الإجراء اللازم.</p>
+            </div>
+            <div class="space-y-4">
+                <textarea id="reportReason" required class="w-full p-4 rounded-2xl border border-brand-100 text-sm focus:outline-none bg-brand-50 text-neutral-900" rows="4" placeholder="اكتب تفاصيل المخالفة هنا بالتفصيل..."></textarea>
+            </div>
+            <button onclick="submitReport()" class="w-full bg-red-500 hover:bg-red-600 py-4 rounded-full text-sm font-bold text-white shadow-lg transition">
+                إرسال البلاغ للإدارة
+            </button>
+        </div>
     </div>
 
     <!-- Rating Modal -->
@@ -471,9 +526,14 @@
                 <span class="text-[10px] text-brand-500 font-extrabold uppercase tracking-widest block mb-0.5">مهمة نشطة (تتبع المسار)</span>
                 <h3 id="driverActiveTaskTitle" class="text-xs font-black text-neutral-900">توصيل الطلب #--</h3>
             </div>
-            <button onclick="completeActiveDeliveryTask()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-full text-xs font-black transition-all shadow-md active:scale-95">
-                تم التسليم للزبون <i class="fa-solid fa-check mr-1.5"></i>
-            </button>
+            <div class="flex gap-2">
+                <button id="driverReportBtn" class="bg-red-50 text-red-500 border border-red-200 px-3 py-2 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95">
+                    بلغ عن الزبون <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+                </button>
+                <button onclick="completeActiveDeliveryTask()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-full text-xs font-black transition-all shadow-md active:scale-95">
+                    تم التسليم للزبون <i class="fa-solid fa-check mr-1.5"></i>
+                </button>
+            </div>
         </div>
 
         <div class="absolute bottom-6 left-6 z-20">
@@ -553,26 +613,27 @@
     <header class="glass-header sticky top-0 z-50">
         <div class="container mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3.5 cursor-pointer" onclick="navigateHome()">
-                <div class="logo text-3xl font-extrabold text-brand-500 tracking-tight">FoodGo</div>
+                <div class="logo text-3xl font-extrabold text-brand-500 tracking-tight">El Affroun Online</div>
             </div>
 
             <!-- Links matching user template -->
             <div class="hidden md:flex items-center gap-8 menu">
                 <a href="#" onclick="navigateHome(); return false;" class="text-neutral-800 hover:text-brand-500 font-bold transition-all">الرئيسية</a>
-                <a href="#" onclick="openAuthModal('login'); return false;" class="text-neutral-800 hover:text-brand-500 font-bold transition-all">المطاعم</a>
+                <a href="#" onclick="openProfileOrAuth(); return false;" class="text-neutral-800 hover:text-brand-500 font-bold transition-all">المطاعم</a>
                 <a href="#" class="text-neutral-800 hover:text-brand-500 font-bold transition-all">العروض</a>
                 <a href="#" class="text-neutral-800 hover:text-brand-500 font-bold transition-all">اتصل بنا</a>
             </div>
 
             <nav class="flex items-center gap-3 bg-transparent p-0 border-none sticky top-auto z-10 shadow-none">
-                <div id="userProfileHeader" class="hidden flex items-center gap-3.5 bg-brand-50 border border-brand-100 px-4 py-1.5 rounded-2xl">
+                <div id="userProfileHeader" onclick="openProfileModal()" class="hidden flex items-center gap-3 bg-brand-50 border border-brand-100 px-4 py-1.5 rounded-2xl shadow-sm cursor-pointer hover:bg-brand-100 transition">
+                    <div id="userAvatar" class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold shadow-md">U</div>
                     <div class="text-right">
                         <span id="headerUserName" class="text-xs font-black text-neutral-800 block">--</span>
                         <span id="headerUserRole" class="text-[9px] text-brand-500 font-extrabold uppercase tracking-widest block">--</span>
                     </div>
                 </div>
-                <button id="logoutBtn" class="hidden bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 px-4 py-2.5 rounded-2xl text-xs font-black transition-all">
-                    خروج <i class="fa-solid fa-arrow-right-from-bracket mr-1.5 text-[10px]"></i>
+                <button id="logoutBtn" class="hidden bg-red-50 hover:bg-red-100 text-red-500 border border-red-200 p-2.5 rounded-2xl transition-all shadow-sm">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
                 </button>
                 <button id="loginTriggerBtn" class="bg-brand-500 hover:bg-brand-600 border border-brand-600 text-white px-5 py-2.5 rounded-2xl text-xs font-black shadow-md transition-all active:scale-95 flex items-center gap-2">
                     <i class="fa-regular fa-user"></i> دخول / تسجيل
@@ -699,14 +760,25 @@
                     <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i> العودة لقائمة المطاعم الرئيسة
                 </button>
 
-                <div class="glass-panel rounded-3xl p-6 border border-brand-100 flex flex-col sm:flex-row gap-5 items-center bg-white">
-                    <img id="menuRestImg" src="" class="w-24 h-24 rounded-2xl object-cover shadow-md border border-brand-100" alt="Restaurant Logo">
-                    <div class="text-center sm:text-right space-y-1.5 flex-1">
-                        <div class="flex flex-col sm:flex-row items-center sm:justify-start gap-2.5">
-                            <h2 id="menuRestName" class="text-2xl font-black text-neutral-900">--</h2>
-                            <span id="menuRestRatingBadge" class="text-xs font-bold text-amber-500 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl"></span>
+                <!-- Premium Header Section Cover Layout -->
+                <div class="relative w-full h-64 md:h-80 rounded-3xl overflow-hidden shadow-lg border border-brand-100">
+                    <img id="menuRestImg" src="" class="w-full h-full object-cover filter brightness-[0.7]" alt="Restaurant Cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-6 right-6 left-6 text-white flex flex-col md:flex-row md:items-end justify-between gap-4 text-right">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <h2 id="menuRestName" class="text-2xl md:text-4xl font-black text-white">--</h2>
+                                <!-- Status Indicator with Green/Red dot -->
+                                <span id="menuRestStatusBadge" class="px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5">
+                                    <span id="menuRestStatusDot" class="w-2.5 h-2.5 rounded-full animate-pulse"></span>
+                                    <span id="menuRestStatusText">--</span>
+                                </span>
+                            </div>
+                            <p id="menuRestPhone" class="text-sm text-neutral-200 font-semibold flex items-center gap-2"></p>
                         </div>
-                        <p id="menuRestPhone" class="text-xs text-neutral-500 font-bold flex items-center justify-center sm:justify-start gap-1.5"></p>
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 self-start md:self-auto">
+                            <span id="menuRestRatingBadge" class="text-sm font-black text-amber-400 flex items-center gap-1"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -729,9 +801,16 @@
                             <p class="text-xs text-neutral-500 text-center py-5 font-semibold">السلة فارغة، أضف بعض الأطباق</p>
                         </div>
 
-                        <!-- Location -->
-                        <div class="bg-brand-50 p-4 rounded-2xl space-y-3.5 border border-brand-100">
+                        <!-- Address Inputs -->
+                        <div class="space-y-3 bg-brand-50 p-4 rounded-2xl border border-brand-100">
                             <span class="block text-xs font-black text-neutral-800"><i class="fa-solid fa-map-pin text-brand-500 ml-1"></i> حدد موقع التوصيل المطلوب:</span>
+                            
+                            <!-- Address Input Manual / Neighbor -->
+                            <div>
+                                <label class="block text-[10px] font-bold text-neutral-500 mb-1.5 text-right">كتابة اسم الحي، الشارع أو معالم قريبة:</label>
+                                <input type="text" id="manualAddressText" class="w-full px-3.5 py-2 rounded-xl border border-brand-100 text-xs font-semibold bg-white text-neutral-900" placeholder="مثال: حي ميمون، عمارة 15، شقة 2">
+                            </div>
+
                             <button type="button" onclick="getCustomerLocation()" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-brand-500/10 active:scale-95">
                                 <i class="fa-solid fa-location-crosshairs"></i>
                                 <span id="gpsStatus">تحديد موقعي التلقائي (GPS)</span>
@@ -760,7 +839,12 @@
                 <div class="absolute top-5 inset-x-5 glass-panel p-5 rounded-3xl shadow-2xl z-20 border border-brand-100 space-y-4 max-w-md mx-auto bg-white">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-black text-neutral-900">حالة طلبك الحالي: <span id="customerOrderStatus" class="text-brand-500">--</span></span>
-                        <button onclick="minimizeCustomerTracker()" class="text-[10px] font-black text-neutral-500 hover:text-neutral-800 px-3 py-1.5 bg-brand-50 rounded-xl transition-all border border-brand-100">تصغير الخريطة</button>
+                        <div class="flex items-center gap-2">
+                            <button id="customerReportBtn" class="bg-red-50 text-red-500 border border-red-200 px-2.5 py-1.5 rounded-xl text-[9px] font-bold shadow-sm transition">
+                                بلّغ عن المندوب <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+                            </button>
+                            <button onclick="minimizeCustomerTracker()" class="text-[10px] font-black text-neutral-500 hover:text-neutral-800 px-3 py-1.5 bg-brand-50 rounded-xl transition-all border border-brand-100">تصغير الخريطة</button>
+                        </div>
                     </div>
                     <div class="grid grid-cols-4 gap-1 py-1.5 text-center">
                         <div id="step-pending" class="flex flex-col items-center text-brand-500">
@@ -877,7 +961,7 @@
                                             <input type="number" id="dishPrice" required class="w-full px-4 py-3 rounded-2xl border border-brand-100 text-sm font-black focus:outline-none focus:border-brand-500 bg-brand-50 text-neutral-900">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold text-neutral-700 mb-1.5 text-right">رابط صورة الوجبة</label>
+                                            <label class="block text-xs font-bold text-neutral-700 mb-1.5 text-right">رابط صورة الوجبة (يمكنك فصل الروابط بفاصلة , للصور المتعددة)</label>
                                             <input type="url" id="dishImg" required class="w-full px-4 py-3 rounded-2xl border border-brand-100 text-sm font-semibold focus:outline-none focus:border-brand-500 bg-brand-50 text-neutral-900">
                                         </div>
                                     </div>
@@ -1138,9 +1222,9 @@
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[9px] font-extrabold tracking-wide">الرئيسية</span>
         </button>
-        <button onclick="openAuthModal('login')" class="flex flex-col items-center justify-center gap-1 text-neutral-600 hover:text-brand-500 transition-colors py-1">
+        <button id="mobileProfileNavBtn" onclick="openProfileOrAuth()" class="flex flex-col items-center justify-center gap-1 text-neutral-600 hover:text-brand-500 transition-colors py-1">
             <i class="fa-solid fa-user text-lg"></i>
-            <span class="text-[9px] font-extrabold tracking-wide">حسابي</span>
+            <span id="mobileProfileText" class="text-[9px] font-extrabold tracking-wide">حسابي</span>
         </button>
     </div>
 
@@ -1148,7 +1232,7 @@
     <footer class="bg-white/80 backdrop-blur-md border-t border-brand-100 text-neutral-500 py-8 text-center text-xs hidden md:block z-10 relative">
         <div class="container mx-auto px-6 space-y-2">
             <p class="font-bold text-neutral-800">العفرون أونلاين - نظام خرائط ومسارات وبث جغرافي ذكي لتوصيل الطعام</p>
-            <p>© <span id="currentYear">2026</span> FoodGo - All Rights Reserved.</p>
+            <p>© <span id="currentYear">2026</span> El Affroun Online - All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -1216,6 +1300,11 @@
         let workerSimulatedLat = 36.4694;
         let workerSimulatedLng = 2.6247;
         let currentDishes = []; 
+
+        // Reporting System State
+        let currentReportTargetId = null;
+        let currentReportTargetRole = null;
+        let currentReportOrderId = null;
 
         // Alarm function with Audio Synthesis
         function playDistinctiveAlarm() {
@@ -1289,6 +1378,7 @@
                                 resetStateToGuest();
                             } else {
                                 setupRoleInterface(currentUserData.role);
+                                updateHeaderAndNavForUser();
                             }
                         } else {
                             await signOut(auth);
@@ -1305,6 +1395,85 @@
                 }
             });
         });
+
+        // Toggle visual indicators upon successful log in
+        function updateHeaderAndNavForUser() {
+            if (currentUserData) {
+                const avatar = document.getElementById('userAvatar');
+                if (avatar) {
+                    avatar.innerText = (currentUserData.name || 'U').charAt(0).toUpperCase();
+                }
+                const mobileText = document.getElementById('mobileProfileText');
+                if (mobileText) {
+                    mobileText.innerText = 'بروفايلي';
+                }
+            }
+        }
+
+        window.openProfileOrAuth = function() {
+            if (currentUser) {
+                openProfileModal();
+            } else {
+                openAuthModal('login');
+            }
+        };
+
+        window.openProfileModal = function() {
+            if (!currentUserData) return;
+            document.getElementById('profileModalName').innerText = currentUserData.name || '--';
+            document.getElementById('profileModalRole').innerText = currentUserData.role === 'customer' ? 'زبون' : (currentUserData.role === 'delivery' ? 'مندوب توصيل' : 'صاحب مطعم');
+            document.getElementById('profileModalEmail').innerText = currentUserData.email || '--';
+            document.getElementById('profileModalPhone').innerText = currentUserData.phone || '--';
+            document.getElementById('profileModalCity').innerText = currentUserData.city || 'العفرون';
+            document.getElementById('profileModalAvatar').innerText = (currentUserData.name || 'U').charAt(0).toUpperCase();
+            
+            document.getElementById('profileModal').classList.remove('hidden');
+        };
+
+        window.closeProfileModal = function() {
+            document.getElementById('profileModal').classList.add('hidden');
+        };
+
+        window.openReportModal = function(targetId, targetRole, orderId) {
+            currentReportTargetId = targetId;
+            currentReportTargetRole = targetRole;
+            currentReportOrderId = orderId;
+            document.getElementById('reportReason').value = "";
+            document.getElementById('reportModalTitle').innerText = targetRole === 'driver' ? 'تقديم بلاغ ضد المندوب' : 'تقديم بلاغ ضد الزبون';
+            document.getElementById('reportModal').classList.remove('hidden');
+        };
+
+        window.closeReportModal = function() {
+            document.getElementById('reportModal').classList.add('hidden');
+        };
+
+        window.submitReport = async function() {
+            const reason = document.getElementById('reportReason').value.trim();
+            if (!reason) {
+                Swal.fire('خطأ', 'يرجى ملء تفاصيل البلاغ أولاً.', 'warning');
+                return;
+            }
+            showLoading(true);
+            try {
+                const reportId = "REP-" + Math.floor(Math.random() * 900000 + 100000);
+                await setDoc(doc(db, "reports", reportId), {
+                    id: reportId,
+                    reporterId: currentUser.uid,
+                    reporterName: currentUserData.name,
+                    reportedId: currentReportTargetId,
+                    reportedRole: currentReportTargetRole,
+                    orderId: currentReportOrderId,
+                    reason: reason,
+                    timestamp: new Date().toISOString()
+                });
+                closeReportModal();
+                Swal.fire('تم الإرسال', 'تم تسجيل بلاغك وسيقوم فريق الدعم بالتحقق منه فوراً.', 'success');
+            } catch (err) {
+                Swal.fire('خطأ', 'حدث خطأ أثناء إرسال البلاغ.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        };
 
         function listenToSiteSettings() {
             onSnapshot(doc(db, "settings", "global"), (snap) => {
@@ -1351,6 +1520,8 @@
             document.getElementById('loginTriggerBtn').classList.remove('hidden');
             document.getElementById('logoutBtn').classList.add('hidden');
             document.getElementById('userProfileHeader').classList.add('hidden');
+            const mobileText = document.getElementById('mobileProfileText');
+            if (mobileText) mobileText.innerText = 'حسابي';
             hideAllViews();
             document.getElementById('landingSection').classList.remove('hidden');
             currentUser = null;
@@ -1497,7 +1668,7 @@
 
                 if (snapshot.empty) {
                     grid.innerHTML = `
-                        <div class="col-span-full text-center py-16 bg-brand-50 border border-brand-100 rounded-3xl text-neutral-500 font-semibold">
+                        <div class="col-span-full text-center py-16 bg-brand-55 border border-brand-100 rounded-3xl text-neutral-500 font-semibold">
                             <i class="fa-solid fa-store-slash text-5xl mb-4 block text-neutral-400"></i>
                             لا تتوفر حالياً مطاعم مفتوحة بمدينة العفرون.
                         </div>`;
@@ -1548,20 +1719,6 @@
                     }
                 });
             }, (err) => { console.warn("Orders error:", err); });
-        }
-
-        function triggerRatingSystem(order) {
-            const modal = document.getElementById('ratingModal');
-            if (!modal.classList.contains('hidden')) return;
-
-            ratingOrderId = order.id;
-            selectedRestaurantRating = 0;
-            selectedDriverRating = 0;
-
-            document.querySelectorAll('.star-rest').forEach(s => s.className = "cursor-pointer text-neutral-300 hover:text-amber-400 transition-colors star-rest");
-            document.querySelectorAll('.star-driver').forEach(s => s.className = "cursor-pointer text-neutral-300 hover:text-amber-400 transition-colors star-driver");
-
-            modal.classList.remove('hidden');
         }
 
         window.closeRatingModal = function() {
@@ -1648,6 +1805,17 @@
             }
         };
 
+        // Multi-image Carousel Slider Index Tracker
+        window.carouselIndices = window.carouselIndices || {};
+        window.slideCarousel = function(dishId, dir, total) {
+            window.carouselIndices[dishId] = window.carouselIndices[dishId] || 0;
+            window.carouselIndices[dishId] = (window.carouselIndices[dishId] + dir + total) % total;
+            const carouselEl = document.getElementById(`carousel-${dishId}`);
+            if (carouselEl) {
+                carouselEl.style.transform = `translateX(${window.carouselIndices[dishId] * 100}%)`;
+            }
+        };
+
         window.viewRestaurantMenu = async function(restaurantId) {
             selectedRestaurantId = restaurantId;
             showLoading(true);
@@ -1657,11 +1825,25 @@
                 if (rSnap.exists()) {
                     selectedRestaurantData = rSnap.data();
                     document.getElementById('menuRestName').innerText = selectedRestaurantData.name || '';
-                    document.getElementById('menuRestPhone').innerHTML = `<i class="fa-solid fa-phone text-brand-500 text-[10px]"></i> ${selectedRestaurantData.phone || ''}`;
-                    document.getElementById('menuRestImg').src = selectedRestaurantData.image || '';
+                    document.getElementById('menuRestPhone').innerHTML = `<i class="fa-solid fa-phone text-brand-200 text-xs"></i> ${selectedRestaurantData.phone || ''}`;
+                    document.getElementById('menuRestImg').src = selectedRestaurantData.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1200';
 
                     const ratingVal = selectedRestaurantData.rating ? selectedRestaurantData.rating.toFixed(1) : 'جديد';
-                    document.getElementById('menuRestRatingBadge').innerHTML = `<i class="fa-solid fa-star text-amber-500 text-[10px]"></i> ${ratingVal} (${selectedRestaurantData.ratingCount || 0})`;
+                    document.getElementById('menuRestRatingBadge').innerHTML = `<i class="fa-solid fa-star text-amber-400 mr-1"></i> ${ratingVal} (${selectedRestaurantData.ratingCount || 0})`;
+
+                    // Professional Status Indicator
+                    const statusDot = document.getElementById('menuRestStatusDot');
+                    const statusText = document.getElementById('menuRestStatusText');
+                    const statusBadge = document.getElementById('menuRestStatusBadge');
+                    if (selectedRestaurantData.isOpen) {
+                        statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                        statusText.innerText = "مفتوح";
+                        statusBadge.className = "px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                    } else {
+                        statusDot.className = "w-2.5 h-2.5 rounded-full bg-red-500";
+                        statusText.innerText = "خارج الخدمة";
+                        statusBadge.className = "px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 bg-red-500/10 text-red-400 border border-red-500/20";
+                    }
                 }
 
                 onSnapshot(query(collection(db, "dishes"), where("restaurantId", "==", restaurantId)), (snapshot) => {
@@ -1678,6 +1860,9 @@
                 setTimeout(() => {
                     initInteractiveLocationMap();
                 }, 300);
+
+                // Smooth Scroll to Top requested by the user
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
             } catch (err) {
                 console.error("Menu error:", err);
@@ -1697,22 +1882,55 @@
 
             currentDishes.forEach((dish) => {
                 const card = document.createElement('div');
-                card.className = "bg-brand-50/50 p-4.5 rounded-3xl border border-brand-100 flex gap-4 items-center justify-between hover:border-brand-500/20 hover:bg-brand-50 transition-all duration-300";
+                card.className = "bg-white p-5 rounded-3xl border border-brand-100 flex flex-col md:flex-row gap-5 items-center justify-between hover:border-brand-500/20 hover:shadow-lg transition-all duration-300";
 
                 const sauces = dish.sauces ? dish.sauces.split(',') : [];
                 const drinks = dish.drinks ? dish.drinks.split(',') : [];
 
+                // Multiple Images Carousel Parser
+                const images = (dish.image || '').split(',').map(img => img.trim()).filter(Boolean);
+                let imageHtml = "";
+                if (images.length > 1) {
+                    imageHtml = `
+                        <div class="relative w-full md:w-44 h-44 rounded-2xl overflow-hidden group shrink-0 shadow-sm border border-brand-100">
+                            <div id="carousel-${dish.id}" class="flex transition-transform duration-300 h-full">
+                                ${images.map(img => `<img src="${img}" class="w-full h-full object-cover flex-shrink-0" alt="${dish.name}">`).join('')}
+                            </div>
+                            <!-- Controls -->
+                            <button onclick="slideCarousel('${dish.id}', -1, ${images.length})" class="absolute top-1/2 -translate-y-1/2 right-2 bg-white/90 hover:bg-white text-brand-500 w-8 h-8 rounded-full flex items-center justify-center shadow-md"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                            <button onclick="slideCarousel('${dish.id}', 1, ${images.length})" class="absolute top-1/2 -translate-y-1/2 left-2 bg-white/90 hover:bg-white text-brand-500 w-8 h-8 rounded-full flex items-center justify-center shadow-md"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                        </div>
+                    `;
+                } else {
+                    imageHtml = `<img src="${images[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=300'}" class="w-full md:w-44 h-44 rounded-2xl object-cover shadow-sm shrink-0 border border-brand-100" alt="${dish.name}">`;
+                }
+
+                // Professional Chip-based Selection Interface
                 let extrasHtml = "";
                 if(sauces.length > 0 || drinks.length > 0) {
                     extrasHtml += `<div class="mt-2.5 space-y-2 border-t border-brand-100 pt-2.5">`;
                     if(sauces.length > 0) {
-                        extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px]"><span class="text-neutral-500 font-extrabold ml-1">الصلصات:</span>`;
-                        sauces.forEach(s => extrasHtml += `<label class="bg-white text-neutral-700 px-2 py-0.5 rounded-lg border border-brand-100 cursor-pointer flex items-center select-none"><input type="checkbox" name="sauce-${dish.id}" value="${s.trim()}" class="ml-1 scale-90 accent-brand-500"> ${s.trim()}</label>`);
+                        extrasHtml += `<div class="flex flex-wrap gap-1.5 text-[10px] items-center"><span class="text-neutral-500 font-extrabold ml-1">الصلصات:</span>`;
+                        sauces.forEach(s => extrasHtml += `
+                            <label class="relative cursor-pointer select-none">
+                                <input type="checkbox" name="sauce-${dish.id}" value="${s.trim()}" class="sr-only peer">
+                                <span class="block px-3 py-1.5 rounded-full text-xs font-bold bg-brand-50 text-neutral-700 border border-brand-100 peer-checked:bg-brand-500 peer-checked:text-white peer-checked:border-brand-500 transition-all duration-200">
+                                    ${s.trim()}
+                                </span>
+                            </label>
+                        `);
                         extrasHtml += `</div>`;
                     }
                     if(drinks.length > 0) {
-                        extrasHtml += `<div class="flex flex-wrap gap-1 text-[10px] mt-1.5"><span class="text-neutral-500 font-extrabold ml-1">المشروب:</span>`;
-                        drinks.forEach(d => extrasHtml += `<label class="bg-white text-neutral-700 px-2 py-0.5 rounded-lg border border-brand-100 cursor-pointer flex items-center select-none"><input type="radio" name="drink-${dish.id}" value="${d.trim()}" class="ml-1 scale-90 accent-brand-500"> ${d.trim()}</label>`);
+                        extrasHtml += `<div class="flex flex-wrap gap-1.5 text-[10px] items-center mt-1.5"><span class="text-neutral-500 font-extrabold ml-1">المشروب:</span>`;
+                        drinks.forEach(d => extrasHtml += `
+                            <label class="relative cursor-pointer select-none">
+                                <input type="radio" name="drink-${dish.id}" value="${d.trim()}" class="sr-only peer">
+                                <span class="block px-3 py-1.5 rounded-full text-xs font-bold bg-brand-50 text-neutral-700 border border-brand-100 peer-checked:bg-brand-500 peer-checked:text-white peer-checked:border-brand-500 transition-all duration-200">
+                                    ${d.trim()}
+                                </span>
+                            </label>
+                        `);
                         extrasHtml += `</div>`;
                     }
                     extrasHtml += `</div>`;
@@ -1724,33 +1942,37 @@
                 if (cartQty > 0) {
                     quantityControlsHtml = `
                         <div class="flex items-center gap-2 bg-brand-500 text-white rounded-full p-1 shadow-md shrink-0">
-                            <button onclick="changeDishCartQuantity('${dish.id}', -1, '${dish.image || ''}')" class="w-8 h-8 rounded-full bg-brand-400 hover:bg-brand-300 flex items-center justify-center font-black text-sm transition active:scale-90">-</button>
+                            <button onclick="changeDishCartQuantity('${dish.id}', -1, '${images[0] || ''}')" class="w-8 h-8 rounded-full bg-brand-400 hover:bg-brand-300 flex items-center justify-center font-black text-sm transition active:scale-90">-</button>
                             <span class="text-xs font-black min-w-[16px] text-center">${cartQty}</span>
-                            <button onclick="changeDishCartQuantity('${dish.id}', 1, '${dish.image || ''}')" class="w-8 h-8 rounded-full bg-brand-400 hover:bg-brand-300 flex items-center justify-center font-black text-sm transition active:scale-90">+</button>
+                            <button onclick="changeDishCartQuantity('${dish.id}', 1, '${images[0] || ''}')" class="w-8 h-8 rounded-full bg-brand-400 hover:bg-brand-300 flex items-center justify-center font-black text-sm transition active:scale-90">+</button>
                         </div>
                     `;
                 } else {
                     quantityControlsHtml = `
-                        <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price}, '${dish.image || ''}')" class="bg-white hover:bg-brand-500 hover:text-white text-brand-500 p-3 rounded-2xl transition-all duration-300 active:scale-90 shrink-0 shadow-sm flex items-center gap-1.5 font-bold text-xs border border-brand-100">
+                        <button onclick="addToCart('${dish.id}', '${dish.name}', ${dish.price}, '${images[0] || ''}')" class="bg-white hover:bg-brand-500 hover:text-white text-brand-500 p-3 rounded-2xl transition-all duration-300 active:scale-90 shrink-0 shadow-sm flex items-center gap-1.5 font-bold text-xs border border-brand-100">
                             <i class="fa-solid fa-plus text-[10px]"></i> إضافة للطلب
                         </button>
                     `;
                 }
 
                 card.innerHTML = `
-                    <div class="flex gap-4 items-center flex-1 min-w-0">
-                        <img src="${dish.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=300'}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-sm shrink-0 border border-brand-100" alt="${dish.name}">
-                        <div class="text-right flex-grow min-w-0">
-                            <h4 class="font-extrabold text-neutral-900 text-xs sm:text-sm truncate">${dish.name}</h4>
+                    <div class="flex flex-col md:flex-row gap-4 items-center flex-1 min-w-0 w-full">
+                        ${imageHtml}
+                        <div class="text-right flex-grow min-w-0 w-full">
+                            <h4 class="font-extrabold text-neutral-900 text-sm md:text-base truncate">${dish.name}</h4>
                             <p class="text-[10px] text-neutral-500 mt-0.5 leading-relaxed font-semibold line-clamp-2">${dish.desc || ''}</p>
                             <div class="flex items-center gap-2 mt-1.5">
                                 <span class="text-xs sm:text-sm font-black text-brand-500">${dish.price} د.ج</span>
-                                <span class="text-[9px] bg-brand-500/10 text-brand-500 px-2 py-0.5 rounded-lg border border-brand-500/10 font-bold uppercase">تحضير طازج</span>
+                                <span class="text-[9px] bg-brand-50/80 text-brand-500 px-2 py-0.5 rounded-lg border border-brand-100 font-bold uppercase">تحضير طازج</span>
                             </div>
                             ${extrasHtml}
+                            <!-- Professional Custom Notes Textarea -->
+                            <div class="mt-3">
+                                <textarea id="dishNotes-${dish.id}" placeholder="إضافة ملاحظة خاصة بالطلب (مثال: بدون مايونيز، بدون بصل)..." class="w-full p-2.5 rounded-xl text-xs border border-brand-100 bg-brand-50 text-neutral-900 focus:outline-none" rows="1"></textarea>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex flex-col items-end justify-center pl-1">
+                    <div class="flex flex-col items-end justify-center pl-1 shrink-0 mt-3 md:mt-0">
                         ${quantityControlsHtml}
                     </div>
                 `;
@@ -1782,7 +2004,9 @@
 
             if (!interactiveSelectMap) {
                 interactiveSelectMap = L.map('interactiveLocationMap').setView([defaultLat, defaultLng], 14);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(interactiveSelectMap);
+                
+                // Crisp standard vector maps with detailed roads and neighborhood names
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(interactiveSelectMap);
 
                 interactiveLocationMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(interactiveSelectMap)
                     .bindPopup("<strong class='text-brand-500 font-bold'>اسحبني فوق موقعك بدقة</strong>").openPopup();
@@ -1815,11 +2039,16 @@
             const checkedDrinkEl = document.querySelector(`input[name="drink-${dishId}"]:checked`);
             if (checkedDrinkEl) selectedDrink = checkedDrinkEl.value;
 
-            const existing = customerCart.find(i => i.dishId === dishId && JSON.stringify(i.sauces) === JSON.stringify(checkedSauces) && i.drink === selectedDrink);
+            // Retreiving professional custom notes text
+            let orderNotes = "";
+            const notesEl = document.getElementById(`dishNotes-${dishId}`);
+            if (notesEl) orderNotes = notesEl.value.trim();
+
+            const existing = customerCart.find(i => i.dishId === dishId && JSON.stringify(i.sauces) === JSON.stringify(checkedSauces) && i.drink === selectedDrink && i.notes === orderNotes);
             if (existing) {
                 existing.quantity++;
             } else {
-                customerCart.push({ dishId, name, price, quantity: 1, sauces: checkedSauces, drink: selectedDrink, image: image });
+                customerCart.push({ dishId, name, price, quantity: 1, sauces: checkedSauces, drink: selectedDrink, notes: orderNotes, image: image });
             }
             updateCartUI();
             renderDishesList();
@@ -1846,13 +2075,14 @@
                 itemDiv.className = "flex items-center justify-between text-xs border-b border-brand-100 pb-2.5";
 
                 let details = "";
-                if(item.sauces.length > 0) details += ` [${item.sauces.join(', ')}]`;
-                if(item.drink) details += ` [${item.drink}]`;
+                if(item.sauces.length > 0) details += ` [صلصات: ${item.sauces.join(', ')}]`;
+                if(item.drink) details += ` [مشروب: ${item.drink}]`;
+                if(item.notes) details += ` [ملاحظة: ${item.notes}]`;
 
                 itemDiv.innerHTML = `
                     <div class="text-right">
                         <span class="font-extrabold text-neutral-900">${item.name} ×${item.quantity}</span>
-                        <span class="block text-[9px] text-neutral-500 font-bold">${details}</span>
+                        <span class="block text-[9px] text-brand-500 font-bold mt-0.5">${details}</span>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="font-black text-neutral-900">${item.price * item.quantity} د.ج</span>
@@ -1942,6 +2172,7 @@
             }
 
             const finalLoc = customerCoordinates || { lat: 36.4694, lng: 2.6247 };
+            const typedAddress = document.getElementById('manualAddressText').value.trim();
 
             showLoading(true);
             try {
@@ -1952,6 +2183,7 @@
                     customerName: currentUserData.name,
                     customerPhone: currentUserData.phone,
                     customerLoc: finalLoc,
+                    customerAddressText: typedAddress || 'لم يكتب تفاصيل إضافية',
                     restaurantId: selectedRestaurantId,
                     restaurantName: selectedRestaurantData.name,
                     items: customerCart,
@@ -1981,6 +2213,15 @@
             document.getElementById('mobileCartBar').classList.add('translate-y-28');
 
             const statusText = document.getElementById('customerOrderStatus');
+
+            // Hook up reporting button for customer
+            const repBtn = document.getElementById('customerReportBtn');
+            if (order.driverId) {
+                repBtn.classList.remove('hidden');
+                repBtn.onclick = () => openReportModal(order.driverId, 'driver', order.id);
+            } else {
+                repBtn.classList.add('hidden');
+            }
 
             const steps = ['pending', 'accepted', 'delivering', 'delivered'];
             steps.forEach(s => {
@@ -2035,7 +2276,7 @@
 
             if (!activeTrackerMap) {
                 activeTrackerMap = L.map('trackerMap', { zoomControl: false }).setView([driverCoords.lat, driverCoords.lng], 15);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeTrackerMap);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(activeTrackerMap);
 
                 const motorcycleIcon = L.divIcon({
                     html: `<div class="relative flex items-center justify-center"><div class="absolute w-12 h-12 rounded-full bg-brand-500/30 animate-ping"></div><div class="relative bg-brand-500 text-white w-9 h-9 rounded-full shadow-lg border-2 border-white flex items-center justify-center"><i class="fa-solid fa-motorcycle text-xs"></i></div></div>`,
@@ -2115,7 +2356,7 @@
                     div.className = "bg-brand-50/50 p-4 rounded-2xl flex items-center justify-between text-xs border border-brand-100 shadow-sm";
                     div.innerHTML = `
                         <div class="flex items-center gap-3">
-                            <img src="${dish.image}" class="w-12 h-12 rounded-xl object-cover shadow-sm border border-brand-100">
+                            <img src="${(dish.image || '').split(',')[0]}" class="w-12 h-12 rounded-xl object-cover shadow-sm border border-brand-100">
                             <div class="text-right">
                                 <h4 class="font-bold text-neutral-900">${dish.name}</h4>
                                 <span class="text-brand-500 font-extrabold block mt-0.5">${dish.price} د.ج</span>
@@ -2145,7 +2386,7 @@
                             showRestaurantOverlay(order);
                         }
 
-                        const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (×${i.quantity})</li>`).join('');
+                        const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (×${i.quantity}) ${i.notes ? `[ملاحظة: ${i.notes}]` : ''}</li>`).join('');
                         const orderCard = document.createElement('div');
                         orderCard.className = "bg-brand-50 border border-brand-200 rounded-3xl p-5 shadow-sm space-y-3.5 text-neutral-800 text-right";
                         orderCard.innerHTML = `
@@ -2155,6 +2396,7 @@
                             </div>
                             <div class="text-xs space-y-1.5">
                                 <p class="text-neutral-700"><strong>الزبون:</strong> ${order.customerName}</p>
+                                <p class="text-neutral-700"><strong>عنوان الزبون المكتوب:</strong> ${order.customerAddressText || 'لا يوجد'}</p>
                                 <ul class="space-y-1 bg-white p-3 rounded-2xl border border-brand-100 font-semibold text-neutral-600">${itemsList}</ul>
                             </div>
                             <div class="flex gap-2">
@@ -2165,7 +2407,7 @@
                         container.appendChild(orderCard);
                     } else if (order.status === 'accepted') {
                         countConf++;
-                        const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (×${i.quantity})</li>`).join('');
+                        const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (×${i.quantity}) ${i.notes ? `[ملاحظة: ${i.notes}]` : ''}</li>`).join('');
                         const orderCard = document.createElement('div');
                         orderCard.className = "bg-brand-50 border border-brand-100 rounded-3xl p-5 shadow-sm space-y-3.5 text-neutral-800 text-right";
                         orderCard.innerHTML = `
@@ -2175,6 +2417,7 @@
                             </div>
                             <div class="text-xs space-y-1.5">
                                 <p class="text-neutral-700"><strong>الزبون:</strong> ${order.customerName}</p>
+                                <p class="text-neutral-700"><strong>عنوان الزبون المكتوب:</strong> ${order.customerAddressText || 'لا يوجد'}</p>
                                 <ul class="space-y-1 bg-white p-3 rounded-2xl border border-brand-100 font-semibold text-neutral-600">${itemsList}</ul>
                             </div>
                             <button onclick="updateOrderStatus('${order.id}', 'ready')" class="w-full btn-brand-gradient py-3.5 rounded-full text-xs transition shadow-sm text-white font-bold">
@@ -2208,9 +2451,10 @@
             const list = document.getElementById('restOverlayItemsList');
             list.innerHTML = order.items.map(i => `
                 <div class="flex items-center gap-3 border-b border-brand-100 pb-2">
-                    <img src="${i.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=150'}" class="w-12 h-12 rounded-xl object-cover shadow-sm shrink-0 border border-brand-100">
+                    <img src="${(i.image || '').split(',')[0] || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=150'}" class="w-12 h-12 rounded-xl object-cover shadow-sm shrink-0 border border-brand-100">
                     <div class="text-right flex-grow">
                         <span class="font-black text-xs text-neutral-900 block">${i.name}</span>
+                        <p class="text-[9px] text-brand-500 mt-1">${i.notes ? `ملاحظة خاصة: ${i.notes}` : ''}</p>
                         <div class="flex items-center justify-between text-[10px] text-neutral-500 mt-1">
                             <span>الكمية: <strong class="text-brand-500 text-xs font-black">×${i.quantity}</strong></span>
                             <span>السعر: ${i.price} د.ج</span>
@@ -2393,7 +2637,7 @@
                             showDriverRequestOverlay(order);
                         }
 
-                        const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (${i.quantity}x)</li>`).join('');
+                        const itemsList = order.items.map(i => `<li class="text-[10px]">• ${i.name} (${i.quantity}x) ${i.notes ? `[ملاحظة: ${i.notes}]` : ''}</li>`).join('');
                         const card = document.createElement('div');
                         card.className = "bg-brand-50 border border-brand-200 rounded-3xl p-5 shadow-sm text-right space-y-3.5 text-neutral-800";
                         card.innerHTML = `
@@ -2404,6 +2648,7 @@
                             <div class="text-xs space-y-1.5">
                                 <p><strong>المطعم:</strong> ${order.restaurantName}</p>
                                 <p><strong>الزبون:</strong> ${order.customerName}</p>
+                                <p><strong>عنوان الزبون المكتوب:</strong> ${order.customerAddressText || 'لا يوجد'}</p>
                                 <ul class="space-y-1 bg-white p-3 rounded-2xl border border-brand-100 font-semibold text-neutral-600 mt-2">${itemsList}</ul>
                             </div>
                             <button onclick="acceptDeliveryTask('${order.id}')" class="w-full btn-brand-gradient py-3.5 rounded-full text-xs transition active:scale-95 text-white">
@@ -2425,6 +2670,7 @@
                             <div class="text-xs space-y-1.5">
                                 <p><strong>الزبون:</strong> ${order.customerName}</p>
                                 <p><strong>الهاتف:</strong> <a href="tel:${order.customerPhone}" class="text-brand-500 font-black underline">${order.customerPhone}</a></p>
+                                <p><strong>عنوان الزبون المكتوب:</strong> ${order.customerAddressText || 'لا يوجد'}</p>
                                 <p><strong>المصدر:</strong> ${order.restaurantName}</p>
                             </div>
                             <button onclick="completeDeliveryTask('${order.id}')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3.5 rounded-full text-xs transition active:scale-95">
@@ -2474,6 +2720,12 @@
             document.getElementById('driverActiveTaskTitle').innerText = `توصيل الطلب #${order.id}`;
             document.getElementById('driverActiveCallBtn').href = `tel:${order.customerPhone}`;
 
+            // Configure reporting on customer
+            const repBtn = document.getElementById('driverReportBtn');
+            if (repBtn) {
+                repBtn.onclick = () => openReportModal(order.customerId, 'customer', order.id);
+            }
+
             setTimeout(() => {
                 initDriverFullscreenMap(order);
             }, 300);
@@ -2485,7 +2737,7 @@
 
             if (!activeFullscreenDriverMap) {
                 activeFullscreenDriverMap = L.map('driverFullscreenMap', { zoomControl: false }).setView([driverCoords.lat, driverCoords.lng], 15);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeFullscreenDriverMap);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(activeFullscreenDriverMap);
             }
 
             if (driverRoutingPolyline) {
@@ -2555,7 +2807,7 @@
         function initDriverLiveMap() {
             if (!activeDriverMap) {
                 activeDriverMap = L.map('driverMap').setView([36.4694, 2.6247], 15);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(activeDriverMap);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(activeDriverMap);
             }
         }
 
@@ -2731,7 +2983,7 @@
                         <td class="py-4 text-neutral-500 text-right">${u.phone || '--'}</td>
                         <td class="py-4 text-right"><span class="bg-brand-50 text-brand-500 px-3 py-1 rounded-full font-black text-[9px] uppercase tracking-wide border border-brand-100">${u.role}</span></td>
                         <td class="py-4 text-center">
-                            <button onclick="toggleUserBan('${u.uid}', '${u.status}')" class="px-3 py-1.5 text-[10px] rounded-lg font-bold transition ${u.status === 'banned' ? 'bg-red-500/10 text-red-500' : 'bg-brand-50 text-neutral-600 hover:bg-red-500/10 hover:text-red-500'}">
+                            <button onclick="toggleUserBan('${u.uid}', '${u.status}')" class="px-3 py-1.5 text-[10px] rounded-lg font-bold transition ${u.status === 'banned' ? 'bg-red-500/10 text-red-400' : 'bg-brand-50 text-neutral-600 hover:bg-red-500/10 hover:text-red-500'}">
                                 ${u.status === 'banned' ? 'فك الحظر' : 'حظر العضو'}
                             </button>
                         </td>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>العفرون أونلاين - منصة التوصيل الذكية</title>
+    <title>العفرون أونلاين - منصة Tوصيل الذكية</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -352,7 +352,7 @@
                 <h2 class="text-2xl font-black text-white mt-2">طلب رقم <span id="restOverlayOrderId" class="text-brand-500">#--</span></h2>
             </div>
             <div class="bg-white/5 rounded-3xl p-5 border border-white/5 text-right space-y-2">
-                <p class="text-xs text-neutral-400 font-bold">معلومات العميل:</p>
+                <p class="text-xs text-neutral-450 font-bold">معلومات العميل:</p>
                 <p class="text-sm text-white font-black"><i class="fa-regular fa-user ml-2 text-neutral-500"></i><span id="restOverlayCustName">--</span></p>
                 <p class="text-sm text-white font-black"><i class="fa-solid fa-phone ml-2 text-neutral-500"></i><span id="restOverlayCustPhone">--</span></p>
             </div>
@@ -387,34 +387,35 @@
                 <div class="flex items-start gap-3.5 border-b border-white/5 pb-4">
                     <div class="w-11 h-11 bg-brand-500/10 text-brand-500 rounded-2xl flex items-center justify-center shrink-0 border border-brand-500/10"><i class="fa-solid fa-store text-base"></i></div>
                     <div>
-                        <span class="text-[10px] text-neutral-400 font-bold block mb-0.5">نقطة استلام الوجبة</span>
+                        <span class="text-[10px] text-neutral-450 font-bold block mb-0.5">نقطة استلام الوجبة</span>
                         <span id="overlayRestName" class="text-sm font-black text-white">--</span>
                     </div>
                 </div>
-                <!-- Customer Details with Written Address -->
+                <!-- Customer Details with Written Address [3] -->
                 <div class="flex items-start gap-3.5 border-b border-white/5 pb-4">
-                    <div class="w-11 h-11 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center shrink-0 border border-emerald-500/10"><i class="fa-solid fa-location-dot text-base"></i></div>
+                    <div class="w-11 h-11 bg-emerald-550/10 text-emerald-500 rounded-2xl flex items-center justify-center shrink-0 border border-emerald-500/10"><i class="fa-solid fa-location-dot text-base"></i></div>
                     <div>
-                        <span class="text-[10px] text-neutral-400 font-bold block mb-0.5">نقطة تسليم العميل</span>
+                        <span class="text-[10px] text-neutral-450 font-bold block mb-0.5">نقطة تسليم العميل</span>
                         <span id="overlayCustName" class="text-sm font-black text-white">--</span>
                         <a id="overlayCustPhone" href="#" class="text-xs text-brand-500 font-bold block mt-1.5 flex items-center gap-1">
                             <i class="fa-solid fa-phone text-[10px]"></i> اتصال: <span id="overlayCustPhoneText">--</span>
                         </a>
                     </div>
                 </div>
+                <!-- Written Address Display for Driver [3] -->
                 <div class="flex items-start gap-3.5">
-                    <div class="w-11 h-11 bg-brand-500/10 text-brand-400 rounded-2xl flex items-center justify-center shrink-0 border border-brand-500/10"><i class="fa-solid fa-map-location text-base"></i></div>
+                    <div class="w-11 h-11 bg-brand-500/10 text-brand-500 rounded-2xl flex items-center justify-center shrink-0 border border-brand-500/10"><i class="fa-solid fa-map-location-dot text-base"></i></div>
                     <div class="flex-1">
-                        <span class="text-[10px] text-neutral-400 font-bold block mb-0.5">العنوان المكتوب بدقة:</span>
-                        <span id="overlayCustAddress" class="text-xs font-black text-white block leading-relaxed bg-white/5 p-2 rounded-xl border border-white/5 mt-1">--</span>
+                        <span class="text-[10px] text-neutral-450 font-bold block mb-0.5">العنوان المكتوب للزبون:</span>
+                        <span id="overlayCustAddress" class="text-xs font-black text-white block mt-1 leading-relaxed bg-white/5 p-2 rounded-xl border border-white/5">--</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Mini Map showing delivery path prior to acceptance -->
+            <!-- Pathing Preview Map for pre-acceptance [3] -->
             <div class="space-y-2 text-right">
-                <h4 class="text-neutral-450 text-xs font-black flex items-center gap-1.5"><i class="fa-solid fa-map-marked-alt text-brand-500"></i> خارطة التوصيل الجغرافية للطلب:</h4>
-                <div id="driverOverlayMiniMap" class="h-44 w-full rounded-2xl border border-white/10 z-10"></div>
+                <h4 class="text-neutral-400 text-xs font-black flex items-center gap-1.5"><i class="fa-solid fa-map-location-dot text-brand-500"></i> تتبع الخارطة والموقع الجغرافي:</h4>
+                <div id="driverOverlayMiniMap" class="h-36 w-full rounded-2xl border border-white/10 z-10"></div>
             </div>
 
             <div class="space-y-2">
@@ -442,6 +443,7 @@
                 <span class="text-[10px] text-brand-500 font-extrabold uppercase tracking-widest block mb-0.5">مهمة نشطة (تتبع المسار)</span>
                 <h3 id="driverActiveTaskTitle" class="text-xs font-black text-white">توصيل الطلب #--</h3>
             </div>
+            <!-- Driver Report Button on active task -->
             <div class="flex items-center gap-2">
                 <button id="driverReportBtn" onclick="submitReport('customer')" class="text-[10px] font-black text-red-400 hover:text-red-500 px-3 py-2 bg-red-500/10 rounded-xl transition border border-red-500/20">تبليغ عن الزبون</button>
                 <button onclick="completeActiveDeliveryTask()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-2xl text-xs font-black transition-all shadow-md active:scale-95">
@@ -647,30 +649,27 @@
                 </div>
             </div>
 
-            <!-- Restaurant Menu Detail with Professional Cover styling -->
+            <!-- Restaurant Menu Detail -->
             <div id="restaurantMenuDetail" class="hidden space-y-8">
                 <button onclick="backToRestaurants()" class="text-brand-500 font-extrabold text-sm flex items-center gap-2 hover:underline transition-all group">
                     <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i> العودة لقائمة المطاعم الرئيسة
                 </button>
 
-                <!-- Premium Header Cover -->
-                <div class="relative rounded-4xl overflow-hidden h-52 sm:h-64 shadow-2xl border border-white/10 flex items-end">
-                    <img id="menuRestImg" src="" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105" alt="Restaurant Cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/60 to-transparent"></div>
-                    
-                    <div class="relative z-10 p-6 md:p-8 flex flex-col sm:flex-row items-center sm:justify-between w-full gap-4 text-right">
-                        <div class="space-y-2">
-                            <div class="flex flex-col sm:flex-row items-center sm:justify-start gap-3">
-                                <h2 id="menuRestName" class="text-2xl md:text-4xl font-black text-white tracking-wide">--</h2>
-                                <span id="menuRestRatingBadge" class="text-xs font-black text-amber-500 bg-amber-500/15 border border-amber-500/25 px-3 py-1.5 rounded-2xl flex items-center gap-1.5"></span>
-                            </div>
-                            <p id="menuRestPhone" class="text-xs text-neutral-200 font-bold flex items-center justify-center sm:justify-start gap-2"></p>
+                <!-- Professional Restaurant Cover design (غلاف احترافي للمطعم) -->
+                <div class="relative rounded-3xl overflow-hidden h-44 sm:h-52 shadow-xl border border-white/10 flex items-end">
+                    <img id="menuRestImg" src="" class="absolute inset-0 w-full h-full object-cover" alt="Restaurant Logo">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                    <div class="relative z-10 p-6 text-right space-y-1">
+                        <div class="flex items-center gap-2.5 flex-wrap">
+                            <h2 id="menuRestName" class="text-2xl sm:text-3xl font-black text-white">--</h2>
+                            <span id="menuRestRatingBadge" class="text-xs font-bold text-amber-500 bg-amber-500/20 border border-amber-500/30 px-2.5 py-1 rounded-xl"></span>
                         </div>
+                        <p id="menuRestPhone" class="text-xs text-neutral-350 font-bold flex items-center gap-1.5"></p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Menu Items -->
+                    <!-- Menu Items (طريقة عرض الأكل والمنيو مطابقة تماماً لكودك الأصلي) -->
                     <div class="lg:col-span-2 space-y-5">
                         <h3 class="text-lg font-black text-white border-b border-white/10 pb-3 flex items-center gap-2"><i class="fa-solid fa-utensils text-brand-500"></i> قائمة الأطباق والوجبات المتاحة</h3>
                         <div id="dishesList" class="grid grid-cols-1 gap-4">
@@ -688,9 +687,9 @@
                             <p class="text-xs text-neutral-400 text-center py-5 font-semibold">السلة فارغة، أضف بعض الأطباق</p>
                         </div>
 
-                        <!-- Location & Client inputs -->
+                        <!-- Location & Written Details [3] -->
                         <div class="bg-white/5 p-4 rounded-2xl space-y-3.5 border border-white/5">
-                            <span class="block text-xs font-black text-white"><i class="fa-solid fa-map-pin text-brand-500 ml-1"></i> حدد موقع التوصيل الجغرافي:</span>
+                            <span class="block text-xs font-black text-white"><i class="fa-solid fa-map-pin text-brand-500 ml-1"></i> حدد موقع التوصيل المطلوب:</span>
                             <button type="button" onclick="getCustomerLocation()" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-brand-500/10 active:scale-95">
                                 <i class="fa-solid fa-location-crosshairs"></i>
                                 <span id="gpsStatus">تحديد موقعي التلقائي (GPS)</span>
@@ -700,13 +699,13 @@
                             </div>
                             <span id="coordinatesText" class="block text-[9px] text-neutral-400 text-center font-extrabold uppercase tracking-wider bg-black/40 py-1.5 rounded-lg border border-white/5">الموقع الحالي: العفرون وسط المدينة</span>
 
-                            <!-- Required Client Written Address & Order Note -->
+                            <!-- Customer Required Written Details [3] -->
                             <div class="space-y-3 pt-2">
-                                <label class="block text-xs font-black text-neutral-300 text-right"><i class="fa-solid fa-house-user text-brand-500 ml-1"></i> اكتب العنوان بالتفصيل (مهم جداً للمندوب):</label>
-                                <textarea id="customerAddressText" required rows="2" placeholder="مثال: حي 500 مسكن، عمارة 04، الطابق الثاني شقة 12، بالقرب من المدرسة..." class="w-full px-4 py-3 rounded-2xl border text-xs font-semibold bg-white/5 text-white"></textarea>
-
-                                <label class="block text-xs font-black text-neutral-300 text-right"><i class="fa-solid fa-comment-dots text-brand-500 ml-1"></i> ملاحظات وتعديلات للوجبة (اختياري):</label>
-                                <textarea id="customerOrderNotes" rows="2" placeholder="مثال: الصلصة حارة جداً، الدجاج ناضج تماماً، بدون مايونيز..." class="w-full px-4 py-3 rounded-2xl border text-xs font-semibold bg-white/5 text-white"></textarea>
+                                <label class="block text-xs font-black text-white text-right"><i class="fa-solid fa-house-user text-brand-500 ml-1"></i> تفاصيل العنوان كتابياً (مهم جداً للمندوب):</label>
+                                <input type="text" id="customerAddressText" required placeholder="مثال: حي 200 مسكن، عمارة ب، الطابق 2، شقة 12" class="w-full px-4 py-3 rounded-2xl border text-xs font-semibold bg-white/5 text-white">
+                                
+                                <label class="block text-xs font-black text-white text-right"><i class="fa-solid fa-comment-dots text-brand-500 ml-1"></i> ملاحظات خاصة (تعديلات للوجبة، صلصات، مشروب...):</label>
+                                <textarea id="customerOrderNotes" rows="2" placeholder="مثال: بدون بصل، توصيل سريع، الاتصال فور الوصول..." class="w-full px-4 py-3 rounded-2xl border text-xs font-semibold bg-white/5 text-white"></textarea>
                             </div>
                         </div>
 
@@ -729,6 +728,7 @@
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-black text-white">حالة طلبك الحالي: <span id="customerOrderStatus" class="text-brand-500">--</span></span>
                         <div class="flex items-center gap-1.5">
+                            <!-- Report Button for Customer -->
                             <button id="customerReportBtn" onclick="submitReport('driver')" class="text-[9px] font-black text-red-400 hover:text-red-500 px-2.5 py-1.5 bg-red-500/10 rounded-xl transition border border-red-500/20">تبليغ عن المندوب</button>
                             <button onclick="minimizeCustomerTracker()" class="text-[10px] font-black text-neutral-300 hover:text-white px-3 py-1.5 bg-white/10 rounded-xl transition-all border border-white/5">تصغير الخريطة</button>
                         </div>
@@ -823,7 +823,7 @@
                         <div class="space-y-4">
                             <h3 class="text-sm font-black text-white flex items-center gap-2"><i class="fa-solid fa-spinner fa-spin text-brand-500"></i> الطلبيات النشطة والجديدة</h3>
                             <div id="restOrdersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Orders loaded dynamically with high visibility styling -->
+                                <!-- Orders loaded dynamically -->
                             </div>
                         </div>
                     </div>
@@ -1189,7 +1189,7 @@
         let currentDishes = []; 
         let driverOverlayMiniMapInstance = null;
 
-        // Premium electronic notification melody (Ascending Chime)
+        // Friendly Ascending Melodic Chime [Premium Sound Quality]
         function playDistinctiveAlarm() {
             const now = Date.now();
             if (now - lastNotificationTime < 4000) return;
@@ -1213,13 +1213,13 @@
                     osc.stop(audioCtx.currentTime + startDelay + durationSec);
                 };
 
-                // Ascending melodic electronic arpeggio
+                // Premium electronic melody
                 playChimeNode(523.25, 0.0, 0.45, 'triangle'); // C5
                 playChimeNode(659.25, 0.1, 0.45, 'triangle'); // E5
                 playChimeNode(783.99, 0.2, 0.45, 'triangle'); // G5
                 playChimeNode(1046.50, 0.3, 0.65, 'sine');    // C6
             } catch(e) {
-                console.warn("Audio Context Alarm Error: ", e);
+                console.warn("Audio Alert Context Error: ", e);
             }
         }
 
@@ -1424,7 +1424,7 @@
                             phone: phone,
                             image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600",
                             isOpen: false,
-                            location: { lat: 36.4690, lng: 2.6280 }, // Default restaurant location centered
+                            location: { lat: 36.4690, lng: 2.6280 }, // Default coordinate centered
                             rating: 0,
                             ratingCount: 0,
                             totalRatingSum: 0
@@ -1489,25 +1489,25 @@
                     const restId = docSnap.id; 
                     const ratingVal = rest.rating ? rest.rating.toFixed(1) : 'جديد';
                     const ratingBadge = rest.rating ? 
-                        `<span class="text-xs font-black text-amber-500 bg-black/75 px-3 py-1.5 rounded-xl flex items-center gap-1 border border-white/5"><i class="fa-solid fa-star text-[10px] text-amber-500"></i> ${ratingVal}</span>` : 
-                        `<span class="text-[10px] font-black text-brand-500 bg-black/75 px-3 py-1.5 rounded-xl border border-white/5">جديد</span>`;
+                        `<span class="text-xs font-black text-amber-500 bg-black/70 px-3 py-1.5 rounded-xl flex items-center gap-1 border border-white/5"><i class="fa-solid fa-star text-[10px] text-amber-500"></i> ${ratingVal}</span>` : 
+                        `<span class="text-[10px] font-black text-brand-500 bg-black/70 px-3 py-1.5 rounded-xl border border-white/5">جديد</span>`;
 
+                    // Main card rendering restored exactly to original styling [5]
                     const card = document.createElement('div');
-                    card.className = "glass-card rounded-3xl overflow-hidden shadow-premium flex flex-col group";
+                    card.className = "glass-card rounded-3xl overflow-hidden shadow-premium flex flex-col";
                     card.innerHTML = `
-                        <div class="relative overflow-hidden h-48">
-                            <img src="${rest.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="${rest.name}">
-                            <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/20 to-transparent"></div>
-                            <div class="absolute top-4 left-4 z-10">${ratingBadge}</div>
+                        <div class="relative overflow-hidden">
+                            <img src="${rest.image || 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600'}" class="w-full h-44 object-cover" alt="${rest.name}">
+                            <div class="absolute top-3 left-3">${ratingBadge}</div>
                         </div>
-                        <div class="p-5.5 space-y-4 text-right flex-1 flex flex-col">
+                        <div class="p-5 space-y-4 text-right flex-1 flex flex-col">
                             <div>
-                                <h3 class="font-black text-white text-base leading-snug">${rest.name}</h3>
-                                <p class="text-[10px] text-brand-400 font-bold mt-1.5 inline-block bg-brand-500/10 px-3 py-1 rounded-full border border-brand-500/15">مفتوح للطلب المباشر</p>
+                                <h3 class="font-extrabold text-white text-sm leading-tight">${rest.name}</h3>
+                                <p class="text-[10px] text-neutral-400 font-bold mt-1 inline-block bg-white/5 px-2 py-0.5 rounded-md border border-white/5">نشط الآن</p>
                             </div>
                             <p class="text-xs text-neutral-400 flex items-center gap-2 justify-start font-bold"><i class="fa-solid fa-phone text-brand-500 text-[10px]"></i> ${rest.phone}</p>
-                            <button onclick="viewRestaurantMenu('${restId}')" class="w-full mt-auto btn-brand-gradient py-3.5 rounded-2xl text-xs transition-all active:scale-95 shadow-lg text-white font-black">
-                                تصفح المنيو والطلب
+                            <button onclick="viewRestaurantMenu('${restId}')" class="w-full mt-auto btn-brand-gradient py-3 rounded-2xl text-xs transition-all active:scale-95 shadow-sm text-white">
+                                تصفح قائمة الأطباق
                             </button>
                         </div>
                     `;
@@ -1676,6 +1676,7 @@
                 return;
             }
 
+            // Restore dishes card design matching exactly original layouts [5]
             currentDishes.forEach((dish) => {
                 const card = document.createElement('div');
                 card.className = "bg-white/5 p-4.5 rounded-3xl border border-white/5 flex gap-4 items-center justify-between hover:border-brand-500/20 hover:bg-white/10 transition-all duration-300";
@@ -1924,7 +1925,7 @@
 
             const addressVal = document.getElementById('customerAddressText').value.trim();
             if (!addressVal) {
-                Swal.fire('حقل مطلوب', 'الرجاء كتابة العنوان بالتفصيل أولاً لمساعدة المندوب.', 'warning');
+                Swal.fire('العنوان ناقص', 'الرجاء كتابة تفاصيل العنوان كتابياً لإرشاد المندوب.', 'warning');
                 return;
             }
 
@@ -1933,7 +1934,7 @@
 
             showLoading(true);
             try {
-                // Clear reporting flags for this upcoming cycle
+                // Reset report states upon launching a new session
                 localStorage.removeItem('hasReportedCurrent');
                 updateReportingButtonsState();
 
@@ -1959,17 +1960,16 @@
                 customerCart = [];
                 updateCartUI();
 
-                // Clear input texts
                 document.getElementById('customerAddressText').value = "";
                 document.getElementById('customerOrderNotes').value = "";
 
-                // Customer interface hides immediately to show map tracker in background without covering UI
+                // Customer menu detail panel closes instantly to avoid screen blockage [3]
                 document.getElementById('restaurantMenuDetail').classList.add('hidden');
                 document.getElementById('customerHome').classList.remove('hidden');
 
-                Swal.fire('تم إرسال الطلب!', 'تم الإرسال بنجاح، بإمكانك متابعة مسار التوصيل الآن عبر الزر العائم.', 'success');
+                Swal.fire('تم الإرسال', 'تم إرسال طلبك بنجاح. تتبع السائق عبر الزر العائم أسفل الشاشة.', 'success');
                 showOrderTracker(orderData);
-                minimizeCustomerTracker(); // Instantly minimize tracker to prevent blocking
+                minimizeCustomerTracker(); // Keeps viewport clean immediately on submission
             } catch(e) {
                 Swal.fire('خطأ', 'فشل إرسال الطلب.', 'error');
             } finally {
@@ -2152,30 +2152,28 @@
                             showRestaurantOverlay(order);
                         }
 
-                        // Highly visible formatted items (Large bold typography with full details highlighted)
+                        // Order list with EXTRA BOLD and EXTRA LARGE Details [3]
                         const itemsList = order.items.map(i => {
                             let itemDetails = [];
-                            if (i.sauces && i.sauces.length > 0) itemDetails.push(`الصلصات: <strong class="text-amber-400">${i.sauces.join('، ')}</strong>`);
-                            if (i.drink) itemDetails.push(`المشروب المقترح: <strong class="text-blue-400">${i.drink}</strong>`);
+                            if (i.sauces && i.sauces.length > 0) itemDetails.push(`الصلصات: ${i.sauces.join('، ')}`);
+                            if (i.drink) itemDetails.push(`المشروب: ${i.drink}`);
                             
-                            const detailsText = itemDetails.length > 0 ? `<div class="text-[13px] text-brand-300 font-extrabold mt-1 bg-brand-500/5 p-2 rounded-lg border border-brand-500/10 leading-relaxed">${itemDetails.join(' | ')}</div>` : '';
-                            
+                            const detailsText = itemDetails.length > 0 ? `<div class="text-base text-brand-300 font-black mt-2 bg-brand-500/5 p-2 rounded-xl border border-brand-500/10 leading-relaxed">${itemDetails.join(' | ')}</div>` : '';
                             return `
-                                <div class="bg-white/5 p-3.5 rounded-2xl border border-white/5 mb-2.5 text-right">
+                                <div class="bg-black/30 p-4 rounded-2xl border border-white/5 mb-3 text-right">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-base font-black text-white">${i.name}</span>
-                                        <span class="text-sm font-black text-brand-500 bg-brand-500/15 px-3 py-1 rounded-full border border-brand-500/25">الكمية: ${i.quantity}</span>
+                                        <span class="text-lg font-black text-white">${i.name}</span>
+                                        <span class="text-base font-black text-brand-500 bg-brand-500/15 px-3.5 py-1.5 rounded-full border border-brand-500/25">الكمية: ${i.quantity}</span>
                                     </div>
                                     ${detailsText}
                                 </div>
                             `;
                         }).join('');
 
-                        // Order special note layout
                         const notesHtml = order.notes ? `
-                            <div class="bg-amber-500/10 border border-amber-500/25 p-3 rounded-2xl text-right mt-3">
-                                <span class="text-amber-500 text-[11px] font-black block"><i class="fa-solid fa-exclamation-triangle ml-1"></i> ملاحظة الزبون الخاصة:</span>
-                                <p class="text-sm font-black text-white mt-1 leading-relaxed">${order.notes}</p>
+                            <div class="bg-amber-500/10 border border-amber-500/25 p-4 rounded-2xl text-right mt-3">
+                                <span class="text-amber-500 text-xs font-black block"><i class="fa-solid fa-exclamation-triangle ml-1"></i> ملاحظة وتفاصيل العميل الخاصة:</span>
+                                <p class="text-base font-black text-white mt-1 leading-relaxed">${order.notes}</p>
                             </div>
                         ` : '';
 
@@ -2183,7 +2181,7 @@
                         orderCard.className = "bg-brand-500/10 border border-brand-500/20 rounded-3xl p-5 shadow-sm space-y-3.5 text-white text-right";
                         orderCard.innerHTML = `
                             <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                                <span class="font-black text-base text-brand-500 flex items-center gap-2"><i class="fa-solid fa-receipt"></i> ${order.id}</span>
+                                <span class="font-black text-lg text-brand-500 flex items-center gap-2"><i class="fa-solid fa-receipt"></i> ${order.id}</span>
                                 <span class="text-[10px] text-neutral-400 font-bold">${new Date(order.createdAt).toLocaleTimeString('ar-DZ')}</span>
                             </div>
                             <div class="text-xs space-y-1.5">
@@ -2199,28 +2197,8 @@
                         container.appendChild(orderCard);
                     } else if (order.status === 'accepted') {
                         countConf++;
-                        const itemsList = order.items.map(i => {
-                            let itemDetails = [];
-                            if (i.sauces && i.sauces.length > 0) itemDetails.push(`الصلصات: ${i.sauces.join('، ')}`);
-                            if (i.drink) itemDetails.push(`المشروب: ${i.drink}`);
-                            
-                            const detailsText = itemDetails.length > 0 ? `<div class="text-[11px] text-neutral-400 mt-1">${itemDetails.join(' | ')}</div>` : '';
-                            return `
-                                <div class="bg-black/40 p-3 rounded-xl border border-white/5 mb-1 text-right">
-                                    <div class="flex justify-between items-center font-black">
-                                        <span>${i.name}</span>
-                                        <span class="text-brand-500">الكمية: ${i.quantity}</span>
-                                    </div>
-                                    ${detailsText}
-                                </div>
-                            `;
-                        }).join('');
-
-                        const notesHtml = order.notes ? `
-                            <div class="bg-amber-500/10 border border-amber-500/15 p-2 rounded-xl text-right mt-1.5 text-[11px]">
-                                <strong>ملاحظة:</strong> ${order.notes}
-                            </div>
-                        ` : '';
+                        const itemsList = order.items.map(i => `<li class="text-sm font-black">• ${i.name} (×${i.quantity})</li>`).join('');
+                        const notesHtml = order.notes ? `<p class="text-xs text-amber-400 font-black mt-2"><strong>ملاحظة:</strong> ${order.notes}</p>` : '';
 
                         const orderCard = document.createElement('div');
                         orderCard.className = "bg-white/5 border border-white/10 rounded-3xl p-5 shadow-sm space-y-3.5 text-white text-right";
@@ -2231,7 +2209,7 @@
                             </div>
                             <div class="text-xs space-y-1.5">
                                 <p class="text-neutral-300"><strong>الزبون:</strong> ${order.customerName}</p>
-                                <div class="space-y-1 mt-2">${itemsList}</div>
+                                <ul class="space-y-1 bg-black/40 p-3 rounded-2xl font-semibold text-neutral-400">${itemsList}</ul>
                                 ${notesHtml}
                             </div>
                             <button onclick="updateOrderStatus('${order.id}', 'ready')" class="w-full btn-brand-gradient py-3.5 rounded-xl text-xs transition shadow-sm text-white font-bold">
@@ -2264,7 +2242,7 @@
 
             const list = document.getElementById('restOverlayItemsList');
             list.innerHTML = order.items.map(i => `
-                <div class="flex items-center gap-3 border-b border-white/5 pb-2 text-right">
+                <div class="flex items-center gap-3 border-b border-white/5 pb-2">
                     <img src="${i.image || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=150'}" class="w-12 h-12 rounded-xl object-cover shadow-sm shrink-0 border border-white/10">
                     <div class="text-right flex-grow">
                         <span class="font-black text-xs text-white block">${i.name}</span>
@@ -2461,10 +2439,9 @@
                             <div class="text-xs space-y-1.5">
                                 <p><strong>المطعم:</strong> ${order.restaurantName}</p>
                                 <p><strong>الزبون:</strong> ${order.customerName}</p>
-                                <p class="line-clamp-2"><strong>العنوان بالتفصيل:</strong> ${order.customerAddress || 'عنوان جغرافي فقط'}</p>
                                 <ul class="space-y-1 bg-black/40 p-3 rounded-2xl border border-white/5 font-semibold text-neutral-300 mt-2">${itemsList}</ul>
                             </div>
-                            <button onclick="acceptDeliveryTask('${order.id}')" class="w-full btn-brand-gradient py-3.5 rounded-2xl text-xs transition active:scale-95 text-white">
+                            <button onclick="acceptDeliveryTask('${order.id}')" class="w-full btn-brand-gradient py-3.5 rounded-2xl text-xs transition active:scale-95 text-white font-black">
                                 قبول المهمة وبث الـ GPS
                             </button>
                         `;
@@ -2483,7 +2460,7 @@
                             <div class="text-xs space-y-1.5">
                                 <p><strong>الزبون:</strong> ${order.customerName}</p>
                                 <p><strong>الهاتف:</strong> <a href="tel:${order.customerPhone}" class="text-blue-400 font-black underline">${order.customerPhone}</a></p>
-                                <p><strong>العنوان:</strong> <strong class="text-white">${order.customerAddress || 'غير مدرج'}</strong></p>
+                                <p><strong>العنوان كتابةً:</strong> ${order.customerAddress || 'غير مدرج'}</p>
                                 <p><strong>المصدر:</strong> ${order.restaurantName}</p>
                             </div>
                             <button onclick="completeDeliveryTask('${order.id}')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3.5 rounded-2xl text-xs transition active:scale-95">
@@ -2503,11 +2480,11 @@
             }, (err) => { console.warn(err); });
         }
 
-        // Mini Map prior to accepting the task so delivery driver knows geographical location
+        // Mini map displaying delivery locations before accepting [3]
         function initDriverOverlayMiniMap(restLoc, custLoc) {
             const container = L.DomUtil.get('driverOverlayMiniMap');
             if (container != null) {
-                container._leaflet_id = null; // resets container ID for recreation
+                container._leaflet_id = null; // resets container ID for safe rebuilding
             }
             driverOverlayMiniMapInstance = L.map('driverOverlayMiniMap', { zoomControl: false }).setView([restLoc.lat, restLoc.lng], 14);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(driverOverlayMiniMapInstance);
@@ -2527,7 +2504,7 @@
             const markerCust = L.marker([custLoc.lat, custLoc.lng], { icon: deliveryIcon }).addTo(driverOverlayMiniMapInstance);
 
             const group = new L.featureGroup([markerRest, markerCust]);
-            driverOverlayMiniMapInstance.fitBounds(group.getBounds().pad(0.2));
+            driverOverlayMiniMapInstance.fitBounds(group.getBounds().pad(0.25));
         }
 
         function showDriverRequestOverlay(order) {
@@ -2538,7 +2515,7 @@
             document.getElementById('overlayOrderId').innerText = order.id;
             document.getElementById('overlayRestName').innerText = order.restaurantName;
             document.getElementById('overlayCustName').innerText = order.customerName;
-            document.getElementById('overlayCustAddress').innerText = order.customerAddress || "لم يحدد تفاصيل إضافية كتابةً";
+            document.getElementById('overlayCustAddress').innerText = order.customerAddress || 'عنوان لم يحدد كتابياً';
             document.getElementById('overlayCustPhoneText').innerText = order.customerPhone;
             document.getElementById('overlayCustPhone').href = `tel:${order.customerPhone}`;
 
@@ -2548,7 +2525,7 @@
             const restLoc = order.restaurantLoc || { lat: 36.4690, lng: 2.6280 };
             const custLoc = order.customerLoc || { lat: 36.4694, lng: 2.6247 };
 
-            // Render Pathing Mini Map on task offer overlay before accepting
+            // Render path preview map before acceptance [3]
             setTimeout(() => {
                 initDriverOverlayMiniMap(restLoc, custLoc);
             }, 300);
@@ -2807,17 +2784,17 @@
         };
 
         /* ================= REPORTING SYSTEM ================= */
-        // Complaint reporting flow: hides button post-reporting until next entities refresh
+        // Handles complaints and immediately hides buttons post-reporting until next cycle
         window.submitReport = async function(targetRole) {
             Swal.fire({
-                title: 'إرسال بلاغ شكوى رسمي',
+                title: 'تقديم بلاغ شكوى',
                 text: `يرجى تحديد سبب التبليغ بوضوح عن ${targetRole === 'driver' ? 'المندوب' : 'الزبون'}:`,
                 input: 'textarea',
-                inputPlaceholder: 'اكتب التفاصيل والمشكلة بالتفصيل هنا...',
+                inputPlaceholder: 'اكتب التفاصيل هنا بالتفصيل...',
                 showCancelButton: true,
                 confirmButtonColor: '#ff7a00',
                 cancelButtonColor: '#94a3b8',
-                confirmButtonText: 'تأكيد وإرسال البلاغ',
+                confirmButtonText: 'إرسال التبليغ',
                 cancelButtonText: 'إلغاء'
             }).then(async (result) => {
                 if (result.isConfirmed && result.value) {
@@ -2837,7 +2814,7 @@
                         localStorage.setItem('hasReportedCurrent', 'true');
                         updateReportingButtonsState();
 
-                        Swal.fire('تم التبليغ', 'شكراً لمساهمتك، جاري مراجعة الشكوى من قبل المشرفين.', 'success');
+                        Swal.fire('تم الإرسال', 'نشكر تعاونك، جاري فحص ومراجعة الشكوى من قبل الإدارة.', 'success');
                     } catch(err) {
                         Swal.fire('خطأ', 'فشل معالجة الشكوى.', 'error');
                     } finally {

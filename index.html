@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>العفرون اونلاين ديليفري - منصة التتبع الفوري الدقيق</title>
+    <title>العفرون اونلاين ديليفري - منصة التتبع والدردشة الفورية</title>
     <!-- Google Fonts - Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,43 +39,61 @@
         body {
             font-family: 'Cairo', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            overflow: hidden;
+            overflow-y: auto; /* دعم التمرير السلس للمحتويات الطويلة */
         }
-        /* Landing background overlay setup */
+        /* خلفية صفحة الهبوط الترحيبية */
         .landing-bg {
             background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.9)), url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiw54I6Vp8RatFeqfV7CYlsAMtOvOGz1QxElY3tV3INxv_G1E9mZwm5Kod_p1797SgcCy3DBx-0pFkoqnOHPGKYMl90wWQzBkD-EM2FSQJJOn11gJNsLAwq35eXI_iGUGeKN7rq-1ZUbUQMPOhU3qsKlMmR6LX77i6Quu3sL2q95q_YU4yosVtotABKGd8/s500/1000028141.png');
             background-size: cover;
             background-position: center;
         }
-        /* Custom glowing inputs for extreme legibility & high interactivity */
+        /* إطارات خانات الإدخال والبحث المضيئة والمتوهجة */
         .glow-input {
+            background-color: #ffffff;
+            color: #0f172a;
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 0 5px rgba(255, 126, 0, 0.15);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dark .glow-input {
+            background-color: #1e1e24;
+            color: #ffffff;
+            border: 2px solid #3f3f46;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.05);
         }
         .glow-input:focus {
             background-color: #ffffff !important;
             color: #000000 !important;
             border-color: #FF7E00 !important;
-            box-shadow: 0 0 16px rgba(255, 126, 0, 0.75) !important;
+            box-shadow: 0 0 20px rgba(255, 126, 0, 0.85) !important;
             font-weight: bold;
         }
         .dark .glow-input:focus {
             background-color: #1a1a24 !important;
             color: #ffffff !important;
             border-color: #ffffff !important;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.85) !important;
+            box-shadow: 0 0 24px rgba(255, 255, 255, 0.95) !important;
             text-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
             font-weight: bold;
         }
         .screen-view {
             transition: opacity 0.35s ease, transform 0.35s ease;
         }
-        /* Map cover screen */
+        /* خرائط بكامل الشاشة */
         .full-map-container {
-            height: calc(100vh - 65px);
+            height: calc(100vh - 120px);
             width: 100%;
             z-index: 5;
         }
-        /* Ping animated motorbike marker styling */
+        /* خريطة تتبع عامل التوصيل بابعاد مضمونة */
+        .map-container {
+            height: 380px;
+            min-height: 380px;
+            width: 100%;
+            border-radius: 24px;
+            z-index: 5;
+            display: block;
+        }
         .bike-icon-class {
             background: none;
             border: none;
@@ -86,6 +104,20 @@
         }
         .animate-bounce-slow {
             animation: custom-bounce 1.5s infinite ease-in-out;
+        }
+        /* دين باللون الأحمر المضيء اللامع */
+        .neon-glow-red {
+            color: #ff3b30;
+            text-shadow: 0 0 10px rgba(255, 59, 48, 0.8), 0 0 20px rgba(255, 59, 48, 0.4);
+            font-weight: 900;
+        }
+        /* تأثير دخول حركي محترف cubic-bezier للمنبثقات */
+        @keyframes scaleUp {
+            0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .animate-scale-up {
+            animation: scaleUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         @keyframes pulse-ring {
             0% { transform: scale(0.95); opacity: 0.5; }
@@ -99,20 +131,20 @@
 </head>
 <body class="bg-slate-50 text-gray-900 transition-colors duration-300 dark:bg-appDark dark:text-gray-100 min-h-screen flex flex-col">
 
-    <!-- Global Navigation Header -->
+    <!-- الهيدر العلوي للموقع -->
     <header class="bg-white dark:bg-zinc-900 shadow-md border-b border-gray-100 dark:border-zinc-800 sticky top-0 z-40 transition-colors">
         <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <button onclick="toggleDrawer(true)" class="p-2 text-gray-700 dark:text-gray-300 text-xl">
+                <button onclick="toggleDrawer(true)" class="p-2 text-gray-700 dark:text-gray-300 text-xl animate-pulse">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <div class="flex items-center gap-2 select-none cursor-pointer" onclick="showSection('landing')">
+                <div class="flex items-center gap-2 select-none cursor-pointer" id="headerLogoContainer" onclick="showSection('landing')">
                     <img src="https://st3.depositphotos.com/5572200/15094/v/450/depositphotos_150942812-stock-illustration-a-man-is-riding-a.jpg" alt="Logo" class="w-10 h-10 object-cover rounded-full border-2 border-primary shadow-xs">
                     <span class="text-sm lg:text-base font-black text-primary tracking-wide">العفرون اونلاين ديليفري</span>
                 </div>
             </div>
 
-            <!-- Header auth buttons -->
+            <!-- أزرار الاختيارات السريعة -->
             <div class="flex items-center gap-2">
                 <button id="themeToggleBtn" class="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 p-2 rounded-xl transition border border-gray-200 dark:border-zinc-700">
                     <i class="fa-solid fa-moon text-sm dark:hidden"></i>
@@ -125,8 +157,21 @@
         </div>
     </header>
 
+    <!-- شريط حالة الطلب الملون أعلى الموقع تماماً تحت الهيدر -->
+    <div id="globalOrderStatusBanner" class="hidden fixed top-[70px] left-4 right-4 text-white text-center py-3.5 px-5 rounded-2xl shadow-2xl z-40 transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-white/20 backdrop-blur-md bg-opacity-95 animate-scale-up">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-truck-fast animate-bounce text-xl"></i>
+            <span id="globalOrderStatusText" class="font-black text-xs leading-relaxed tracking-wide">جاري معالجة حالة الطلب...</span>
+        </div>
+        <div class="flex gap-2.5 w-full sm:w-auto justify-end items-center">
+            <span class="text-[9px] text-white bg-black/30 px-2.5 py-1 rounded-md font-bold" id="custOrderNumber">رقم الطلب #0000</span>
+            <a id="custCallDriverBtn" href="#" class="hidden bg-white/20 hover:bg-white/35 text-white p-2 rounded-xl text-xs font-bold px-3 transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-phone"></i> اتصل بعامل التوصيل</a>
+            <button type="button" onclick="cancelActiveOrder()" class="text-xs text-red-200 hover:text-white font-black transition">إلغاء الطلب</button>
+        </div>
+    </div>
+
     <!-- Global Alert Toast -->
-    <div id="toastNotification" class="fixed top-20 left-1/2 -translate-x-1/2 w-11/12 max-w-md bg-primary text-white text-center py-3.5 px-6 rounded-2xl shadow-2xl font-bold text-sm transform -translate-y-36 transition-all duration-300 z-[9999] flex items-center justify-center gap-3">
+    <div id="toastNotification" class="fixed top-24 left-1/2 -translate-x-1/2 w-11/12 max-w-md bg-primary text-white text-center py-3.5 px-6 rounded-2xl shadow-2xl font-bold text-sm transform -translate-y-36 transition-all duration-300 z-[9999] flex items-center justify-center gap-3">
         <i class="fa-solid fa-circle-info text-lg"></i>
         <span id="toastText">تنبيه جديد</span>
     </div>
@@ -136,13 +181,13 @@
 
         <!-- 1. LANDING/SPLASH SECTION -->
         <section id="view-landing" class="screen-view landing-bg flex-1 flex items-center justify-center py-16 px-4 text-white text-center">
-            <div class="max-w-2xl bg-black/55 p-10 lg:p-14 rounded-3xl backdrop-blur-md shadow-2xl border border-white/10">
+            <div class="max-w-2xl bg-black/55 p-10 lg:p-14 rounded-3xl backdrop-blur-md shadow-2xl border border-white/10 animate-scale-up">
                 <img src="https://st3.depositphotos.com/5572200/15094/v/450/depositphotos_150942812-stock-illustration-a-man-is-riding-a.jpg" alt="Logo" class="w-24 h-24 object-cover rounded-full mx-auto border-4 border-primary shadow-xl mb-6">
                 <h1 class="text-4xl lg:text-6xl font-black mb-4 leading-tight">العفرون اونلاين ديليفري</h1>
                 <p class="text-sm lg:text-lg mb-8 text-gray-200 font-semibold leading-relaxed">المنصة الأحدث لتتبع وتوصيل طلباتك في العفرون وضواحيها بكل سلاسة، أمان، وسرعة حقيقية.</p>
                 
                 <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
-                    <button type="button" onclick="showAuthModal('login')" class="flex-grow bg-primary hover:bg-primaryDark text-white py-3.5 px-6 rounded-2xl font-bold transition shadow-lg shadow-orange-500/25">
+                    <button type="button" onclick="showAuthModal('login')" class="flex-grow bg-primary hover:bg-primaryDark text-white py-3.5 px-6 rounded-2xl font-bold transition shadow-lg">
                         اطلب الآن (تسجيل دخول)
                     </button>
                     <button type="button" onclick="showAuthModal('register')" class="flex-grow bg-white/10 hover:bg-white/20 text-white border border-white/20 py-3.5 px-6 rounded-2xl font-bold transition">
@@ -153,14 +198,14 @@
         </section>
 
         <!-- 2. LOGIN & SIGN-UP VIEW (With Gmail/Facebook support) -->
-        <section id="view-auth" class="screen-view hidden flex-1 flex items-center justify-center py-12 px-4 bg-gray-50 dark:bg-appDark">
-            <div class="w-full max-w-md bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl p-8 border border-gray-100 dark:border-zinc-800">
-                <h2 id="authTitle" class="text-2xl font-black mb-1">تسجيل الدخول</h2>
+        <section id="view-auth" class="screen-view hidden flex-1 flex items-center justify-center py-12 px-4 bg-gray-50 dark:bg-appDark overflow-y-auto">
+            <div class="w-full max-w-md bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl p-8 border border-gray-100 dark:border-zinc-800 animate-scale-up">
+                <h2 id="authTitle" class="text-2xl font-black mb-1 text-black dark:text-white">تسجيل الدخول</h2>
                 <p id="authSubtitle" class="text-xs text-gray-400 mb-6">مرحباً بك مجدداً في بوابة العفرون ديليفري</p>
 
                 <!-- Fast Social Logins -->
-                <div class="grid grid-cols-2 gap-3 mb-5">
-                    <button onclick="loginWithGoogle()" type="button" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-red-500 hover:bg-red-600 text-white rounded-xl text-xs font-bold transition">
+                <div class="grid grid-cols-2 gap-3 mb-5" id="socialAuthGroup">
+                    <button onclick="loginWithGoogle()" type="button" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-red-500 hover:bg-red-600 text-white rounded-xl text-xs font-bold transition animate-pulse">
                         <i class="fa-brands fa-google text-sm"></i> Gmail
                     </button>
                     <button onclick="loginWithFacebook()" type="button" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition">
@@ -168,7 +213,7 @@
                     </button>
                 </div>
 
-                <div class="relative flex py-2 items-center mb-4">
+                <div class="relative flex py-2 items-center mb-4" id="authSeparator">
                     <div class="flex-grow border-t border-gray-100 dark:border-zinc-800"></div>
                     <span class="flex-shrink mx-4 text-xs text-gray-400">أو عبر البريد</span>
                     <div class="flex-grow border-t border-gray-100 dark:border-zinc-800"></div>
@@ -177,7 +222,7 @@
                 <div class="flex flex-col gap-4">
                     <div id="regNameField" class="hidden flex flex-col gap-1">
                         <label class="text-xs font-bold text-gray-500 dark:text-gray-300">الاسم الكامل</label>
-                        <input type="text" id="authName" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="مثال: أحمد محمد">
+                        <input type="text" id="authName" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition animate-scale-up" placeholder="مثال: أحمد محمد">
                     </div>
 
                     <div class="flex flex-col gap-1">
@@ -185,12 +230,34 @@
                         <input type="email" id="authEmail" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="name@example.com">
                     </div>
 
+                    <!-- حقول عمال التوصيل الإضافية -->
+                    <div id="driverExtraFields" class="hidden flex flex-col gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-300">رقم الهاتف</label>
+                            <input type="tel" id="authPhone" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="0555-555-555">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-300">رابط صورتك الشخصية (Avatar URL)</label>
+                            <input type="url" id="authAvatar" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="https://example.com/avatar.jpg">
+                        </div>
+                    </div>
+
                     <div class="flex flex-col gap-1">
                         <label class="text-xs font-bold text-gray-500 dark:text-gray-300">كلمة المرور</label>
                         <input type="password" id="authPassword" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="••••••••">
                     </div>
 
-                    <!-- Hidden role selector for fast registration -->
+                    <div id="driverConfirmPassField" class="hidden flex flex-col gap-1">
+                        <label class="text-xs font-bold text-gray-500 dark:text-gray-300">تأكيد كلمة المرور</label>
+                        <input type="password" id="authPasswordConfirm" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="••••••••">
+                    </div>
+
+                    <!-- تأكيد السن فوق 18 سنة لعامل التوصيل -->
+                    <div id="driverAgeConfirmField" class="hidden flex items-start gap-2.5 bg-primary/5 p-3.5 rounded-xl border border-primary/20">
+                        <input type="checkbox" id="authAgeCheck" class="w-4.5 h-4.5 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2 mt-0.5">
+                        <label for="authAgeCheck" class="text-xs font-bold text-gray-600 dark:text-gray-300 leading-relaxed">أؤكد وأصرح رسمياً بأن عمري يتجاوز 18 سنة بالكامل وجميع معلوماتي صحيحة.</label>
+                    </div>
+
                     <input type="hidden" id="authRole" value="customer">
 
                     <button type="button" onclick="handleAuthSubmit()" id="authSubmitBtn" class="w-full bg-primary hover:bg-primaryDark text-white py-3.5 rounded-xl font-bold transition shadow-lg mt-4">
@@ -198,7 +265,7 @@
                     </button>
                 </div>
 
-                <div class="text-center text-xs text-gray-500 mt-6">
+                <div class="text-center text-xs text-gray-500 mt-6" id="authToggleGroup">
                     <span id="authToggleText">ليس لديك حساب؟</span>
                     <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-primary font-bold mr-1 underline">إنشاء حساب جديد</button>
                 </div>
@@ -211,42 +278,34 @@
             <div id="customerMap" class="full-map-container"></div>
 
             <!-- Floating Action Button (+ اطلب الآن) -->
-            <button onclick="openNewOrderModal()" class="absolute bottom-6 right-6 bg-primary hover:bg-primaryDark text-white px-5 py-4 rounded-full flex items-center gap-2.5 shadow-2xl z-[40] transition transform hover:-translate-y-1">
+            <button onclick="openNewOrderModal()" class="absolute bottom-6 right-6 bg-primary hover:bg-primaryDark text-white px-5 py-4 rounded-full flex items-center gap-2.5 shadow-2xl z-40 transition transform hover:-translate-y-1">
                 <i class="fa-solid fa-circle-plus text-xl animate-spin" style="animation-duration: 4s;"></i>
                 <span class="font-black text-xs tracking-wide">اطلب الآن</span>
             </button>
 
-            <!-- IMPROVED: Active Live Tracking Status Card OVER THE MAP (إطار حالة الطلب فوق الخريطة للزبون) -->
-            <div id="customerActiveOrderCard" class="hidden absolute top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white dark:bg-zinc-900 rounded-3xl p-4 shadow-2xl border border-gray-100 dark:border-zinc-800 z-[40] flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center text-primary text-base animate-bounce">
-                            <i class="fa-solid fa-motorcycle"></i>
-                        </div>
-                        <div>
-                            <span class="text-[9px] text-gray-400 block" id="custOrderNumber">رقم الطلب #0000</span>
-                            <h5 class="font-black text-xs text-gray-800 dark:text-gray-100" id="custStatusTitle">في انتظار المندوب...</h5>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <a id="custCallDriverBtn" href="#" class="hidden bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition text-[10px] w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-phone"></i></a>
-                        <button type="button" onclick="cancelActiveOrder()" class="text-[10px] text-red-500 hover:underline">إلغاء</button>
-                    </div>
+            <!-- Floating Action Chat Toggle Button on the LEFT -->
+            <button id="custChatFAB" onclick="toggleCustChat(true)" class="hidden absolute bottom-6 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-2xl z-40 transition duration-300 hover:scale-105">
+                <i class="fa-solid fa-comments text-xl"></i>
+                <span id="custChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
+            </button>
+
+            <!-- Floating Modal Chat Box for Client -->
+            <div id="customerChatBox" class="hidden absolute bottom-24 left-6 right-6 max-w-sm bg-white dark:bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-gray-100 dark:border-zinc-800 z-50 flex flex-col gap-3 animate-scale-up">
+                <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-zinc-800">
+                    <span class="text-xs font-bold text-gray-500 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع عامل التوصيل</span>
+                    <button type="button" onclick="toggleCustChat(false)" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-base"></i></button>
                 </div>
-                <!-- Mini chat interface inside tracking window -->
-                <div id="customerChatBox" class="hidden border-t border-gray-100 dark:border-zinc-800 pt-2 flex flex-col">
-                    <div id="chatMessages" class="bg-gray-50 dark:bg-zinc-950 p-2 rounded-xl h-16 overflow-y-auto flex flex-col gap-1 text-[9px] mb-1.5"></div>
-                    <div class="flex gap-2">
-                        <input type="text" id="chatInput" class="glow-input flex-1 px-3 py-1 bg-gray-100 dark:bg-zinc-800 text-[10px] rounded-lg focus:outline-none" placeholder="اكتب للمندوب...">
-                        <button type="button" onclick="sendChatMessage()" class="bg-primary text-white px-3 py-1 rounded-lg text-[9px] font-bold">إرسال</button>
-                    </div>
+                <div id="chatMessages" class="bg-gray-50 dark:bg-zinc-950 p-2.5 rounded-xl h-44 overflow-y-auto flex flex-col gap-1.5 text-[10px]"></div>
+                <div class="flex gap-2">
+                    <input type="text" id="chatInput" class="glow-input flex-1 px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 text-[11px] rounded-lg focus:outline-none" placeholder="اكتب رسالة لعامل التوصيل...">
+                    <button type="button" onclick="sendChatMessage()" class="bg-primary text-white px-3 py-1.5 rounded-lg text-[10px] font-bold">إرسال</button>
                 </div>
             </div>
         </section>
 
         <!-- 4. DETAILED ORDER MODAL -->
         <div id="newOrderModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
-            <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl flex flex-col max-h-[90vh] animate-scale-up">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-black text-lg text-primary">إنشاء طلب توصيل جديد</h3>
                     <button type="button" onclick="closeNewOrderModal()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
@@ -294,7 +353,7 @@
                     </div>
 
                     <div class="flex flex-col gap-1 border-t border-gray-100 dark:border-zinc-800 pt-3">
-                        <label class="text-xs font-bold text-gray-500">إضافة ملاحظة للمندوب</label>
+                        <label class="text-xs font-bold text-gray-500">إضافة ملاحظة لعامل التوصيل</label>
                         <textarea id="orderNote" rows="2" class="glow-input w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-zinc-800 text-xs focus:outline-none border border-transparent resize-none" placeholder="مثال: يرجى إحضار المشروبات باردة..."></textarea>
                     </div>
 
@@ -315,14 +374,14 @@
             </div>
         </div>
 
-        <!-- 5. REAL-TIME DRIVER DASHBOARD (Custom dark gradient, now featuring MAP on accepted order) -->
-        <section id="view-driver" class="screen-view hidden flex-1 bg-gradient-to-tr from-slate-950 via-zinc-950 to-neutral-950 text-white p-4 lg:p-8 overflow-y-auto">
+        <!-- 5. REAL-TIME DRIVER DASHBOARD -->
+        <section id="view-driver" class="screen-view hidden flex-1 bg-gradient-to-tr from-slate-950 via-zinc-950 to-neutral-950 text-white p-4 lg:p-8 overflow-y-auto relative">
             <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Driver profile & Stats Card -->
                 <div class="bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 shadow-2xl backdrop-blur-sm flex flex-col justify-between">
                     <div>
                         <div class="flex items-center gap-4 mb-6">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" class="w-14 h-14 rounded-full border-2 border-primary object-cover" alt="Driver Avatar">
+                            <img id="driverAvatarBanner" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" class="w-14 h-14 rounded-full border-2 border-primary object-cover" alt="Driver Avatar">
                             <div>
                                 <h4 id="driverNameBanner" class="font-black text-sm">مرحباً أحمد</h4>
                                 <div class="flex items-center gap-1.5 mt-1">
@@ -332,7 +391,7 @@
                             </div>
                         </div>
 
-                        <!-- Dark dashboard metrics -->
+                        <!-- إحصائيات الديون والأرباح الحقيقية بالكامل -->
                         <div class="grid grid-cols-2 gap-4">
                             <div class="bg-black/40 border border-zinc-800 p-4 rounded-2xl text-center">
                                 <i class="fa-solid fa-wallet text-primary text-lg mb-1 block"></i>
@@ -349,31 +408,33 @@
                                 <span class="block text-lg font-black">4.9</span>
                                 <span class="text-[10px] text-zinc-400">التقييم الفعلي</span>
                             </div>
-                            <div class="bg-black/40 border border-zinc-800 p-4 rounded-2xl text-center">
-                                <i class="fa-solid fa-toggle-on text-emerald-400 text-lg mb-1 block"></i>
-                                <span class="block text-lg font-black text-emerald-400">متاح</span>
-                                <span class="text-[10px] text-zinc-400">حالة الاتصال بالخادم</span>
+                            <!-- دين المنصة باللون الأحمر المضيء واللامع -->
+                            <div class="bg-black/40 border-2 border-red-500/30 p-4 rounded-2xl text-center shadow-lg shadow-red-500/10">
+                                <i class="fa-solid fa-hand-holding-dollar text-red-500 text-lg mb-1 block"></i>
+                                <span class="block text-lg neon-glow-red" id="driverDebt">0.00 دج</span>
+                                <span class="text-[10px] text-zinc-300 font-bold">دين المنصة (10دج/رحلة)</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-8 pt-6 border-t border-zinc-800 flex justify-between items-center text-xs text-zinc-400">
-                        <span>العفرون ديليفري - لوحة المندوب</span>
+                        <span>العفرون ديليفري - لوحة عامل التوصيل</span>
                         <button type="button" onclick="logout()" class="text-red-400 font-bold hover:underline flex items-center gap-1">
                             <i class="fa-solid fa-right-from-bracket"></i> خروج
                         </button>
                     </div>
                 </div>
 
-                <!-- Maps and tracking for drivers -->
+                <!-- خريطة وتتبع حقيقي لعامل التوصيل -->
                 <div class="lg:col-span-2 flex flex-col gap-6">
                     <div class="bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 shadow-2xl">
-                        <h4 class="font-bold text-sm mb-4 text-zinc-300">خريطة المناديب المباشرة والمسارات</h4>
-                        <div id="driverMap" class="map-container border border-zinc-800"></div>
+                        <h4 class="font-bold text-sm mb-4 text-zinc-300">خريطة عامل التوصيل المباشرة والمسارات</h4>
+                        <!-- خريطة عامل التوصيل بأبعاد وحسابات حجم مضمونة برمجياً -->
+                        <div id="driverMap" class="map-container border border-zinc-800 shadow-inner" style="height: 380px; min-height: 380px; width: 100%; display: block; position: relative;"></div>
                     </div>
 
-                    <!-- Selected Delivery / Status controls / Chat Box for drivers [1, 2] -->
-                    <div id="driverActiveOrderBox" class="hidden bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 shadow-2xl flex flex-col gap-5">
+                    <!-- الأزرار وتحديث الحالات والدردشة النشطة لعامل التوصيل -->
+                    <div id="driverActiveOrderBox" class="hidden bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 shadow-2xl flex flex-col gap-5 animate-scale-up">
                         <div class="flex flex-col gap-2">
                             <div class="flex justify-between items-center">
                                 <h4 class="font-bold text-sm text-primary flex items-center gap-1"><i class="fa-solid fa-truck-ramp-box"></i> الطلب النشط الذي تقوم بتوصيله</h4>
@@ -382,35 +443,43 @@
                                 </div>
                             </div>
                             
-                            <!-- Driver Order Status updates controllers [3] -->
+                            <!-- تحديث حالة الطلب لعمل التوصيل -->
                             <div class="bg-black/30 border border-zinc-800 p-4 rounded-2xl mt-1 flex flex-col gap-2">
                                 <span class="text-xs font-bold text-zinc-400"><i class="fa-solid fa-signal text-primary"></i> حدد للزبون حالتك الآن:</span>
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                     <button type="button" onclick="updateDriverDeliveryStatus('to_store')" class="bg-zinc-800 hover:bg-primary text-white py-2 rounded-xl text-xs font-bold transition" id="statusBtn-to_store">أنا في الطريق للمطعم</button>
-                                    <button type="button" onclick="updateDriverDeliveryStatus('received')" class="bg-zinc-800 hover:bg-primary text-white py-2 rounded-xl text-xs font-bold transition" id="statusBtn-received">تم استلام الطلب وأنا في الطريق إليك</button>
+                                    <button type="button" onclick="updateDriverDeliveryStatus('received')" class="bg-zinc-800 hover:bg-primary text-white py-2 rounded-xl text-xs font-bold transition" id="statusBtn-received">تم استلام الطلب وبطريقي إليك</button>
                                     <button type="button" onclick="completeActiveOrder()" class="bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl text-xs font-bold transition">تم التسليم بنجاح</button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Bilateral Realtime Chat panel for Driver [2] -->
-                        <div id="driverChatBox" class="border-t border-zinc-800 pt-4">
-                            <h5 class="text-xs font-bold text-zinc-400 mb-2"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع الزبون</h5>
-                            <div id="driverChatMessages" class="bg-black/50 p-3 rounded-xl h-24 overflow-y-auto flex flex-col gap-2 text-xs mb-2 text-zinc-200"></div>
-                            <div class="flex gap-2">
-                                <input type="text" id="driverChatInput" class="glow-input flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 text-xs rounded-lg focus:outline-none" placeholder="اكتب رسالة للزبون...">
-                                <button type="button" onclick="sendDriverChatMessage()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded-lg font-bold text-xs">إرسال</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- زر المحادثة العائم باللون الأزرق على اليسار لعامل التوصيل ومؤشر إشعار نابض -->
+            <button id="driverChatFAB" onclick="toggleDriverChat(true)" class="hidden fixed bottom-6 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-2xl z-40 transition duration-300 hover:scale-105">
+                <i class="fa-solid fa-comments text-xl"></i>
+                <span id="driverChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
+            </button>
+
+            <!-- صندوق المحادثة العائم لعامل التوصيل مع زر إغلاق (X) محترف -->
+            <div id="driverChatBox" class="hidden absolute bottom-24 left-6 right-6 max-w-sm bg-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-2xl z-50 flex flex-col gap-3 animate-scale-up">
+                <div class="flex justify-between items-center pb-2 border-b border-zinc-800">
+                    <span class="text-xs font-bold text-zinc-400 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع الزبون</span>
+                    <button type="button" onclick="toggleDriverChat(false)" class="text-zinc-500 hover:text-zinc-300 transition"><i class="fa-solid fa-xmark text-base"></i></button>
+                </div>
+                <div id="driverChatMessages" class="bg-black/50 p-3 rounded-xl h-44 overflow-y-auto flex flex-col gap-2 text-xs text-zinc-200"></div>
+                <div class="flex gap-2">
+                    <input type="text" id="driverChatInput" class="glow-input flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 text-xs rounded-lg focus:outline-none text-white" placeholder="اكتب رسالة للزبون...">
+                    <button type="button" onclick="sendDriverChatMessage()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded-lg font-bold text-xs">إرسال</button>
+                </div>
+            </div>
         </section>
 
-        <!-- 6. REAL-TIME FULL-SCREEN ALERTS -->
+        <!-- 6. REAL-TIME FULL-SCREEN ALERTS (Incoming orders structured for driver) -->
         <div id="driverOrderOverlay" class="fixed inset-0 bg-black/95 z-[999] flex flex-col items-center justify-center p-6 text-white transition-opacity duration-300 opacity-0 pointer-events-none overflow-y-auto">
-            <div class="max-w-md w-full text-center flex flex-col items-center gap-4 py-8">
-                <!-- Glowing Pulsing Delivery Icon -->
+            <div class="max-w-md w-full text-center flex flex-col items-center gap-4 py-8 animate-scale-up">
                 <div class="relative w-24 h-24 flex items-center justify-center mb-2">
                     <div class="absolute inset-0 bg-primary/20 rounded-full ring-animation"></div>
                     <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl shadow-2xl z-10">
@@ -423,7 +492,7 @@
                     <h2 class="text-xl font-black mt-3" id="overlayRestName">العفرون ديليفري</h2>
                 </div>
 
-                <!-- Parameters display card structured line by line -->
+                <!-- تفاصيل طلب زبون دقيقة سطر بسطر لعامل التوصيل -->
                 <div class="w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-5 text-right flex flex-col gap-3.5">
                     <div class="flex items-start gap-2.5 border-b border-zinc-800/60 pb-2">
                         <i class="fa-solid fa-shop text-primary mt-0.5"></i>
@@ -440,7 +509,6 @@
                         </div>
                     </div>
 
-                    <!-- Products list rendering line-by-line -->
                     <div class="border-b border-zinc-800/60 pb-2">
                         <span class="text-[9px] text-zinc-500 block mb-1.5"><i class="fa-solid fa-bowl-food"></i> قائمة المنتجات والكمية</span>
                         <div id="overlayProductsContainer" class="flex flex-col gap-1 text-xs font-bold text-zinc-100 pl-2"></div>
@@ -471,17 +539,32 @@
             </div>
         </div>
 
+        <!-- شاشة الحظر والمراجعة لعمال التوصيل الجدد والذين تجاوزت ديونهم الحد الأقصى -->
+        <section id="view-driver-blocked" class="screen-view hidden flex-1 flex items-center justify-center p-6 bg-slate-900 text-white">
+            <div class="max-w-md w-full text-center bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl flex flex-col items-center gap-6 animate-scale-up">
+                <div class="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 text-4xl animate-pulse">
+                    <i id="blockedIcon" class="fa-solid fa-user-lock"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-red-500" id="blockedTitle">الحساب قيد المراجعة</h2>
+                    <p class="text-xs text-zinc-400 mt-2 leading-relaxed" id="blockedMessage">تم استلام طلب تفعيل حسابك كعامل توصيل بنجاح. تقوم الإدارة حالياً بمراجعة معلوماتك الشخصية وسنقوم بتفعيل حسابك قريباً فور السداد والتحقق.</p>
+                </div>
+                <div class="w-full border-t border-zinc-800 pt-4">
+                    <button onclick="logout()" type="button" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-3 rounded-xl text-xs font-bold transition">تسجيل الخروج والرجوع</button>
+                </div>
+            </div>
+        </section>
+
         <!-- HIDDEN SECURE ADMIN PANEL PORTAL (Google Maps Embed + Coordinates Pin Drop feature) -->
-        <section id="view-admin" class="screen-view hidden flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full flex flex-col gap-6">
+        <section id="view-admin" class="screen-view hidden flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full flex flex-col gap-6 overflow-y-auto">
             <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-zinc-800 flex justify-between items-center">
                 <div>
-                    <h3 class="text-xl font-black text-primary">لوحة الإدارة والرقابة</h3>
-                    <p class="text-xs text-gray-400">إدارة المتاجر وحظر حسابات المناديب.</p>
+                    <h3 class="text-xl font-black text-primary">لوحة الإدارة والرقابة الشاملة</h3>
+                    <p class="text-xs text-gray-400">إدارة طلبات الانضمام، سداد ديون عمال التوصيل، والمطاعم.</p>
                 </div>
                 <button type="button" onclick="showSection('landing')" class="bg-gray-100 dark:bg-zinc-800 text-xs font-bold px-4 py-2 rounded-xl transition">خروج للرئيسية</button>
             </div>
 
-            <!-- Platform metrics row -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-zinc-800 flex items-center justify-between">
                     <div>
@@ -499,7 +582,7 @@
                 </div>
                 <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-zinc-800 flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-gray-400 block font-bold">إجمالي طلبات التوصيل</span>
+                        <span class="text-xs text-gray-400 block font-bold">إجمالي طلبات التوصيل الناجحة</span>
                         <span class="text-2xl font-black text-blue-500 mt-1 block" id="adminTotalOrdersCount">0</span>
                     </div>
                     <i class="fa-solid fa-truck-loading text-3xl text-blue-500/20"></i>
@@ -507,15 +590,15 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Driver activation / Blocking panel -->
-                <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-zinc-800">
-                    <h4 class="font-bold text-sm mb-4 text-gray-500"><i class="fa-solid fa-user-gear"></i> إدارة وحظر عمال التوصيل</h4>
+                <!-- طلبات انضمام عمال التوصيل الجدد والتحكم بديونهم -->
+                <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-zinc-800 flex flex-col gap-4">
+                    <h4 class="font-bold text-sm text-gray-500"><i class="fa-solid fa-user-plus text-primary"></i> طلبات توظيف ومراجعة ديون عمال التوصيل</h4>
                     <div class="overflow-x-auto">
                         <table class="w-full text-right text-xs">
                             <thead>
                                 <tr class="border-b border-gray-100 dark:border-zinc-800 text-gray-400">
-                                    <th class="py-3">اسم المندوب</th>
-                                    <th class="py-3">حالة الحساب</th>
+                                    <th class="py-3">البيانات الشخصية</th>
+                                    <th class="py-3">الدين الحالي</th>
                                     <th class="py-3 text-center">الإجراءات والتحكم</th>
                                 </tr>
                             </thead>
@@ -524,18 +607,17 @@
                     </div>
                 </div>
 
-                <!-- Admin Restaurant manager with Maps coordinates picker & Link importer -->
+                <!-- إضافة المطاعم والمحلات الجغرافية -->
                 <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-zinc-800 flex flex-col gap-4">
                     <h4 class="font-bold text-sm text-gray-500 flex items-center justify-between">
                         <span><i class="fa-solid fa-store"></i> إضافة المتاجر والمطاعم</span>
                         <span class="text-[10px] text-primary">يمكنك لصق رابط Google Maps أو النقر يدوياً على الخارطة</span>
                     </h4>
                     
-                    <!-- Form entries -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <input type="text" id="adminStoreName" class="glow-input sm:col-span-3 px-3 py-2 text-xs rounded-lg bg-gray-50 dark:bg-zinc-800 focus:outline-none border border-transparent text-black dark:text-white" placeholder="اسم المطعم / المتجر (مثال: بيتزا هاوس)">
                         
-                        <!-- Google maps parser block -->
+                        <!-- Google maps URL Parser -->
                         <div class="sm:col-span-3 flex gap-2">
                             <input type="text" id="adminGoogleMapsLink" class="glow-input flex-1 px-3 py-2 text-xs rounded-lg bg-gray-50 dark:bg-zinc-800 focus:outline-none border border-transparent text-black dark:text-white" placeholder="ألصق رابط Google Maps هنا للاستخراج التلقائي...">
                             <button type="button" onclick="parseAdminMapsUrl()" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] px-3.5 rounded-lg font-bold transition">استخراج</button>
@@ -547,7 +629,7 @@
                         <button onclick="handleAdminAddStore()" type="button" class="bg-primary hover:bg-primaryDark text-white text-xs font-bold px-4 py-2 rounded-lg shadow-md transition">حفظ المطعم</button>
                     </div>
 
-                    <!-- Map picker inside Admin to specify location manually -->
+                    <!-- تحديد الإحداثيات يدوياً للأدمن بالنقر على الخريطة -->
                     <div class="flex flex-col gap-1.5 mt-2">
                         <span class="text-[10px] text-gray-400">انقر على الخارطة في الأسفل لتحديد موقع المحل بدقة:</span>
                         <div id="adminPickerMap" class="w-full h-44 rounded-xl border border-gray-200 dark:border-zinc-800 z-10"></div>
@@ -571,7 +653,7 @@
 
         <!-- Hidden Admin Login Portal -->
         <section id="view-admin-login" class="screen-view hidden flex-1 flex items-center justify-center py-12 px-4">
-            <div class="w-full max-w-md bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl p-8 border border-gray-100 dark:border-zinc-800">
+            <div class="w-full max-w-md bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl p-8 border border-gray-100 dark:border-zinc-800 animate-scale-up">
                 <div class="text-center mb-6">
                     <i class="fa-solid fa-user-shield text-4xl text-primary mb-2"></i>
                     <h2 class="text-xl font-black">تسجيل دخول الإدارة المحمي</h2>
@@ -597,7 +679,7 @@
 
     <!-- Drawer Side-Menu for Mobile -->
     <div id="sideDrawer" class="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none z-50">
-        <div id="drawerContent" class="absolute top-0 right-0 w-3/4 max-w-xs h-full bg-white dark:bg-zinc-900 shadow-2xl p-6 transition-transform duration-300 transform translate-x-full flex flex-col justify-between">
+        <div id="drawerContent" class="absolute top-0 right-0 w-3/4 max-w-xs h-full bg-white dark:bg-zinc-900 shadow-2xl p-6 transition-transform duration-300 transform translate-x-full flex flex-col justify-between overflow-y-auto">
             <div>
                 <div class="flex justify-between items-center mb-6">
                     <button type="button" onclick="toggleDrawer(false)" class="text-gray-500 text-lg">
@@ -606,12 +688,14 @@
                     <span class="text-sm font-extrabold text-primary">العفرون ديليفري</span>
                 </div>
                 <div class="flex flex-col gap-2 text-xs font-bold text-gray-700 dark:text-gray-300">
-                    <button type="button" onclick="showSection('landing')" class="text-right p-3 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl flex items-center gap-2"><i class="fa-solid fa-house"></i> الصفحة الرئيسية</button>
+                    <button type="button" id="drawerHomeBtn" onclick="showSection('landing')" class="text-right p-3 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl flex items-center gap-2"><i class="fa-solid fa-house"></i> الصفحة الرئيسية</button>
                     <button id="drawerOrdersBtn" type="button" onclick="showCustomerOrdersModal()" class="hidden text-right p-3 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl flex items-center gap-2"><i class="fa-solid fa-basket-shopping"></i> طلباتي</button>
-                    <button type="button" onclick="showAuthModal('register', 'driver')" class="text-right p-3 text-primary hover:bg-orange-50 dark:hover:bg-zinc-800/40 rounded-xl flex items-center gap-2 border border-primary/20"><i class="fa-solid fa-motorcycle animate-bounce-slow"></i> انضم للعمل معنا كعامل توصيل</button>
+                    
+                    <!-- Exclusively Driver Registration from sidebar ONLY -->
+                    <button id="drawerJoinWorkBtn" type="button" onclick="showAuthModal('register', 'driver')" class="text-right p-3 text-primary hover:bg-orange-50 dark:hover:bg-zinc-800/40 rounded-xl flex items-center gap-2 border border-primary/20"><i class="fa-solid fa-motorcycle animate-bounce-slow"></i> انضم للعمل معنا كعامل توصيل</button>
                 </div>
             </div>
-            <span class="text-[10px] text-gray-400 text-center">الإصدار 2.5.0</span>
+            <span class="text-[10px] text-gray-400 text-center mt-6">الإصدار 3.0.0</span>
         </div>
     </div>
 
@@ -692,6 +776,10 @@
         let activeIncomingOrderId = null;
         let watchPositionId = null;
 
+        // Unread message markers for Customer and Driver FAB Chats
+        let lastMessageCountCustomer = 0;
+        let lastMessageCountDriver = 0;
+
         let globalUnsubscribes = {
             orders: null,
             customerOrders: null,
@@ -770,7 +858,7 @@
         };
 
         // Navigation switcher
-        window.showSection = function(sectionId) {
+        function showSection(sectionId) {
             document.querySelectorAll('.screen-view').forEach(v => {
                 v.classList.add('hidden');
                 v.style.opacity = '0';
@@ -785,6 +873,7 @@
 
             toggleDrawer(false);
             
+            // Re-render and resize maps layout instantly to guarantee flawless load on webviews
             setTimeout(() => {
                 if (sectionId === 'customer') {
                     initCustomerDashboard();
@@ -797,9 +886,10 @@
                     if (maps.admin) maps.admin.invalidateSize();
                 }
             }, 220);
-        };
+        }
+        window.showSection = showSection;
 
-        window.toggleDrawer = function(open) {
+        function toggleDrawer(open) {
             const d = document.getElementById('sideDrawer');
             const c = document.getElementById('drawerContent');
             if (open) {
@@ -809,61 +899,36 @@
                 d.classList.add('pointer-events-none', 'opacity-0');
                 c.classList.add('translate-x-full');
             }
-        };
-
-        // --- Fast Gmail & Facebook Logins ---
-        window.loginWithGoogle = async function() {
-            try {
-                const provider = new GoogleAuthProvider();
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                await setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid,
-                    name: user.displayName || 'مستخدم Google',
-                    email: user.email || '',
-                    role: 'customer',
-                    blocked: false,
-                    createdAt: new Date().toISOString()
-                }, { merge: true });
-                showToast("تم الدخول بنجاح عبر حساب Google!");
-            } catch (err) {
-                showToast(`خطأ تسجيل Google: ${err.message}`);
-            }
-        };
-
-        window.loginWithFacebook = async function() {
-            try {
-                const provider = new FacebookAuthProvider();
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                await setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid,
-                    name: user.displayName || 'مستخدم Facebook',
-                    email: user.email || '',
-                    role: 'customer',
-                    blocked: false,
-                    createdAt: new Date().toISOString()
-                }, { merge: true });
-                showToast("تم الدخول بنجاح عبر حساب Facebook!");
-            } catch (err) {
-                showToast(`خطأ تسجيل Facebook: ${err.message}`);
-            }
-        };
+        }
+        window.toggleDrawer = toggleDrawer;
 
         // --- Auth Modals ---
-        window.showAuthModal = function(mode, autoRole = 'customer') {
+        function showAuthModal(mode, autoRole = 'customer') {
             activeAuthMode = mode;
             document.getElementById('authRole').value = autoRole;
 
             const nameF = document.getElementById('regNameField');
-            title = document.getElementById('authTitle');
+            const title = document.getElementById('authTitle'); // Clean Strict Mode Declaration Confirmed!
             const sub = document.getElementById('authSubtitle');
             const submitBtn = document.getElementById('authSubmitBtn');
             const toggleBtn = document.getElementById('authToggleBtn');
             const toggleTxt = document.getElementById('authToggleText');
+            
+            // Driver specific fields selectors
+            const driverExtra = document.getElementById('driverExtraFields');
+            const driverConfirmPass = document.getElementById('driverConfirmPassField');
+            const driverAgeConfirm = document.getElementById('driverAgeConfirmField');
+            const socialAuth = document.getElementById('socialAuthGroup');
+            const authSep = document.getElementById('authSeparator');
 
             if (mode === 'login') {
                 nameF.classList.add('hidden');
+                driverExtra.classList.add('hidden');
+                driverConfirmPass.classList.add('hidden');
+                driverAgeConfirm.classList.add('hidden');
+                socialAuth.classList.remove('hidden');
+                authSep.classList.remove('hidden');
+                
                 title.innerText = "تسجيل الدخول";
                 sub.innerText = "سجل الدخول للمتابعة في منصة العفرون";
                 submitBtn.innerText = "دخول";
@@ -871,25 +936,49 @@
                 toggleBtn.innerText = "إنشاء حساب جديد";
             } else {
                 nameF.classList.remove('hidden');
-                title.innerText = "إنشاء حساب";
-                sub.innerText = "سجل حسابك مجاناً لتوصيل أسرع";
-                submitBtn.innerText = "تسجيل";
+                socialAuth.classList.add('hidden'); // Disable social login during driver register simulation to prevent mismatch
+                authSep.classList.add('hidden');
+                
+                if (autoRole === 'driver') {
+                    // NEW DYNAMIC LAYOUT: Driver Registration Multi-fields [1, 2]
+                    title.innerText = "تسجيل عامل التوصيل جديد";
+                    sub.innerText = "قم بتعبئة بياناتك لمراجعة طلب توظيفك وتنشيط حسابك";
+                    driverExtra.classList.remove('hidden');
+                    driverConfirmPass.classList.remove('hidden');
+                    driverAgeConfirm.classList.remove('hidden');
+                } else {
+                    title.innerText = "إنشاء حساب زبون جديد";
+                    sub.innerText = "سجل حسابك مجاناً لتوصيل أسرع";
+                    driverExtra.classList.add('hidden');
+                    driverConfirmPass.classList.add('hidden');
+                    driverAgeConfirm.classList.add('hidden');
+                }
+                
+                submitBtn.innerText = "تسجيل الحساب";
                 toggleTxt.innerText = "لديك حساب بالفعل؟";
                 toggleBtn.innerText = "تسجيل دخول";
             }
             showSection('auth');
-        };
+        }
+        window.showAuthModal = showAuthModal;
 
-        window.toggleAuthMode = function() {
+        function toggleAuthMode() {
             showAuthModal(activeAuthMode === 'login' ? 'register' : 'login');
-        };
+        }
+        window.toggleAuthMode = toggleAuthMode;
 
         // Complete Client-Side Form Submitter Bypass
-        window.handleAuthSubmit = async function() {
+        async function handleAuthSubmit() {
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value.trim();
             const name = document.getElementById('authName').value.trim();
             const role = document.getElementById('authRole').value;
+            
+            // Driver specific fields retrieval
+            const phone = document.getElementById('authPhone').value.trim();
+            const avatar = document.getElementById('authAvatar').value.trim();
+            const passwordConfirm = document.getElementById('authPasswordConfirm').value.trim();
+            const ageCheck = document.getElementById('authAgeCheck').checked;
 
             if (!email || !password) {
                 showToast("الرجاء إدخال البريد الإلكتروني وكلمة المرور.");
@@ -905,24 +994,54 @@
                         showToast("الرجاء إدخال الاسم الكامل للتسجيل.");
                         return;
                     }
+                    if (role === 'driver') {
+                        if (!phone || !avatar) {
+                            showToast("الرجاء تعبئة رقم الهاتف ورابط الصورة الشخصية.");
+                            return;
+                        }
+                        if (password !== passwordConfirm) {
+                            showToast("كلمات المرور غير متطابقة.");
+                            return;
+                        }
+                        if (!ageCheck) {
+                            showToast("يجب تأكيد وتصريح السن فوق 18 سنة لإتمام الطلب.");
+                            return;
+                        }
+                    }
+
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await updateProfile(cred.user, { displayName: name });
-                    await setDoc(doc(db, "users", cred.user.uid), {
+                    
+                    // NEW SECURE DRIVER APPROVAL ENGINE: Sets pending "approved: false" for drivers [3, 4]
+                    const driverPayload = {
                         uid: cred.user.uid,
                         name: name,
                         email: email,
                         role: role,
+                        phoneNumber: phone || '',
+                        avatarUrl: avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop',
+                        ageConfirmed: ageCheck,
                         blocked: false,
+                        approved: role === 'driver' ? false : true, // Drivers must be approved by admin [4]
+                        debt: 0, // Neon red debt field [5]
                         createdAt: new Date().toISOString()
-                    });
-                    showToast("مرحباً بك! تم إنشاء الحساب بنجاح.");
+                    };
+
+                    await setDoc(doc(db, "users", cred.user.uid), driverPayload);
+                    
+                    if (role === 'driver') {
+                        showToast("طلب توظيفك قيد المراجعة حالياً من طرف الإدارة!");
+                    } else {
+                        showToast("مرحباً بك! تم إنشاء الحساب بنجاح.");
+                    }
                 }
             } catch (err) {
                 showToast(`خطأ في الإدخال: ${err.message}`);
             }
-        };
+        }
+        window.handleAuthSubmit = handleAuthSubmit;
 
-        window.logout = async function() {
+        async function logout() {
             try {
                 if (watchPositionId) {
                     navigator.geolocation.clearWatch(watchPositionId);
@@ -939,7 +1058,8 @@
             } catch (err) {
                 showToast("خطأ أثناء تسجيل الخروج");
             }
-        };
+        }
+        window.logout = logout;
 
         // High Accuracy Geolocation API Options
         const highAccuracyGeoOptions = {
@@ -949,7 +1069,7 @@
         };
 
         // GPS Location Fetcher
-        window.detectGPS = function(targetType) {
+        function detectGPS(targetType) {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition((pos) => {
                     const { latitude, longitude } = pos.coords;
@@ -983,7 +1103,8 @@
                     console.warn(err);
                 }, highAccuracyGeoOptions);
             }
-        };
+        }
+        window.detectGPS = detectGPS;
 
         // Custom professional dropdown with Search filtering
         const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
@@ -1060,6 +1181,7 @@
             }
             recalculatePriceOnCoordinates();
         }
+        window.selectDropdownOption = selectDropdownOption;
 
         // Pricing logic
         function recalculatePriceOnCoordinates() {
@@ -1089,10 +1211,12 @@
             descEl.innerText = `مسافة المسار: ${dist.toFixed(2)} كم (${dist <= 2.5 ? 'أقل من 2.5 كلم' : 'أكثر من 2.5 كلم'})`;
         }
 
-        // --- Core User / Driver Session Router ---
+        // --- Core User / Driver Session Router & UI Conditional Hider ---
         onAuthStateChanged(auth, async (user) => {
             const authHeader = document.getElementById('authHeaderState');
             const drawerOrdersBtn = document.getElementById('drawerOrdersBtn');
+            const drawerHomeBtn = document.getElementById('drawerHomeBtn');
+            const drawerJoinWorkBtn = document.getElementById('drawerJoinWorkBtn');
 
             if (user) {
                 currentUser = user;
@@ -1117,6 +1241,10 @@
                         </div>
                     `;
 
+                    // Hide "Home" and "Join Us" options in drawer upon login [1]
+                    drawerHomeBtn.classList.add('hidden');
+                    drawerJoinWorkBtn.classList.add('hidden');
+
                     if (currentUserRole === 'driver') {
                         document.getElementById('driverNameBanner').innerText = `مرحباً ${userData.name}`;
                         showSection('driver');
@@ -1134,9 +1262,15 @@
             } else {
                 currentUser = null;
                 drawerOrdersBtn.classList.add('hidden');
+                
+                // Show standard unauthenticated buttons again [1]
+                drawerHomeBtn.classList.remove('hidden');
+                drawerJoinWorkBtn.classList.remove('hidden');
+
                 authHeader.innerHTML = `
                     <button type="button" onclick="showAuthModal('login')" class="text-xs font-bold px-3 py-2 rounded-xl bg-primary text-white hover:bg-primaryDark transition shadow-xs">دخول</button>
                 `;
+                // Always return home if logged out
                 showSection('landing');
             }
         });
@@ -1212,8 +1346,14 @@
 
                 globalUnsubscribes.customerOrders = onSnapshot(q, (snapshot) => {
                     const card = document.getElementById('customerActiveOrderCard');
+                    const banner = document.getElementById('globalOrderStatusBanner');
+                    const bannerText = document.getElementById('globalOrderStatusText');
+
                     if (snapshot.empty) {
                         card.classList.add('hidden');
+                        banner.classList.add('hidden');
+                        document.getElementById('custChatFAB').classList.add('hidden');
+                        toggleCustChat(false);
                         return;
                     }
 
@@ -1229,29 +1369,35 @@
                     });
 
                     if (latest) {
-                        card.classList.remove('hidden');
+                        // Order Status Banner is fixed/sticky at the top! Always visible [1]
+                        banner.classList.remove('hidden');
                         document.getElementById('custOrderNumber').innerText = `رقم الطلب #${latestId.slice(-4)}`;
                         
-                        // NEW & IMPROVED: Multi-status listener on client's screen [3]
+                        // NEW DYNAMIC COLORS FOR GLOBAL STATUS BANNER [3]
                         if (latest.status === 'pending') {
-                            document.getElementById('custStatusTitle').innerText = "جاري البحث عن عامل توصيل قريب...";
+                            banner.className = "fixed top-[70px] left-4 right-4 bg-gradient-to-r from-red-600/95 to-rose-600/95 backdrop-blur-md text-white text-center py-3.5 px-5 rounded-2xl shadow-2xl z-40 transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-red-500/30 animate-scale-up shadow-red-600/25";
+                            bannerText.innerText = "جاري البحث عن عامل توصيل قريب لطلبك... ⏳";
                             document.getElementById('customerChatBox').classList.add('hidden');
                             document.getElementById('custCallDriverBtn').classList.add('hidden');
+                            toggleCustChat(false);
                             if (trackingDriverMarker) {
                                 trackingDriverMarker.remove();
                                 trackingDriverMarker = null;
                             }
                         } else {
-                            document.getElementById('customerChatBox').classList.remove('hidden');
+                            // Show toggleable Floating Chat button (FAB) when accepted
+                            document.getElementById('custChatFAB').classList.remove('hidden');
                             document.getElementById('custCallDriverBtn').classList.remove('hidden');
                             
-                            // Visual feedback of custom Driver status updates to the client
                             if (latest.status === 'accepted') {
-                                document.getElementById('custStatusTitle').innerText = `المندوب (${latest.driverName}) وافق على طلبك!`;
+                                banner.className = "fixed top-[70px] left-4 right-4 bg-gradient-to-r from-blue-600/95 to-indigo-600/95 backdrop-blur-md text-white text-center py-3.5 px-5 rounded-2xl shadow-2xl z-40 transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-blue-500/30 animate-scale-up shadow-indigo-600/25";
+                                bannerText.innerText = `تم قبول طلبك بواسطة عامل التوصيل: ${latest.driverName} ✅`;
                             } else if (latest.status === 'to_store') {
-                                document.getElementById('custStatusTitle').innerText = `المندوب (${latest.driverName}): أنا في الطريق للمطعم / المتجر 🏃‍♂️`;
+                                banner.className = "fixed top-[70px] left-4 right-4 bg-gradient-to-r from-amber-500/95 to-orange-500/95 backdrop-blur-md text-white text-center py-3.5 px-5 rounded-2xl shadow-2xl z-40 transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-amber-400/30 animate-scale-up shadow-orange-600/25";
+                                bannerText.innerText = `${latest.driverName}: أنا في الطريق للمطعم / المتجر الآن 🏃‍♂️`;
                             } else if (latest.status === 'received') {
-                                document.getElementById('custStatusTitle').innerText = `المندوب (${latest.driverName}): تم استلام طلبك وأنا في الطريق إليك الآن 🛵`;
+                                banner.className = "fixed top-[70px] left-4 right-4 bg-gradient-to-r from-emerald-600/95 to-teal-600/95 backdrop-blur-md text-white text-center py-3.5 px-5 rounded-2xl shadow-2xl z-40 transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-emerald-500/30 animate-scale-up shadow-emerald-600/25";
+                                bannerText.innerText = `${latest.driverName}: تم استلام الطلب وأنا في الطريق إليك الآن 🛵`;
                             }
 
                             getDoc(doc(db, "users", latest.driverId)).then(drSnap => {
@@ -1265,6 +1411,9 @@
                         }
                     } else {
                         card.classList.add('hidden');
+                        banner.classList.add('hidden');
+                        document.getElementById('custChatFAB').classList.add('hidden');
+                        toggleCustChat(false);
                         if (trackingDriverMarker) {
                             trackingDriverMarker.remove();
                             trackingDriverMarker = null;
@@ -1278,7 +1427,31 @@
             }
         }
 
-        // NEW: Real-time driver positioning combined with OSM Road Matching polyline drawing [1, 2]
+        // Floating chat triggers for Client with automatic read reset [2]
+        function toggleCustChat(open) {
+            const chatBox = document.getElementById('customerChatBox');
+            if (open) {
+                chatBox.classList.remove('hidden');
+                document.getElementById('custChatBadge').classList.add('hidden'); // Clear badge on read [2]
+            } else {
+                chatBox.classList.add('hidden');
+            }
+        }
+        window.toggleCustChat = toggleCustChat;
+
+        // Floating chat triggers for Driver with automatic read reset [2]
+        function toggleDriverChat(open) {
+            const chatBox = document.getElementById('driverChatBox');
+            if (open) {
+                chatBox.classList.remove('hidden');
+                document.getElementById('driverChatBadge').classList.add('hidden'); // Clear badge on read [2]
+            } else {
+                chatBox.classList.add('hidden');
+            }
+        }
+        window.toggleDriverChat = toggleDriverChat;
+
+        // Real-time driver positioning combined with OSM Road Matching polyline drawing [1, 2]
         function trackDriverAndDrawRealRoute(order, mapInstance) {
             if (globalUnsubscribes.driverLocationTracker) {
                 globalUnsubscribes.driverLocationTracker();
@@ -1312,7 +1485,7 @@
                         }
 
                         // Get customer coordinates
-                        const customerCoords = [currentGPSLocation.lat, currentGPSLocation.lng];
+                        const customerCoords = [order.lat || currentGPSLocation.lat, order.lng || currentGPSLocation.lng];
 
                         // Draw the true real-time road matching route [1]
                         await drawRealRoadRoute(mapInstance, [driver.lat, driver.lng], customerCoords, '#00C853');
@@ -1321,7 +1494,7 @@
             });
         }
 
-        // NEW: Open Source OSRM Router fetch engine to match real streets instead of simple line [1]
+        // Open Source OSRM Router fetch engine to match real streets instead of simple line [1]
         async function drawRealRoadRoute(mapInstance, startCoords, endCoords, color = '#FF7E00') {
             try {
                 // start and end coordinates format: [latitude, longitude]
@@ -1362,7 +1535,7 @@
 
         // Draw and track all active delivery driver locations with animated motorcycles
         function trackActiveDriversOnMap() {
-            const q = query(collection(db, "users"), where("role", "==", "driver"));
+            const q = query(collection(db, "users"), where("role", "==", "driver"), where("approved", "==", true));
             
             if (globalUnsubscribes.driversList) globalUnsubscribes.driversList();
 
@@ -1395,7 +1568,7 @@
 
                                 activeDriverMarkers[driverId] = L.marker([driver.lat, driver.lng], { icon: bikeIcon })
                                     .addTo(maps.customer)
-                                    .bindPopup(`المندوب: ${driver.name}`);
+                                    .bindPopup(`عامل التوصيل: ${driver.name}`);
                             }
                         } else {
                             if (activeDriverMarkers[driverId]) {
@@ -1412,10 +1585,14 @@
         function initDriverDashboard() {
             const isDark = document.body.classList.contains('dark');
             if (!maps.driver) {
+                // FIXED & ENHANCED: Direct absolute initialization of maps.driver with custom sizes [3]
                 maps.driver = setupMapInstance('driverMap', isDark);
-            } else {
-                maps.driver.invalidateSize();
             }
+            
+            // Failsafe resize trigger [3]
+            setTimeout(() => {
+                if (maps.driver) maps.driver.invalidateSize();
+            }, 300);
 
             detectGPS('driver');
 
@@ -1457,6 +1634,8 @@
                 const box = document.getElementById('driverActiveOrderBox');
                 if (snapshot.empty) {
                     box.classList.add('hidden');
+                    document.getElementById('driverChatFAB').classList.add('hidden');
+                    toggleDriverChat(false);
                     if (driverRoutingMarker) {
                         driverRoutingMarker.remove();
                         driverRoutingMarker = null;
@@ -1477,31 +1656,47 @@
 
                 if (assignedOrder) {
                     box.classList.remove('hidden');
+                    document.getElementById('driverChatFAB').classList.remove('hidden');
                     document.getElementById('driverCallClientBtn').href = `tel:${assignedOrder.customerPhone || '0555555555'}`;
                     
-                    // Highlights current selected status button on UI
                     highlightActiveStatusBtn(assignedOrder.status);
 
                     initChatSession(orderId, 'driver');
 
-                    // Map for Driver tracking: Draws real road route from Driver's GPS to Client [1]
+                    // IMPROVED & SYNCED: Driver map shows client's precise GPS pins matching customer [3]
                     if (maps.driver) {
                         navigator.geolocation.getCurrentPosition(async (pos) => {
                             const dLat = pos.coords.latitude;
                             const dLng = pos.coords.longitude;
-                            const clientCoords = [currentGPSLocation.lat, currentGPSLocation.lng]; // In a real system, you'd use order location coordinate fields. Let's use elAffrounCenter as fallbacks.
+                            
+                            // Load exact customer GPS coordinate from Firestore
+                            const clientCoords = [assignedOrder.lat || elAffrounCenter[0], assignedOrder.lng || elAffrounCenter[1]];
+
+                            const userIcon = L.divIcon({
+                                html: `
+                                    <div class="relative bg-blue-500 text-white p-2 rounded-full border-2 border-white shadow-lg text-xs flex items-center justify-center w-8 h-8">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                `,
+                                className: 'customer-icon-class',
+                                iconSize: [32, 32],
+                                iconAnchor: [16, 16]
+                            });
 
                             if (driverRoutingMarker) {
                                 driverRoutingMarker.setLatLng(clientCoords);
                             } else {
-                                driverRoutingMarker = L.marker(clientCoords).addTo(maps.driver).bindPopup("موقع العميل للتسليم");
+                                driverRoutingMarker = L.marker(clientCoords, { icon: userIcon }).addTo(maps.driver).bindPopup("مكان تسليم طلب الزبون");
                             }
 
-                            await drawRealRoadRoute(maps.driver, [dLat, dLng], clientCoords, '#00C853');
+                            // Draws real Algerian street-by-street OSRM route for Driver Map [1]
+                            await drawRealRoadRoute(maps.driver, [dLat, dLng], clientCoords, '#FF7E00');
                         }, null, highAccuracyGeoOptions);
                     }
                 } else {
                     box.classList.add('hidden');
+                    document.getElementById('driverChatFAB').classList.add('hidden');
+                    toggleDriverChat(false);
                     if (driverRoutingMarker) {
                         driverRoutingMarker.remove();
                         driverRoutingMarker = null;
@@ -1524,8 +1719,8 @@
             });
         }
 
-        // NEW: Driver sets custom shipping statuses [3]
-        window.updateDriverDeliveryStatus = async function(statusValue) {
+        // Driver sets custom shipping statuses [3]
+        async function updateDriverDeliveryStatus(statusValue) {
             const activeQ = query(
                 collection(db, "orders"),
                 where("status", "in", ["accepted", "to_store", "received"]),
@@ -1539,9 +1734,10 @@
                 });
                 showToast(`تم تحديث حالة الطلب إلى: ${statusValue === 'to_store' ? 'أنا في الطريق للمطعم' : 'تم استلام الطلب وبطريقي إليك'}`);
             }
-        };
+        }
+        window.updateDriverDeliveryStatus = updateDriverDeliveryStatus;
 
-        // Real Statistics calculation from Firestore Completed Orders database directly
+        // Real Statistics calculation from Firestore Completed Orders database directly + Auto-Freeze mechanism
         function initRealtimeDriverStats() {
             const q = query(
                 collection(db, "orders"),
@@ -1551,7 +1747,7 @@
 
             if (globalUnsubscribes.realtimeDriverStats) globalUnsubscribes.realtimeDriverStats();
 
-            globalUnsubscribes.realtimeDriverStats = onSnapshot(q, (snapshot) => {
+            globalUnsubscribes.realtimeDriverStats = onSnapshot(q, async (snapshot) => {
                 let completedCount = 0;
                 let totalEarnings = 0;
 
@@ -1561,8 +1757,30 @@
                     totalEarnings += order.price;
                 });
 
+                // DYNAMIC AUTO-FREEZING COMPUTATION: 10 DZD per order, Auto-blocks if debt >= 1000 DZD [5]
+                const calculatedDebt = completedCount * 10;
+
                 document.getElementById('driverCompletedCount').innerText = completedCount;
                 document.getElementById('driverEarnings').innerText = `${totalEarnings} دج`;
+                document.getElementById('driverDebt').innerText = `${calculatedDebt} دج`;
+
+                // Update Firestore user document with calculated real debt
+                if (currentUser && currentUserRole === 'driver') {
+                    const userRef = doc(db, "users", currentUser.uid);
+                    
+                    if (calculatedDebt >= 1000) {
+                        // Dynamically freeze the account automatically
+                        await updateDoc(userRef, {
+                            debt: calculatedDebt,
+                            blocked: true
+                        });
+                        showToast("تم تجميد حسابك مؤقتاً لتجاوز الديون 1000 دج. يرجى دفع التفعيل.");
+                    } else {
+                        await updateDoc(userRef, {
+                            debt: calculatedDebt
+                        });
+                    }
+                }
             });
         }
 
@@ -1608,18 +1826,19 @@
             stopRingtone();
         }
 
-        window.rejectOverlayOrder = function() {
+        function rejectOverlayOrder() {
             hideIncomingOverlay();
             showToast("تم رفض عرض التوصيل وتجاهله.");
-        };
+        }
+        window.rejectOverlayOrder = rejectOverlayOrder;
 
-        window.acceptOverlayOrder = async function() {
+        async function acceptOverlayOrder() {
             if (!activeIncomingOrderId) return;
             try {
                 await updateDoc(doc(db, "orders", activeIncomingOrderId), {
                     status: 'accepted',
                     driverId: currentUser.uid,
-                    driverName: currentUser.displayName || 'مندوب العفرون'
+                    driverName: currentUser.displayName || 'عامل التوصيل'
                 });
                 
                 showToast("تم قبول طلب التوصيل بنجاح!");
@@ -1627,9 +1846,10 @@
             } catch (err) {
                 showToast("حدث خطأ ما عند محاولة قبول الطلب.");
             }
-        };
+        }
+        window.acceptOverlayOrder = acceptOverlayOrder;
 
-        window.completeActiveOrder = async function() {
+        async function completeActiveOrder() {
             if (confirm("هل قمت بتسليم الطلب للزبون بنجاح؟")) {
                 const activeQ = query(
                     collection(db, "orders"),
@@ -1645,9 +1865,10 @@
                     showToast("تم إكمال الرحلة وتأكيد التسليم بنجاح!");
                 }
             }
-        };
+        }
+        window.completeActiveOrder = completeActiveOrder;
 
-        // --- Live Chats Section ---
+        // --- Live Chats Section (With Red unread notification badges) ---
         function initChatSession(orderId, senderRole) {
             const chatRef = collection(db, "orders", orderId, "messages");
             const q = query(chatRef, orderBy("sentAt", "asc"));
@@ -1674,10 +1895,31 @@
                     container.appendChild(el);
                 });
                 container.scrollTop = container.scrollHeight;
+
+                // NEW LARGE RED BADGES [2]: Triggers dynamic neon bounce unread count
+                if (senderRole === 'customer') {
+                    const chatBox = document.getElementById('customerChatBox');
+                    if (chatBox.classList.contains('hidden') && snapshot.size > lastMessageCountCustomer) {
+                        document.getElementById('custChatBadge').classList.remove('hidden');
+                    }
+                    if (!chatBox.classList.contains('hidden')) {
+                        lastMessageCountCustomer = snapshot.size;
+                        document.getElementById('custChatBadge').classList.add('hidden');
+                    }
+                } else {
+                    const chatBox = document.getElementById('driverChatBox');
+                    if (chatBox.classList.contains('hidden') && snapshot.size > lastMessageCountDriver) {
+                        document.getElementById('driverChatBadge').classList.remove('hidden');
+                    }
+                    if (!chatBox.classList.contains('hidden')) {
+                        lastMessageCountDriver = snapshot.size;
+                        document.getElementById('driverChatBadge').classList.add('hidden');
+                    }
+                }
             });
         }
 
-        window.sendChatMessage = async function() {
+        async function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
             if (!text) return;
@@ -1701,9 +1943,10 @@
                 });
                 input.value = '';
             }
-        };
+        }
+        window.sendChatMessage = sendChatMessage;
 
-        window.sendDriverChatMessage = async function() {
+        async function sendDriverChatMessage() {
             const input = document.getElementById('driverChatInput');
             const text = input.value.trim();
             if (!text) return;
@@ -1726,31 +1969,34 @@
                 });
                 input.value = '';
             }
-        };
+        }
+        window.sendDriverChatMessage = sendDriverChatMessage;
 
         // --- Dynamic Product Rows Controller ---
-        window.addNewProductRow = function() {
+        function addNewProductRow() {
             const container = document.getElementById('productsRowsContainer');
             const rowId = 'prod-row-' + Date.now();
             
             const div = document.createElement('div');
             div.id = rowId;
-            div.className = "flex gap-2 items-center animate-fade-in";
+            div.className = "flex gap-2 items-center animate-fade-in animate-scale-up";
             div.innerHTML = `
                 <input type="text" class="prod-name glow-input flex-1 px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-xs rounded-xl border border-transparent focus:outline-none text-black dark:text-white" placeholder="مثال: بيتزا مارغريتا" required>
                 <input type="number" min="1" value="1" class="prod-qty glow-input w-16 px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-xs rounded-xl border border-transparent text-center focus:outline-none text-black dark:text-white" required>
                 <button type="button" onclick="removeProductRow('${rowId}')" class="text-red-500 text-base"><i class="fa-solid fa-trash"></i></button>
             `;
             container.appendChild(div);
-        };
+        }
+        window.addNewProductRow = addNewProductRow;
 
-        window.removeProductRow = function(rowId) {
+        function removeProductRow(rowId) {
             const row = document.getElementById(rowId);
             if (row) row.remove();
-        };
+        }
+        window.removeProductRow = removeProductRow;
 
         // Modal triggers
-        window.openNewOrderModal = function() {
+        function openNewOrderModal() {
             if (!currentUser) {
                 showToast("الرجاء تسجيل الدخول أولاً للتمكن من الطلب.");
                 showAuthModal('login');
@@ -1760,14 +2006,16 @@
             const container = document.getElementById('productsRowsContainer');
             container.innerHTML = '';
             addNewProductRow();
-        };
+        }
+        window.openNewOrderModal = openNewOrderModal;
 
-        window.closeNewOrderModal = function() {
+        function closeNewOrderModal() {
             document.getElementById('newOrderModal').classList.add('hidden');
-        };
+        }
+        window.closeNewOrderModal = closeNewOrderModal;
 
         // --- Custom Client-Side Order Submission ---
-        window.handleOrderSubmit = async function() {
+        async function handleOrderSubmit() {
             const restId = selectedStoreId; 
             let restaurantName = "";
             let restaurantAddr = "العفرون";
@@ -1794,6 +2042,7 @@
                 return;
             }
 
+            // Extract meals/products dynamically from the multiple lists
             const items = [];
             const rows = document.querySelectorAll('#productsRowsContainer > div');
             rows.forEach(row => {
@@ -1825,13 +2074,15 @@
                     price: price,
                     items: items,
                     note: note,
+                    lat: currentGPSLocation.lat,
+                    lng: currentGPSLocation.lng,
                     customerId: currentUser.uid,
                     customerName: currentUser.displayName || 'زبون العفرون',
                     customerPhone: currentUser.phoneNumber || '0555555555',
                     status: 'pending',
                     createdAt: new Date().toISOString()
                 });
-                showToast("تم إرسال طلبك بنجاح! جاري تنبيه المناديب.");
+                showToast("تم إرسال طلبك بنجاح! جاري تنبيه عمال التوصيل.");
                 
                 // Clear state
                 dropdownLabel.innerText = "انقر لاختيار متجر...";
@@ -1844,9 +2095,10 @@
             } catch (err) {
                 showToast(`تعذر إرسال الطلب: ${err.message}`);
             }
-        };
+        }
+        window.handleOrderSubmit = handleOrderSubmit;
 
-        window.cancelActiveOrder = async function() {
+        async function cancelActiveOrder() {
             if (confirm("هل تريد بالتأكيد إلغاء طلبك الحالي؟")) {
                 const q = query(
                     collection(db, "orders"),
@@ -1861,10 +2113,11 @@
                 });
                 showToast("تم إلغاء طلبك المعلق بنجاح.");
             }
-        };
+        }
+        window.cancelActiveOrder = cancelActiveOrder;
 
         // Active customer order summaries modal
-        window.showCustomerOrdersModal = function() {
+        async function showCustomerOrdersModal() {
             toggleOrdersModal(true);
             const list = document.getElementById('ordersModalList');
             list.innerHTML = `<span class="text-xs text-gray-400 text-center py-4">جاري التحميل...</span>`;
@@ -1890,7 +2143,7 @@
 
                 ordersArray.forEach(order => {
                     const item = document.createElement('div');
-                    item.className = "p-3 bg-gray-50 dark:bg-zinc-850 rounded-xl border border-gray-100 dark:border-zinc-800 flex justify-between items-center text-xs text-black dark:text-white";
+                    item.className = "p-3 bg-gray-50 dark:bg-zinc-850 rounded-xl border border-gray-100 dark:border-zinc-800 flex justify-between items-center text-xs text-black dark:text-white animate-scale-up";
                     
                     let statusLabel = `<span class="text-orange-500 font-bold">معلق</span>`;
                     if (order.status === 'accepted' || order.status === 'to_store' || order.status === 'received') {
@@ -1912,13 +2165,15 @@
                     list.appendChild(item);
                 });
             });
-        };
+        }
+        window.showCustomerOrdersModal = showCustomerOrdersModal;
 
-        window.toggleOrdersModal = function(open) {
+        function toggleOrdersModal(open) {
             const m = document.getElementById('ordersModal');
             if (open) m.classList.remove('hidden');
             else m.classList.add('hidden');
-        };
+        }
+        window.toggleOrdersModal = toggleOrdersModal;
 
         // Sync Stores data dynamically
         globalUnsubscribes.stores = onSnapshot(collection(db, "stores"), (snapshot) => {
@@ -1931,7 +2186,7 @@
         });
 
         // Fixed Admin login credentials check [4, 5]
-        window.handleAdminLoginSubmit = async function() {
+        async function handleAdminLoginSubmit() {
             const username = document.getElementById('adminUserField').value.trim();
             const password = document.getElementById('adminPassField').value.trim();
 
@@ -1942,7 +2197,7 @@
 
             const passHash = await sha256(password);
             
-            // Checking strictly 'admin009' and 'abobob123' with SHA-256 and base64 helper overrides
+            // Checking strictly 'admin009' and 'abobob123' with base64 helper overrides
             const isPasswordCorrect = passHash === "74df6db14902c3eb4615a5f1ba8e26bc2a8315276137d3af803ba09c894d4d65" || btoa(password) === "YWJvYm9iMTIz";
 
             if (username === 'admin009' && isPasswordCorrect) {
@@ -1956,7 +2211,7 @@
         };
 
         // Google Maps URL coordinate extractor logic
-        window.parseAdminMapsUrl = function() {
+        function parseAdminMapsUrl() {
             const url = document.getElementById('adminGoogleMapsLink').value.trim();
             if (!url) {
                 showToast("يرجى لصق رابط صالح أولاً.");
@@ -1987,9 +2242,10 @@
             } else {
                 showToast("لم نتمكن من استخراج الإحداثيات آلياً. يرجى التحديد يدوياً من الخريطة.");
             }
-        };
+        }
+        window.parseAdminMapsUrl = parseAdminMapsUrl;
 
-        window.handleAdminAddStore = async function() {
+        async function handleAdminAddStore() {
             const name = document.getElementById('adminStoreName').value.trim();
             const lat = parseFloat(document.getElementById('adminStoreLat').value);
             const lng = parseFloat(document.getElementById('adminStoreLng').value);
@@ -2018,21 +2274,51 @@
             } catch (err) {
                 showToast("حدث خطأ أثناء حفظ بيانات المتجر.");
             }
-        };
+        }
+        window.handleAdminAddStore = handleAdminAddStore;
 
-        window.toggleDriverBlockStatus = async function(driverUid, currentBlockStatus) {
+        // Admin Driver status controller: handles reactivation, approval, and debt reset to 0 [5]
+        async function adminApproveDriver(driverUid) {
+            try {
+                await updateDoc(doc(db, "users", driverUid), {
+                    approved: true
+                });
+                showToast("تم قبول طلب انضمام عامل التوصيل وتنشيط حسابه بنجاح!");
+            } catch (e) {
+                showToast("حدث خطأ أثناء تفعيل الحساب.");
+            }
+        }
+        window.adminApproveDriver = adminApproveDriver;
+
+        // Admin resets driver debt to 0 and reactivates them from Firestore [5]
+        async function adminRecoverAndReactivateDriver(driverUid) {
+            try {
+                await updateDoc(doc(db, "users", driverUid), {
+                    blocked: false,
+                    debt: 0,
+                    approved: true // guarantee activation
+                });
+                showToast("تم تحصيل ديون عامل التوصيل وإعادة تنشيط حسابه ليصبح دينه 0 دج.");
+            } catch (e) {
+                showToast("حدث خطأ أثناء تصفير الديون.");
+            }
+        }
+        window.adminRecoverAndReactivateDriver = adminRecoverAndReactivateDriver;
+
+        async function toggleDriverBlockStatus(driverUid, currentBlockStatus) {
             const action = currentBlockStatus ? "تنشيط" : "حظر";
             if (confirm(`هل تريد بالتأكيد ${action} حساب هذا المندوب؟`)) {
                 try {
                     await updateDoc(doc(db, "users", driverUid), {
                         blocked: !currentBlockStatus
                     });
-                    showToast(`تم ${action} حساب المندوب بنجاح.`);
+                    showToast(`تم ${action} حساب عامل التوصيل بنجاح.`);
                 } catch (err) {
                     showToast("حدث خطأ عند تحديث حالة الحساب.");
                 }
             }
-        };
+        }
+        window.toggleDriverBlockStatus = toggleDriverBlockStatus;
 
         function checkHashRoute() {
             if (window.location.hash === '#admin009' || window.location.pathname.endsWith('/admin009')) {
@@ -2081,6 +2367,7 @@
                 document.getElementById('adminTotalOrdersCount').innerText = completedCount;
             });
 
+            // Sync all Driver Profiles to Admin Table featuring Application Approval and dynamic Debt controls [5]
             if (globalUnsubscribes.driversList) globalUnsubscribes.driversList();
             
             globalUnsubscribes.driversList = onSnapshot(collection(db, "users"), (snapshot) => {
@@ -2091,21 +2378,46 @@
                     const userObj = docSnap.data();
                     if (userObj.role === 'driver') {
                         const isBlocked = userObj.blocked === true;
+                        const isApproved = userObj.approved === true;
+                        const currentDebt = userObj.debt || 0;
                         
                         const tr = document.createElement('tr');
-                        tr.className = "border-b border-gray-100 dark:border-zinc-800 text-gray-500 dark:text-gray-300";
+                        tr.className = "border-b border-gray-100 dark:border-zinc-800 text-gray-500 dark:text-gray-300 text-xs animate-scale-up";
+                        
+                        // Set up status badge
+                        let statusBadge = `<span class="bg-green-500/10 text-green-500 px-2.5 py-0.5 rounded-full font-bold">نشط</span>`;
+                        if (!isApproved) {
+                            statusBadge = `<span class="bg-yellow-500/10 text-yellow-500 px-2.5 py-0.5 rounded-full font-bold animate-pulse">انتظار المراجعة</span>`;
+                        } else if (isBlocked || currentDebt >= 1000) {
+                            statusBadge = `<span class="bg-red-500/10 text-red-500 px-2.5 py-0.5 rounded-full font-bold animate-pulse">مجمد (متراكم)</span>`;
+                        }
+
+                        // Determine actions
+                        let actionButtons = '';
+                        if (!isApproved) {
+                            actionButtons = `
+                                <button type="button" onclick="adminApproveDriver('${userObj.uid}')" class="bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-600 transition shadow-md">تفعيل وقبول</button>
+                            `;
+                        } else {
+                            actionButtons = `
+                                <div class="flex gap-1.5 justify-center">
+                                    <button type="button" onclick="adminRecoverAndReactivateDriver('${userObj.uid}')" class="bg-primary/10 text-primary font-bold px-2 py-1 rounded-lg hover:bg-primary/20 transition">تصفير وسداد</button>
+                                    <button type="button" onclick="toggleDriverBlockStatus('${userObj.uid}', ${isBlocked})" class="text-red-500 hover:underline font-bold">${isBlocked ? 'فك التجميد' : 'تجميد يدوياً'}</button>
+                                </div>
+                            `;
+                        }
+
                         tr.innerHTML = `
-                            <td class="py-3 font-bold">${userObj.name}</td>
-                            <td class="py-3">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                    isBlocked ? 'bg-red-500/10 text-red-500' : 'bg-green-500/10 text-green-500'
-                                }">${isBlocked ? 'محظور' : 'نشط'}</span>
+                            <td class="py-3 flex items-center gap-2">
+                                <img src="${userObj.avatarUrl || ''}" class="w-8 h-8 rounded-full object-cover">
+                                <div>
+                                    <span class="font-bold text-gray-800 dark:text-gray-100 block">${userObj.name}</span>
+                                    <span class="text-[9px] text-gray-400 block">${userObj.phoneNumber || 'بلا هاتف'}</span>
+                                </div>
                             </td>
-                            <td class="py-3 text-center">
-                                <button type="button" onclick="toggleDriverBlockStatus('${userObj.uid}', ${isBlocked})" class="text-xs font-bold ${
-                                    isBlocked ? 'text-green-500' : 'text-red-500'
-                                } hover:underline">${isBlocked ? 'تنشيط الحساب' : 'حظر الحساب'}</button>
-                            </td>
+                            <td class="py-3 font-black text-rose-500 animate-pulse">${currentDebt} دج</td>
+                            <td class="py-3 text-center">${statusBadge}</td>
+                            <td class="py-3 text-center">${actionButtons}</td>
                         `;
                         tbody.appendChild(tr);
                     }
@@ -2139,6 +2451,10 @@
         window.toggleDriverBlockStatus = toggleDriverBlockStatus;
         window.parseAdminMapsUrl = parseAdminMapsUrl;
         window.updateDriverDeliveryStatus = updateDriverDeliveryStatus;
+        window.toggleCustChat = toggleCustChat;
+        window.toggleDriverChat = toggleDriverChat;
+        window.adminApproveDriver = adminApproveDriver;
+        window.adminRecoverAndReactivateDriver = adminRecoverAndReactivateDriver;
 
     </script>
 </body>

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -138,7 +137,7 @@
 <body class="bg-slate-50 text-gray-900 transition-colors duration-300 dark:bg-appDark dark:text-gray-100 min-h-screen flex flex-col font-sans">
 
     <!-- الهيدر العلوي للموقع -->
-    <header class="bg-white dark:bg-zinc-900 shadow-md border-b border-gray-100 dark:border-zinc-800 sticky top-0 z-45 transition-colors animate-fade-in">
+    <header class="bg-white dark:bg-zinc-900 shadow-md border-b border-gray-100 dark:border-zinc-800 sticky top-0 z-45 transition-colors">
         <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <button onclick="toggleDrawer(true)" class="p-2 text-gray-700 dark:text-gray-300 text-xl">
@@ -185,6 +184,14 @@
     <!-- MAIN VIEWPORTS -->
     <main class="flex-1 flex flex-col justify-stretch relative">
 
+        <!-- NEW: Global Download App Button (يظهر في المسافة الفاصلة تحت الهيدر وفوق الكروت بانسجام تام) -->
+        <div id="globalDownloadAppBtn" class="w-full max-w-md mx-auto px-4 mt-4 mb-2 z-30 animate-scale-up">
+            <a href="https://apk.e-droid.net/apk/app4112720-5k6gzi.apk?v=2" class="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white text-xs font-black py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-xl shadow-orange-500/20 transition-all hover:scale-[1.02] duration-300 animate-pulse text-center select-none" download>
+                <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                <span>تحميل تطبيق العفرون ديليفري </span>
+            </a>
+        </div>
+
         <!-- 1. LANDING/SPLASH SECTION -->
         <section id="view-landing" class="screen-view landing-bg-animated flex-1 flex items-center justify-center py-16 px-4 text-center">
             <div class="max-w-2xl bg-white/60 dark:bg-black/40 p-10 lg:p-14 rounded-3xl backdrop-blur-md shadow-2xl border border-orange-500/10 animate-scale-up">
@@ -205,15 +212,6 @@
 
         <!-- 2. LOGIN & SIGN-UP VIEW (With Gmail/Facebook support) -->
         <section id="view-auth" class="screen-view hidden flex-1 flex flex-col items-center justify-center py-12 px-4 bg-gray-50 dark:bg-appDark overflow-y-auto">
-            
-            <!-- NEW: Download App Pulsing Button placed in the exact requested space (المسافة الرأسية بين الرأس العلوية ومربع تسجيل الدخول) -->
-            <div id="authDownloadAppBtnContainer" class="w-full max-w-md mb-4">
-                <a href="https://apk.e-droid.net/apk/app4112720-5k6gzi.apk?v=2" class="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white text-xs font-black py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-xl shadow-orange-500/20 transition-all hover:scale-[1.02] duration-300 animate-pulse text-center select-none" download>
-                    <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
-                    <span>تحميل تطبيق العفرون ديليفري المباشر 📲</span>
-                </a>
-            </div>
-
             <div class="w-full max-w-md bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl p-8 border border-gray-100 dark:border-zinc-800 animate-scale-up">
                 <h2 id="authTitle" class="text-2xl font-black mb-1 text-black dark:text-white">تسجيل الدخول</h2>
                 <p id="authSubtitle" class="text-xs text-gray-400 mb-6">مرحباً بك مجدداً في بوابة العفرون ديليفري</p>
@@ -729,18 +727,18 @@
 
     <!-- Active Orders Modal -->
     <div id="ordersModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl">
+        <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl animate-scale-up">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary" id="ordersModalHeaderTitle">سجل التعاملات</h3>
+                <h3 class="font-extrabold text-base text-primary">التعاملات السابقة</h3>
                 <button type="button" onclick="toggleOrdersModal(false)" class="text-gray-400"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="ordersModalList" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1"></div>
         </div>
     </div>
 
-    <!-- Past Transactions Modal -->
+    <!-- Past Transactions Modal (أرشيف التعاملات السابقة) -->
     <div id="transactionsModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl">
+        <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl animate-scale-up">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-extrabold text-base text-primary">أرشيف التعاملات السابقة</h3>
                 <button type="button" onclick="toggleTransactionsModal(false)" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -1312,7 +1310,7 @@
             const drawerHomeBtn = document.getElementById('drawerHomeBtn');
             const drawerJoinWorkBtn = document.getElementById('drawerJoinWorkBtn');
             const drawerTransactionsBtn = document.getElementById('drawerTransactionsBtn');
-            const downloadBtn = document.getElementById('headerDownloadAppBtn');
+            const downloadBtn = document.getElementById('authDownloadAppBtnContainer');
 
             if (user) {
                 currentUser = user;
@@ -1462,12 +1460,12 @@
                 if (globalUnsubscribes.customerOrders) globalUnsubscribes.customerOrders();
 
                 globalUnsubscribes.customerOrders = onSnapshot(q, (snapshot) => {
-                    const card = document.getElementById('customerActiveOrderCard');
+                    const activeCard = document.getElementById('customerActiveOrderCard');
                     const banner = document.getElementById('globalOrderStatusBanner');
                     const bannerText = document.getElementById('globalOrderStatusText');
 
                     if (snapshot.empty) {
-                        if (card) card.classList.add('hidden');
+                        if (activeCard) activeCard.classList.add('hidden');
                         banner.classList.add('hidden');
                         document.getElementById('custChatFAB').classList.add('hidden');
                         toggleCustChat(false);
@@ -1536,7 +1534,7 @@
                             trackDriverAndDrawRealRoute(latest, maps.customer);
                         }
                     } else {
-                        if (card) card.classList.add('hidden');
+                        if (activeCard) activeCard.classList.add('hidden');
                         banner.classList.add('hidden');
                         document.getElementById('custChatFAB').classList.add('hidden');
                         toggleCustChat(false);
@@ -1910,7 +1908,7 @@
                 const calculatedDebt = completedCount * 10;
 
                 document.getElementById('driverCompletedCount').innerText = completedCount;
-                document.getElementById('driverEarnings').innerText = `${totalEarnings} دج`;
+                document.getElementById('driverEarnings').innerText = `${totalEarnings} dج`;
                 document.getElementById('driverDebt').innerText = `${calculatedDebt} دج`;
 
                 // Update Firestore user document with calculated real debt

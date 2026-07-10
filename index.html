@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -136,7 +138,7 @@
 <body class="bg-slate-50 text-gray-900 transition-colors duration-300 dark:bg-appDark dark:text-gray-100 min-h-screen flex flex-col font-sans">
 
     <!-- الهيدر العلوي للموقع -->
-    <header class="bg-white dark:bg-zinc-900 shadow-md border-b border-gray-100 dark:border-zinc-800 sticky top-0 z-45 transition-colors">
+    <header class="bg-white dark:bg-zinc-900 shadow-md border-b border-gray-100 dark:border-zinc-800 sticky top-0 z-45 transition-colors animate-fade-in">
         <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <button onclick="toggleDrawer(true)" class="p-2 text-gray-700 dark:text-gray-300 text-xl">
@@ -148,15 +150,8 @@
                 </div>
             </div>
 
-            <!-- أزرار الاختيارات السريعة وزر تحميل التطبيق الجديد المضيء -->
+            <!-- أزرار الاختيارات السريعة -->
             <div class="flex items-center gap-2">
-                <!-- NEW: Download App Pulsing Button (يظهر فقط قبل تسجيل الدخول وبحركة نبض جذابة) -->
-                <a id="headerDownloadAppBtn" href="https://apk.e-droid.net/apk/app4112720-5k6gzi.apk?v=2" class="bg-gradient-to-r from-orange-500 to-amber-600 text-white text-[10px] sm:text-xs font-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-orange-500/20 transition-all hover:scale-105 duration-300 animate-pulse select-none shrink-0" download>
-                    <i class="fa-solid fa-cloud-arrow-down"></i>
-                    <span class="hidden sm:inline">تحميل التطبيق</span>
-                    <span class="inline sm:hidden">التطبيق</span>
-                </a>
-
                 <button id="themeToggleBtn" class="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 p-2 rounded-xl transition border border-gray-200 dark:border-zinc-700">
                     <i class="fa-solid fa-moon text-sm dark:hidden"></i>
                     <i class="fa-solid fa-sun text-sm hidden dark:block text-yellow-400"></i>
@@ -190,7 +185,7 @@
     <!-- MAIN VIEWPORTS -->
     <main class="flex-1 flex flex-col justify-stretch relative">
 
-        <!-- 1. LANDING/SPLASH SECTION (تدرج ألوان برتقالي وأبيض متحرك) -->
+        <!-- 1. LANDING/SPLASH SECTION -->
         <section id="view-landing" class="screen-view landing-bg-animated flex-1 flex items-center justify-center py-16 px-4 text-center">
             <div class="max-w-2xl bg-white/60 dark:bg-black/40 p-10 lg:p-14 rounded-3xl backdrop-blur-md shadow-2xl border border-orange-500/10 animate-scale-up">
                 <img src="https://st3.depositphotos.com/5572200/15094/v/450/depositphotos_150942812-stock-illustration-a-man-is-riding-a.jpg" alt="Logo" class="w-24 h-24 object-cover rounded-full mx-auto border-4 border-primary shadow-xl mb-6">
@@ -209,7 +204,16 @@
         </section>
 
         <!-- 2. LOGIN & SIGN-UP VIEW (With Gmail/Facebook support) -->
-        <section id="view-auth" class="screen-view hidden flex-1 flex items-center justify-center py-12 px-4 bg-gray-50 dark:bg-appDark overflow-y-auto">
+        <section id="view-auth" class="screen-view hidden flex-1 flex flex-col items-center justify-center py-12 px-4 bg-gray-50 dark:bg-appDark overflow-y-auto">
+            
+            <!-- NEW: Download App Pulsing Button placed in the exact requested space (المسافة الرأسية بين الرأس العلوية ومربع تسجيل الدخول) -->
+            <div id="authDownloadAppBtnContainer" class="w-full max-w-md mb-4">
+                <a href="https://apk.e-droid.net/apk/app4112720-5k6gzi.apk?v=2" class="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white text-xs font-black py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-xl shadow-orange-500/20 transition-all hover:scale-[1.02] duration-300 animate-pulse text-center select-none" download>
+                    <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                    <span>تحميل تطبيق العفرون ديليفري المباشر 📲</span>
+                </a>
+            </div>
+
             <div class="w-full max-w-md bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl p-8 border border-gray-100 dark:border-zinc-800 animate-scale-up">
                 <h2 id="authTitle" class="text-2xl font-black mb-1 text-black dark:text-white">تسجيل الدخول</h2>
                 <p id="authSubtitle" class="text-xs text-gray-400 mb-6">مرحباً بك مجدداً في بوابة العفرون ديليفري</p>
@@ -414,7 +418,7 @@
                     </div>
                 </div>
 
-                <!-- [ثاني شيء]: صندوق الإحصائيات (يظهر تلقائياً عندما لا يكون هناك أي طلب نشط) -->
+                <!-- [ثاني شيء]: صندوق الإحصائيات (يظهر تلقائياً عندما لا يكون هناك أي طلب نشط) - الإحصائيات قبل الخريطة -->
                 <div id="driverStatsBox" class="bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 shadow-2xl backdrop-blur-sm flex flex-col gap-4 animate-scale-up">
                     <div class="flex items-center gap-4 mb-2">
                         <img id="driverAvatarBanner" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" class="w-14 h-14 rounded-full border-2 border-primary object-cover" alt="Driver Avatar">
@@ -715,8 +719,7 @@
                 <div class="flex flex-col gap-2 text-xs font-bold text-gray-700 dark:text-gray-300">
                     <button type="button" id="drawerHomeBtn" onclick="showSection('landing')" class="text-right p-3 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl flex items-center gap-2"><i class="fa-solid fa-house"></i> الصفحة الرئيسية</button>
                     <button id="drawerOrdersBtn" type="button" onclick="showCustomerOrdersModal()" class="hidden text-right p-3 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl flex items-center gap-2"><i class="fa-solid fa-basket-shopping"></i> طلباتي</button>
-                    
-                    <!-- NEW EXCLUSIVE DRIVER APPLICATION BUTTON -->
+                    <button id="drawerTransactionsBtn" type="button" onclick="showPastTransactionsModal()" class="hidden text-right p-3 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl flex items-center gap-2"><i class="fa-solid fa-history"></i> أرشيف التعاملات السابقة</button>
                     <button id="drawerJoinWorkBtn" type="button" onclick="showAuthModal('register', 'driver')" class="text-right p-3 text-primary hover:bg-orange-50 dark:hover:bg-zinc-800/40 rounded-xl flex items-center gap-2 border border-primary/20"><i class="fa-solid fa-motorcycle animate-bounce-slow"></i> انضم للعمل معنا كعامل توصيل</button>
                 </div>
             </div>
@@ -728,10 +731,21 @@
     <div id="ordersModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary">التعاملات السابقة</h3>
+                <h3 class="font-extrabold text-base text-primary" id="ordersModalHeaderTitle">سجل التعاملات</h3>
                 <button type="button" onclick="toggleOrdersModal(false)" class="text-gray-400"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="ordersModalList" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1"></div>
+        </div>
+    </div>
+
+    <!-- Past Transactions Modal -->
+    <div id="transactionsModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-extrabold text-base text-primary">أرشيف التعاملات السابقة</h3>
+                <button type="button" onclick="toggleTransactionsModal(false)" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="transactionsModalList" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1"></div>
         </div>
     </div>
 
@@ -1297,6 +1311,7 @@
             const drawerOrdersBtn = document.getElementById('drawerOrdersBtn');
             const drawerHomeBtn = document.getElementById('drawerHomeBtn');
             const drawerJoinWorkBtn = document.getElementById('drawerJoinWorkBtn');
+            const drawerTransactionsBtn = document.getElementById('drawerTransactionsBtn');
             const downloadBtn = document.getElementById('headerDownloadAppBtn');
 
             if (user) {
@@ -1347,12 +1362,14 @@
                         document.getElementById('driverNameBanner').innerText = `مرحباً ${userData.name}`;
                         showSection('driver');
                         drawerOrdersBtn.classList.add('hidden');
+                        drawerTransactionsBtn.classList.add('hidden');
                         
                         startDriverLiveTracking();
                         initRealtimeDriverStats();
                     } else {
                         showSection('customer');
                         drawerOrdersBtn.classList.remove('hidden');
+                        drawerTransactionsBtn.classList.remove('hidden');
                     }
                 } else {
                     showSection('customer');
@@ -1360,6 +1377,7 @@
             } else {
                 currentUser = null;
                 drawerOrdersBtn.classList.add('hidden');
+                drawerTransactionsBtn.classList.add('hidden');
                 
                 // Show standard unauthenticated buttons again [1]
                 drawerHomeBtn.classList.remove('hidden');
@@ -1534,56 +1552,6 @@
                 });
             }
         }
-
-        // New Rating Engine: updates star count and submits reviews [1]
-        function setStarRating(rating) {
-            selectedRating = rating;
-            for (let i = 1; i <= 5; i++) {
-                const star = document.getElementById(`star-${i}`);
-                if (star) {
-                    if (i <= rating) {
-                        star.className = "text-yellow-500 hover:scale-110 transition text-2xl";
-                    } else {
-                        star.className = "text-gray-300 dark:text-zinc-700 hover:scale-110 transition text-2xl";
-                    }
-                }
-            }
-        }
-        window.setStarRating = setStarRating;
-
-        async function submitDriverRating() {
-            try {
-                // Instantly record the completed feedback and close the window smoothly
-                document.getElementById('rateDriverModal').classList.add('hidden');
-                showToast(`شكراً لك! تم تسجيل تقييمك بـ ${selectedRating} نجوم لعامل التوصيل.`);
-            } catch (e) {
-                showToast("حدث خطأ أثناء حفظ تقييمك.");
-            }
-        }
-        window.submitDriverRating = submitDriverRating;
-
-        // Confirm delivery triggers the completed state and rating modal [1]
-        async function confirmCustomerDelivery() {
-            const q = query(collection(db, "orders"), where("customerId", "==", currentUser.uid));
-            const snap = await getDocs(q);
-            let activeOrder = null;
-            snap.forEach(dDoc => {
-                const data = dDoc.data();
-                if (data.status === 'delivered') {
-                    activeOrder = { id: dDoc.id, ...data };
-                }
-            });
-
-            if (activeOrder) {
-                lastRatedDriverId = activeOrder.driverId;
-                await updateDoc(doc(db, "orders", activeOrder.id), {
-                    status: 'completed'
-                });
-                setStarRating(5); // Default rating initialization
-                document.getElementById('rateDriverModal').classList.remove('hidden');
-            }
-        }
-        window.confirmCustomerDelivery = confirmCustomerDelivery;
 
         // Floating chat triggers for Client with automatic read reset
         function toggleCustChat(open) {
@@ -2293,13 +2261,13 @@
                     where("customerId", "==", currentUser.uid)
                 );
                 const snap = await getDocs(q);
-                snap.forEach(async (dDoc) => {
+                for (const dDoc of snap.docs) {
                     const orderData = dDoc.data();
                     if (orderData.status === 'pending' || orderData.status === 'accepted' || orderData.status === 'to_store' || orderData.status === 'received' || orderData.status === 'delivered') {
                         await deleteDoc(doc(db, "orders", dDoc.id));
                     }
-                });
-                showToast("تم إلغاء طلبك المعلق بنجاح.");
+                }
+                showToast("تم إلغاء طلبك بنجاح.");
             }
         }
         window.cancelActiveOrder = cancelActiveOrder;
@@ -2318,11 +2286,64 @@
             getDocs(q).then((snapshot) => {
                 list.innerHTML = '';
                 if (snapshot.empty) {
-                    list.innerHTML = `<span class="text-xs text-gray-400 text-center py-4">لا توجد تعاملات سابقة في الأرشيف</span>`;
+                    list.innerHTML = `<span class="text-xs text-gray-400 text-center py-4">ليس لديك طلبات سابقة في الأرشيف</span>`;
                     return;
                 }
 
                 // Sort orders locally by time
+                let ordersArray = [];
+                snapshot.forEach(docSnap => {
+                    ordersArray.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                ordersArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                ordersArray.forEach(order => {
+                    const item = document.createElement('div');
+                    item.className = "p-3 bg-gray-50 dark:bg-zinc-850 rounded-xl border border-gray-100 dark:border-zinc-800 flex justify-between items-center text-xs text-black dark:text-white animate-scale-up";
+                    
+                    let statusLabel = `<span class="text-orange-500 font-bold">معلق</span>`;
+                    if (order.status === 'accepted') {
+                        statusLabel = `<span class="text-green-500 font-bold">جاري التوصيل</span>`;
+                    } else if (order.status === 'completed') {
+                        statusLabel = `<span class="text-gray-400 font-bold">مكتمل</span>`;
+                    }
+
+                    item.innerHTML = `
+                        <div>
+                            <h5 class="font-bold text-black dark:text-white">${order.restaurant}</h5>
+                            <span class="text-[10px] text-gray-400 block">${order.customerAddress}</span>
+                        </div>
+                        <div class="text-left">
+                            <span class="font-extrabold text-primary block">${order.price} دج</span>
+                            ${statusLabel}
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            });
+        }
+        window.showCustomerOrdersModal = showCustomerOrdersModal;
+
+        // NEW: Show/hide Past Transactions modal [2]
+        async function showPastTransactionsModal() {
+            toggleTransactionsModal(true);
+            const list = document.getElementById('transactionsModalList');
+            list.innerHTML = `<span class="text-xs text-gray-400 text-center py-4">جاري تحميل الأرشيف...</span>`;
+
+            const q = query(
+                collection(db, "orders"),
+                where("customerId", "==", currentUser.uid)
+            );
+
+            try {
+                const snapshot = await getDocs(q);
+                list.innerHTML = '';
+                if (snapshot.empty) {
+                    list.innerHTML = `<span class="text-xs text-gray-400 text-center py-4">لا توجد تعاملات سابقة في الأرشيف</span>`;
+                    return;
+                }
+
+                // Sort orders locally by creation time
                 let ordersArray = [];
                 snapshot.forEach(docSnap => {
                     ordersArray.push({ id: docSnap.id, ...docSnap.data() });
@@ -2371,9 +2392,18 @@
                     `;
                     list.appendChild(item);
                 });
-            });
+            } catch (err) {
+                list.innerHTML = `<span class="text-xs text-red-500 text-center py-4">فشل تحميل الأرشيف: ${err.message}</span>`;
+            }
         }
-        window.showCustomerOrdersModal = showCustomerOrdersModal;
+        window.showPastTransactionsModal = showPastTransactionsModal;
+
+        function toggleTransactionsModal(open) {
+            const m = document.getElementById('transactionsModal');
+            if (open) m.classList.remove('hidden');
+            else m.classList.add('hidden');
+        }
+        window.toggleTransactionsModal = toggleTransactionsModal;
 
         function toggleOrdersModal(open) {
             const m = document.getElementById('ordersModal');
@@ -2641,6 +2671,8 @@
         window.confirmCustomerDelivery = confirmCustomerDelivery;
         window.submitDriverRating = submitDriverRating;
         window.setStarRating = setStarRating;
+        window.showPastTransactionsModal = showPastTransactionsModal;
+        window.toggleTransactionsModal = toggleTransactionsModal;
 
     </script>
 </body>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -83,13 +85,13 @@
         .screen-view {
             transition: opacity 0.35s ease, transform 0.35s ease;
         }
-        /* خرائط بكامل الشاشة للزبون مع مراعاة الأشرطة السفلية للهواتف */
+        /* خرائط بكامل الشاشة */
         .full-map-container {
-            height: calc(100vh - 140px);
+            height: calc(100vh - 120px);
             width: 100%;
             z-index: 5;
         }
-        /* خريطة تتبع عامل التوصيل بابعاد مضمونة ومستقرة */
+        /* خريطة تتبع عامل التوصيل بابعاد مضمونة */
         .map-container {
             height: 380px;
             min-height: 380px;
@@ -109,7 +111,7 @@
         .animate-bounce-slow {
             animation: custom-bounce 1.5s infinite ease-in-out;
         }
-        /* دين باللون الأحمر المضيء اللامع لعامل التوصيل */
+        /* دين باللون الأحمر المضيء اللامع للعمال */
         .neon-glow-red {
             color: #ff3b30;
             text-shadow: 0 0 10px rgba(255, 59, 48, 0.8), 0 0 20px rgba(255, 59, 48, 0.4);
@@ -161,8 +163,8 @@
         </div>
     </header>
 
-    <!-- شريط حالة الطلب الملون أعلى الموقع تماماً تحت الهيدر مباشرة z-[99999] (موقع طافٍ آمن ومحمي من الاختفاء) -->
-    <div id="globalOrderStatusBanner" class="hidden fixed top-[75px] left-4 right-4 text-white text-center py-3.5 px-5 rounded-2xl shadow-[0_15px_40px_rgba(255,126,0,0.25)] z-[99999] transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-white/20 backdrop-blur-md bg-zinc-950/95 animate-scale-up">
+    <!-- شريط حالة الطلب الملون أعلى الموقع تماماً تحت الهيدر مباشرة z-[99999] -->
+    <div id="globalOrderStatusBanner" class="hidden fixed top-[65px] left-4 right-4 text-white text-center py-3.5 px-5 rounded-2xl shadow-[0_15px_40px_rgba(255,126,0,0.25)] z-[99999] transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-white/20 backdrop-blur-md bg-zinc-950/95 animate-scale-up">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-truck-fast animate-bounce text-xl"></i>
             <span id="globalOrderStatusText" class="font-black text-xs leading-relaxed tracking-wide">جاري معالجة حالة الطلب...</span>
@@ -183,14 +185,6 @@
     <!-- MAIN VIEWPORTS -->
     <main class="flex-1 flex flex-col justify-stretch relative">
 
-        <!-- NEW: Global Download App Button (يظهر في المسافة الفاصلة تحت الهيدر وفوق الكروت بانسجام تام) -->
-        <div id="globalDownloadAppBtn" class="w-full max-w-md mx-auto px-4 mt-4 mb-2 z-30 animate-scale-up">
-            <a href="https://apk.e-droid.net/apk/app4112720-5k6gzi.apk?v=2" class="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white text-xs font-black py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-xl shadow-orange-500/20 transition-all hover:scale-[1.02] duration-300 animate-pulse text-center select-none" download>
-                <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
-                <span>تحميل تطبيق العفرون ديليفري   </span>
-            </a>
-        </div>
-
         <!-- 1. LANDING/SPLASH SECTION -->
         <section id="view-landing" class="screen-view landing-bg-animated flex-1 flex items-center justify-center py-16 px-4 text-center">
             <div class="max-w-2xl bg-white/60 dark:bg-black/40 p-10 lg:p-14 rounded-3xl backdrop-blur-md shadow-2xl border border-orange-500/10 animate-scale-up">
@@ -209,8 +203,17 @@
             </div>
         </section>
 
-        <!-- 2. LOGIN & SIGN-UP VIEW (With Gmail/Facebook support) -->
+        <!-- 2. LOGIN & SIGN-UP VIEW -->
         <section id="view-auth" class="screen-view hidden flex-1 flex flex-col items-center justify-center py-12 px-4 bg-gray-50 dark:bg-appDark overflow-y-auto">
+            
+            <!-- زر تحميل التطبيق متواجد فقط هنا في مساحة حرة بين الهيدر وكارت تسجيل الدخول -->
+            <div id="authDownloadAppBtnContainer" class="w-full max-w-md mb-4">
+                <a href="https://apk.e-droid.net/apk/app4112720-5k6gzi.apk?v=2" class="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white text-xs font-black py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-xl shadow-orange-500/20 transition-all hover:scale-[1.02] duration-300 animate-pulse text-center select-none" download>
+                    <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                    <span>تحميل تطبيق العفرون ديليفري المباشر (APK) من هنا 📲</span>
+                </a>
+            </div>
+
             <div class="w-full max-w-md bg-white dark:bg-zinc-900 shadow-2xl rounded-3xl p-8 border border-gray-100 dark:border-zinc-800 animate-scale-up">
                 <h2 id="authTitle" class="text-2xl font-black mb-1 text-black dark:text-white">تسجيل الدخول</h2>
                 <p id="authSubtitle" class="text-xs text-gray-400 mb-6">مرحباً بك مجدداً في بوابة العفرون ديليفري</p>
@@ -295,8 +298,8 @@
                 <span class="font-black text-xs tracking-wide">اطلب الآن</span>
             </button>
 
-            <!-- Floating Action Chat Toggle Button on the LEFT (تم رفع الارتفاع fixed bottom-24 ليتناسب مع المتصفحات) -->
-            <button id="custChatFAB" onclick="toggleCustChat(true)" class="hidden fixed bottom-24 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
+            <!-- Floating Action Chat Toggle Button on the LEFT -->
+            <button id="custChatFAB" onclick="toggleCustChat(true)" class="hidden fixed bottom-8 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
                 <i class="fa-solid fa-comments text-xl"></i>
                 <span id="custChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
             </button>
@@ -389,11 +392,11 @@
             </div>
         </div>
 
-        <!-- 5. REAL-TIME DRIVER DASHBOARD (تعديل الهيكل: الطلب النشط بالكامل في الأعلى ثم الخريطة ثم الإحصائيات عند الإلغاء أو التسليم) -->
+        <!-- 5. REAL-TIME DRIVER DASHBOARD -->
         <section id="view-driver" class="screen-view hidden flex-1 bg-gradient-to-tr from-slate-950 via-zinc-950 to-neutral-950 text-white p-4 lg:p-8 overflow-y-auto relative">
             <div class="max-w-7xl mx-auto w-full flex flex-col gap-6">
 
-                <!-- [أول شيء]: صندوق الطلب النشط الجاري توصيله لعامل التوصيل -->
+                <!-- صندوق الطلب النشط الجاري توصيله لعامل التوصيل -->
                 <div id="driverActiveOrderBox" class="hidden bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 shadow-2xl flex flex-col gap-5 animate-scale-up">
                     <div class="flex flex-col gap-2">
                         <div class="flex justify-between items-center">
@@ -415,7 +418,7 @@
                     </div>
                 </div>
 
-                <!-- [ثاني شيء]: صندوق الإحصائيات (يظهر تلقائياً عندما لا يكون هناك أي طلب نشط) - الإحصائيات قبل الخريطة -->
+                <!-- صندوق الإحصائيات -->
                 <div id="driverStatsBox" class="bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 shadow-2xl backdrop-blur-sm flex flex-col gap-4 animate-scale-up">
                     <div class="flex items-center gap-4 mb-2">
                         <img id="driverAvatarBanner" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" class="w-14 h-14 rounded-full border-2 border-primary object-cover" alt="Driver Avatar">
@@ -428,7 +431,7 @@
                         </div>
                     </div>
 
-                    <!-- شبكة الإحصائيات الحقيقية مع دين المنصة المضيء -->
+                    <!-- شبكة الإحصائيات الحقيقية -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div class="bg-black/40 border border-zinc-800 p-4 rounded-2xl text-center">
                             <i class="fa-solid fa-wallet text-primary text-lg mb-1 block"></i>
@@ -445,7 +448,7 @@
                             <span class="block text-lg font-black">4.9</span>
                             <span class="text-[10px] text-zinc-400">التقييم الفعلي</span>
                         </div>
-                        <!-- دين المنصة باللون الأحمر المضيء الساطع -->
+                        <!-- دين المنصة -->
                         <div class="bg-black/40 border-2 border-red-500/30 p-4 rounded-2xl text-center shadow-lg shadow-red-500/10">
                             <i class="fa-solid fa-hand-holding-dollar text-red-500 text-lg mb-1 block"></i>
                             <span class="block text-lg neon-glow-red" id="driverDebt">0.00 دج</span>
@@ -454,17 +457,16 @@
                     </div>
                 </div>
 
-                <!-- [ثالث شيء]: خريطة عامل التوصيل تفاعلياً على الخريطة لعرض المسارات الحقيقية -->
+                <!-- خريطة عامل التوصيل -->
                 <div class="bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 shadow-2xl animate-scale-up">
                     <h4 class="font-bold text-sm mb-4 text-zinc-300">خريطة عامل التوصيل المباشرة والمسارات</h4>
-                    <!-- خريطة عامل التوصيل بأبعاد وعروض صارمة ومستقرة زلافت مدمجة -->
                     <div id="driverMap" class="map-container border border-zinc-800 shadow-inner" style="height: 380px; min-height: 380px; width: 100%; display: block; position: relative;"></div>
                 </div>
 
             </div>
 
-            <!-- زر المحادثة العائم باللون الأزرق على اليسار لعامل التوصيل (تم رفع الارتفاع fixed bottom-24 ليتناسب مع المتصفحات) -->
-            <button id="driverChatFAB" onclick="toggleDriverChat(true)" class="hidden fixed bottom-24 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
+            <!-- زر المحادثة العائم باللون الأزرق على اليسار لعامل التوصيل -->
+            <button id="driverChatFAB" onclick="toggleDriverChat(true)" class="hidden fixed bottom-8 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
                 <i class="fa-solid fa-comments text-xl"></i>
                 <span id="driverChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
             </button>
@@ -483,7 +485,7 @@
             </div>
         </section>
 
-        <!-- 6. REAL-TIME FULL-SCREEN ALERTS (تنبيهات المندوب المنظمة تفاعلياً) -->
+        <!-- 6. REAL-TIME FULL-SCREEN ALERTS -->
         <div id="driverOrderOverlay" class="fixed inset-0 bg-black/95 z-[999] flex flex-col items-center justify-center p-6 text-white transition-opacity duration-300 opacity-0 pointer-events-none overflow-y-auto">
             <div class="max-w-md w-full text-center flex flex-col items-center gap-4 py-8 animate-scale-up">
                 <div class="relative w-24 h-24 flex items-center justify-center mb-2">
@@ -597,7 +599,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- طلبات انضمام عمال التوصيل الجدد والتحكم بديونهم [5] -->
+                <!-- طلبات انضمام عمال التوصيل الجدد والتحكم بديونهم -->
                 <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-zinc-800 flex flex-col gap-4 animate-scale-up">
                     <h4 class="font-bold text-sm text-gray-500 flex items-center gap-1.5"><i class="fa-solid fa-user-plus text-primary"></i> طلبات توظيف ومراجعة ديون عمال التوصيل</h4>
                     <div class="overflow-x-auto">
@@ -682,14 +684,14 @@
             </div>
         </section>
 
-        <!-- NEW: Rate Delivery Driver Modal for Customer [1] -->
+        <!-- NEW: Rate Delivery Driver Modal for Customer -->
         <div id="rateDriverModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-[99999] flex items-center justify-center p-4 hidden">
             <div class="bg-white dark:bg-zinc-900 w-full max-w-sm rounded-3xl p-6 shadow-2xl flex flex-col items-center gap-4 animate-scale-up">
                 <i class="fa-solid fa-star text-4xl text-yellow-500 animate-bounce"></i>
                 <h3 class="font-black text-lg text-gray-800 dark:text-white">تقييم عامل التوصيل</h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400 text-center">يرجى تقييم أداء عامل التوصيل لمساعدتنا في تحسين الجودة</p>
                 
-                <!-- Star Rating Selector [1] -->
+                <!-- Star Rating Selector -->
                 <div class="flex gap-2 text-2xl text-gray-300 dark:text-zinc-700 my-2">
                     <button type="button" onclick="setStarRating(1)" id="star-1" class="hover:scale-110 transition text-2xl"><i class="fa-solid fa-star"></i></button>
                     <button type="button" onclick="setStarRating(2)" id="star-2" class="hover:scale-110 transition text-2xl"><i class="fa-solid fa-star"></i></button>
@@ -728,7 +730,7 @@
     <div id="ordersModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary">التعاملات السابقة</h3>
+                <h3 class="font-extrabold text-base text-primary">سجل طلباتي</h3>
                 <button type="button" onclick="toggleOrdersModal(false)" class="text-gray-400"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="ordersModalList" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1"></div>
@@ -800,11 +802,10 @@
         let activeAuthMode = "login";
         let maps = { customer: null, driver: null, admin: null };
         let mapMarkers = { customerStore: null, customerDest: null, driverLive: null, routeLine: null, adminStorePin: null };
-        let activeDriverMarkers = {}; // Keep active drivers on map tracked
-        let trackingDriverMarker = null; // Live motorcycle marker for accepted driver
-        let driverRoutingMarker = null; // Marker on driver's map
+        let activeDriverMarkers = {}; 
+        let trackingDriverMarker = null; 
+        let driverRoutingMarker = null; 
         
-        // Driver accepted order explicit markers [3]
         let driverStoreMarker = null;
         let driverCustomerMarker = null;
         let driverLiveMarker = null;
@@ -817,13 +818,13 @@
         let activeIncomingOrderId = null;
         let watchPositionId = null;
 
-        // Unread message markers for Customer and Driver FAB Chats
         let lastMessageCountCustomer = 0;
         let lastMessageCountDriver = 0;
         
-        // Rating states [1]
         let selectedRating = 5;
         let lastRatedDriverId = null;
+        
+        let hasGeocodedOnce = false;
 
         let globalUnsubscribes = {
             orders: null,
@@ -918,7 +919,6 @@
 
             toggleDrawer(false);
             
-            // Re-render and resize maps layout instantly to guarantee flawless load on webviews
             setTimeout(() => {
                 if (sectionId === 'customer') {
                     initCustomerDashboard();
@@ -953,13 +953,12 @@
             document.getElementById('authRole').value = autoRole;
 
             const nameF = document.getElementById('regNameField');
-            const title = document.getElementById('authTitle'); // Clean Strict Mode Declaration Confirmed!
+            const title = document.getElementById('authTitle'); 
             const sub = document.getElementById('authSubtitle');
             const submitBtn = document.getElementById('authSubmitBtn');
             const toggleBtn = document.getElementById('authToggleBtn');
             const toggleTxt = document.getElementById('authToggleText');
             
-            // Driver specific fields selectors
             const driverExtra = document.getElementById('driverExtraFields');
             const driverConfirmPass = document.getElementById('driverConfirmPassField');
             const driverAgeConfirm = document.getElementById('driverAgeConfirmField');
@@ -981,11 +980,10 @@
                 toggleBtn.innerText = "إنشاء حساب جديد";
             } else {
                 nameF.classList.remove('hidden');
-                socialAuth.classList.add('hidden'); // Disable social login during driver register simulation to prevent mismatch
+                socialAuth.classList.add('hidden'); 
                 authSep.classList.add('hidden');
                 
                 if (autoRole === 'driver') {
-                    // NEW DYNAMIC LAYOUT: Driver Registration Multi-fields [1, 2]
                     title.innerText = "تسجيل عامل التوصيل جديد";
                     sub.innerText = "قم بتعبئة بياناتك لمراجعة طلب توظيفك وتنشيط حسابك";
                     driverExtra.classList.remove('hidden');
@@ -1012,14 +1010,62 @@
         }
         window.toggleAuthMode = toggleAuthMode;
 
-        // Complete Client-Side Form Submitter Bypass
+        // دالة تسجيل الدخول عبر Google
+        async function loginWithGoogle() {
+            const provider = new GoogleAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const userRef = doc(db, "users", result.user.uid);
+                const docSnap = await getDoc(userRef);
+                if (!docSnap.exists()) {
+                    await setDoc(userRef, {
+                        uid: result.user.uid,
+                        name: result.user.displayName || 'زبون العفرون',
+                        email: result.user.email,
+                        role: 'customer',
+                        blocked: false,
+                        approved: true,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                showToast("تم تسجيل الدخول بجوجل بنجاح!");
+            } catch (error) {
+                showToast(`فشل تسجيل الدخول بجوجل: ${error.message}`);
+            }
+        }
+        window.loginWithGoogle = loginWithGoogle;
+
+        // دالة تسجيل الدخول عبر Facebook
+        async function loginWithFacebook() {
+            const provider = new FacebookAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const userRef = doc(db, "users", result.user.uid);
+                const docSnap = await getDoc(userRef);
+                if (!docSnap.exists()) {
+                    await setDoc(userRef, {
+                        uid: result.user.uid,
+                        name: result.user.displayName || 'زبون العفرون',
+                        email: result.user.email,
+                        role: 'customer',
+                        blocked: false,
+                        approved: true,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                showToast("تم تسجيل الدخول بفيسبوك بنجاح!");
+            } catch (error) {
+                showToast(`فشل تسجيل الدخول بفيسبوك: ${error.message}`);
+            }
+        }
+        window.loginWithFacebook = loginWithFacebook;
+
         async function handleAuthSubmit() {
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value.trim();
             const name = document.getElementById('authName').value.trim();
             const role = document.getElementById('authRole').value;
             
-            // Driver specific fields retrieval
             const phone = document.getElementById('authPhone').value.trim();
             const avatar = document.getElementById('authAvatar').value.trim();
             const passwordConfirm = document.getElementById('authPasswordConfirm').value.trim();
@@ -1057,7 +1103,6 @@
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await updateProfile(cred.user, { displayName: name });
                     
-                    // NEW SECURE DRIVER APPROVAL ENGINE: Sets pending "approved: false" for drivers [3, 4]
                     const driverPayload = {
                         uid: cred.user.uid,
                         name: name,
@@ -1067,8 +1112,8 @@
                         avatarUrl: avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop',
                         ageConfirmed: ageCheck,
                         blocked: false,
-                        approved: role === 'driver' ? false : true, // Drivers must be approved by admin [4]
-                        debt: 0, // Neon red debt field [5]
+                        approved: role === 'driver' ? false : true, 
+                        debt: 0, 
                         createdAt: new Date().toISOString()
                     };
 
@@ -1088,10 +1133,7 @@
 
         async function logout() {
             try {
-                if (watchPositionId) {
-                    navigator.geolocation.clearWatch(watchPositionId);
-                    watchPositionId = null;
-                }
+                stopLiveTracking(); 
                 Object.keys(globalUnsubscribes).forEach(k => {
                     if (globalUnsubscribes[k]) {
                         globalUnsubscribes[k]();
@@ -1226,6 +1268,17 @@
         window.selectDropdownOption = selectDropdownOption;
 
         // Pricing logic
+        function getDistanceKm(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
         function recalculatePriceOnCoordinates() {
             let storeLat = elAffrounCenter[0];
             let storeLng = elAffrounCenter[1];
@@ -1253,13 +1306,13 @@
             descEl.innerText = `مسافة المسار: ${dist.toFixed(2)} كم (${dist <= 2.5 ? 'أقل من 2.5 كلم' : 'أكثر من 2.5 كلم'})`;
         }
 
-        // Animated Icon Creators for Map [3]
+        // Animated Icon Creators for Map
         function makeCustomerIcon() {
             return L.divIcon({
                 html: `
                     <div class="relative flex items-center justify-center">
                         <div class="absolute w-8 h-8 bg-blue-500/20 rounded-full ring-animation"></div>
-                        <div class="relative bg-blue-600 text-white p-2 rounded-full border-2 border-white shadow-lg text-xs flex items-center justify-center w-9 h-9 font-black">
+                        <div class="relative bg-blue-600 text-white p-2 rounded-full border-2 border-white shadow-lg text-xs flex items-center justify-center w-9 h-9">
                             <i class="fa-solid fa-user-large"></i>
                         </div>
                     </div>
@@ -1275,7 +1328,7 @@
                 html: `
                     <div class="relative flex items-center justify-center">
                         <div class="absolute w-8 h-8 bg-emerald-500/20 rounded-full ring-animation"></div>
-                        <div class="relative bg-emerald-500 text-white p-2 rounded-full border-2 border-white shadow-lg text-xs animate-bounce-slow flex items-center justify-center w-9 h-9 font-black">
+                        <div class="relative bg-emerald-500 text-white p-2 rounded-full border-2 border-white shadow-lg text-xs animate-bounce-slow flex items-center justify-center w-9 h-9">
                             <i class="fa-solid fa-motorcycle"></i>
                         </div>
                     </div>
@@ -1286,12 +1339,13 @@
             });
         }
 
+        // Store Icon
         function makeStoreIcon() {
             return L.divIcon({
                 html: `
                     <div class="relative flex items-center justify-center">
                         <div class="absolute w-8 h-8 bg-orange-500/20 rounded-full ring-animation"></div>
-                        <div class="relative bg-primary text-white p-2 rounded-full border-2 border-white shadow-lg text-xs animate-pulse flex items-center justify-center w-9 h-9 font-black">
+                        <div class="relative bg-primary text-white p-2 rounded-full border-2 border-white shadow-lg text-xs animate-pulse flex items-center justify-center w-9 h-9">
                             <i class="fa-solid fa-utensils"></i>
                         </div>
                     </div>
@@ -1309,7 +1363,7 @@
             const drawerHomeBtn = document.getElementById('drawerHomeBtn');
             const drawerJoinWorkBtn = document.getElementById('drawerJoinWorkBtn');
             const drawerTransactionsBtn = document.getElementById('drawerTransactionsBtn');
-            const downloadBtn = document.getElementById('globalDownloadAppBtn');
+            const downloadBtn = document.getElementById('authDownloadAppBtnContainer');
 
             if (user) {
                 currentUser = user;
@@ -1326,7 +1380,7 @@
                         document.getElementById('blockedIcon').className = "fa-solid fa-clock-rotate-left";
                         drawerHomeBtn.classList.add('hidden');
                         drawerJoinWorkBtn.classList.add('hidden');
-                        if (downloadBtn) downloadBtn.classList.add('hidden'); // Hide download app button on login
+                        if (downloadBtn) downloadBtn.classList.add('hidden'); 
                         return;
                     }
 
@@ -1337,7 +1391,7 @@
                         document.getElementById('blockedIcon').className = "fa-solid fa-user-lock text-red-500 animate-bounce";
                         drawerHomeBtn.classList.add('hidden');
                         drawerJoinWorkBtn.classList.add('hidden');
-                        if (downloadBtn) downloadBtn.classList.add('hidden'); // Hide download app button on login
+                        if (downloadBtn) downloadBtn.classList.add('hidden'); 
                         return;
                     }
 
@@ -1350,10 +1404,10 @@
                         </div>
                     `;
 
-                    // Hide "Home" and "Join Us" options in drawer upon login [1]
+                    // Hide "Home" and "Join Us" options in drawer upon login
                     drawerHomeBtn.classList.add('hidden');
                     drawerJoinWorkBtn.classList.add('hidden');
-                    if (downloadBtn) downloadBtn.classList.add('hidden'); // Hide download app button on login
+                    if (downloadBtn) downloadBtn.classList.add('hidden'); 
 
                     if (currentUserRole === 'driver') {
                         document.getElementById('driverNameBanner').innerText = `مرحباً ${userData.name}`;
@@ -1364,47 +1418,111 @@
                         startDriverLiveTracking();
                         initRealtimeDriverStats();
                     } else {
+                        // تم حل المشكلة هنا: نقوم بنقل واجهة العميل تلقائياً عند الدخول
                         showSection('customer');
+                        startCustomerLiveTracking();
                         drawerOrdersBtn.classList.remove('hidden');
                         drawerTransactionsBtn.classList.remove('hidden');
                     }
                 } else {
                     showSection('customer');
+                    startCustomerLiveTracking();
                 }
             } else {
                 currentUser = null;
                 drawerOrdersBtn.classList.add('hidden');
                 drawerTransactionsBtn.classList.add('hidden');
                 
-                // Show standard unauthenticated buttons again [1]
+                // Show standard unauthenticated buttons again
                 drawerHomeBtn.classList.remove('hidden');
                 drawerJoinWorkBtn.classList.remove('hidden');
-                if (downloadBtn) downloadBtn.classList.remove('hidden'); // Show download app button on logout
+                if (downloadBtn) downloadBtn.classList.remove('hidden'); 
 
                 authHeader.innerHTML = `
                     <button type="button" onclick="showAuthModal('login')" class="text-xs font-bold px-3 py-2 rounded-xl bg-primary text-white hover:bg-primaryDark transition shadow-xs">دخول</button>
                 `;
                 // Always return home if logged out
                 showSection('landing');
+                stopLiveTracking();
             }
         });
 
-        // Driver continuous high accuracy GPS stream sharing
-        function startDriverLiveTracking() {
-            if (watchPositionId) navigator.geolocation.clearWatch(watchPositionId);
-            
+        // Customer continuous high accuracy GPS stream sharing
+        function startCustomerLiveTracking() {
+            stopLiveTracking();
             if ("geolocation" in navigator) {
                 watchPositionId = navigator.geolocation.watchPosition((pos) => {
                     const { latitude, longitude } = pos.coords;
+                    currentGPSLocation = { lat: latitude, lng: longitude };
+                    
+                    if (maps.customer) {
+                        maps.customer.setView([latitude, longitude], 15);
+                        if (mapMarkers.customerDest) {
+                            mapMarkers.customerDest.setLatLng([latitude, longitude]);
+                        } else {
+                            mapMarkers.customerDest = L.marker([latitude, longitude], { draggable: true, icon: makeCustomerIcon() }).addTo(maps.customer);
+                            mapMarkers.customerDest.on('dragend', recalculatePriceOnCoordinates);
+                        }
+                    }
+                    recalculatePriceOnCoordinates();
+                    
+                    // Trigger dynamic OSM Nominatim geocoder once
+                    triggerReverseGeocode(latitude, longitude);
+                }, (err) => console.warn("GPS sharing lost/refused:", err), highAccuracyGeoOptions);
+            }
+        }
+
+        // Driver continuous high accuracy GPS stream sharing
+        function startDriverLiveTracking() {
+            if ("geolocation" in navigator) {
+                watchPositionId = navigator.geolocation.watchPosition(async (pos) => {
+                    const { latitude, longitude } = pos.coords;
                     if (currentUser && currentUserRole === 'driver') {
-                        updateDoc(doc(db, "users", currentUser.uid), {
+                        const userRef = doc(db, "users", currentUser.uid);
+                        await updateDoc(userRef, {
                             lat: latitude,
                             lng: longitude,
                             lastUpdated: new Date().toISOString()
                         });
+                        if (maps.driver) {
+                            maps.driver.setView([latitude, longitude], 15);
+                            if (driverLiveMarker) {
+                                driverLiveMarker.setLatLng([latitude, longitude]);
+                            }
+                        }
                     }
-                }, (err) => console.warn("GPS dynamic sharing interrupted:", err), highAccuracyGeoOptions);
+                }, (err) => console.warn("Driver GPS lost:", err), highAccuracyGeoOptions);
             }
+        }
+
+        // nominatim reverse geocoder logic
+        async function triggerReverseGeocode(lat, lng) {
+            if (hasGeocodedOnce) return;
+            hasGeocodedOnce = true;
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=ar`);
+                const data = await response.json();
+                if (data && data.address) {
+                    const addr = data.address;
+                    const readableAddress = [
+                        addr.road || addr.suburb || addr.neighbourhood,
+                        addr.city || addr.town || addr.village || 'العفرون'
+                    ].filter(Boolean).join('، ');
+                    
+                    const inputField = document.getElementById('orderCustAddr');
+                    if (inputField) inputField.value = readableAddress || data.display_name;
+                }
+            } catch (error) {
+                console.warn("Dynamic nominatim lookup failure:", error);
+            }
+        }
+
+        function stopLiveTracking() {
+            if (watchPositionId) {
+                navigator.geolocation.clearWatch(watchPositionId);
+                watchPositionId = null;
+            }
+            hasGeocodedOnce = false;
         }
 
         // --- Maps Tile helper ---
@@ -1447,7 +1565,6 @@
                 maps.customer.invalidateSize();
             }
 
-            detectGPS('customer');
             trackActiveDriversOnMap();
 
             if (currentUser) {
@@ -1459,12 +1576,12 @@
                 if (globalUnsubscribes.customerOrders) globalUnsubscribes.customerOrders();
 
                 globalUnsubscribes.customerOrders = onSnapshot(q, (snapshot) => {
-                    const card = document.getElementById('customerActiveOrderCard');
+                    const activeCard = document.getElementById('customerActiveOrderCard');
                     const banner = document.getElementById('globalOrderStatusBanner');
                     const bannerText = document.getElementById('globalOrderStatusText');
 
                     if (snapshot.empty) {
-                        if (card) card.classList.add('hidden');
+                        if (activeCard) activeCard.classList.add('hidden');
                         banner.classList.add('hidden');
                         document.getElementById('custChatFAB').classList.add('hidden');
                         toggleCustChat(false);
@@ -1488,9 +1605,8 @@
                         
                         const custCallBtn = document.getElementById('custCallDriverBtn');
 
-                        // NEW DYNAMIC COLORS FOR GLOBAL STATUS BANNER [1]
                         if (latest.status === 'pending') {
-                            banner.style.background = "linear-gradient(135deg, #dc2626, #991b1b)"; // Red/Orange [1]
+                            banner.style.background = "linear-gradient(135deg, #dc2626, #991b1b)"; 
                             bannerText.innerText = "جاري البحث عن عامل التوصيل قريب لطلبك... ⏳";
                             custCallBtn.classList.add('hidden');
                             document.getElementById('custChatFAB').classList.add('hidden');
@@ -1504,22 +1620,19 @@
                             document.getElementById('custCallDriverBtn').classList.remove('hidden');
                             
                             if (latest.status === 'accepted') {
-                                banner.style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)"; // Blue
+                                banner.style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)"; 
                                 bannerText.innerText = `تم قبول طلبك بواسطة عامل التوصيل: ${latest.driverName} ✅`;
                                 custCallBtn.classList.remove('hidden');
                             } else if (latest.status === 'to_store') {
-                                // أنا في الطريق للمطعم تظهر بخلفية حمراء
-                                banner.style.background = "linear-gradient(135deg, #dc2626, #b91c1c)"; // Red
+                                banner.style.background = "linear-gradient(135deg, #dc2626, #b91c1c)"; 
                                 bannerText.innerText = `${latest.driverName}: أنا في الطريق للمطعم / المتجر الآن 🏃‍♂️`;
                                 custCallBtn.classList.remove('hidden');
                             } else if (latest.status === 'received') {
-                                // تم استلام الطلب انا في طريقي اليك خلفية باللون البرتقالي
-                                banner.style.background = "linear-gradient(135deg, #f97316, #ea580c)"; // Orange
+                                banner.style.background = "linear-gradient(135deg, #f97316, #ea580c)"; 
                                 bannerText.innerText = `${latest.driverName}: تم استلام طلبك وأنا في الطريق إليك الآن 🛵`;
                                 custCallBtn.classList.remove('hidden');
                             } else if (latest.status === 'delivered') {
-                                // تم الاستلام بنجاح بخلفية خضراء مع زر التأكيد والتقييم للزبون [1]
-                                banner.style.background = "linear-gradient(135deg, #10b981, #064e3b)"; // Green
+                                banner.style.background = "linear-gradient(135deg, #10b981, #064e3b)"; 
                                 bannerText.innerHTML = `
                                     <div class="flex flex-col sm:flex-row items-center gap-3 w-full justify-between">
                                         <span class="font-black text-xs">لقد تم تسليم طلبك بنجاح! يرجى تأكيد الاستلام:</span>
@@ -1533,7 +1646,7 @@
                             trackDriverAndDrawRealRoute(latest, maps.customer);
                         }
                     } else {
-                        if (card) card.classList.add('hidden');
+                        if (activeCard) activeCard.classList.add('hidden');
                         banner.classList.add('hidden');
                         document.getElementById('custChatFAB').classList.add('hidden');
                         toggleCustChat(false);
@@ -1550,7 +1663,56 @@
             }
         }
 
-        // Floating chat triggers for Client with automatic read reset
+        // New Rating Engine
+        function setStarRating(rating) {
+            selectedRating = rating;
+            for (let i = 1; i <= 5; i++) {
+                const star = document.getElementById(`star-${i}`);
+                if (star) {
+                    if (i <= rating) {
+                        star.className = "text-yellow-500 hover:scale-110 transition text-2xl";
+                    } else {
+                        star.className = "text-gray-300 dark:text-zinc-700 hover:scale-110 transition text-2xl";
+                    }
+                }
+            }
+        }
+        window.setStarRating = setStarRating;
+
+        async function submitDriverRating() {
+            try {
+                document.getElementById('rateDriverModal').classList.add('hidden');
+                showToast(`شكراً لك! تم تسجيل تقييمك بـ ${selectedRating} نجوم لعامل التوصيل.`);
+            } catch (e) {
+                showToast("حدث خطأ أثناء حفظ تقييمك.");
+            }
+        }
+        window.submitDriverRating = submitDriverRating;
+
+        // Confirm delivery triggers the completed state and rating modal
+        async function confirmCustomerDelivery() {
+            const q = query(collection(db, "orders"), where("customerId", "==", currentUser.uid));
+            const snap = await getDocs(q);
+            let activeOrder = null;
+            snap.forEach(dDoc => {
+                const data = dDoc.data();
+                if (data.status === 'delivered') {
+                    activeOrder = { id: dDoc.id, ...data };
+                }
+            });
+
+            if (activeOrder) {
+                lastRatedDriverId = activeOrder.driverId;
+                await updateDoc(doc(db, "orders", activeOrder.id), {
+                    status: 'completed'
+                });
+                setStarRating(5); 
+                document.getElementById('rateDriverModal').classList.remove('hidden');
+            }
+        }
+        window.confirmCustomerDelivery = confirmCustomerDelivery;
+
+        // Floating chat triggers for Client
         function toggleCustChat(open) {
             const chatBox = document.getElementById('customerChatBox');
             if (open) {
@@ -1562,7 +1724,7 @@
         }
         window.toggleCustChat = toggleCustChat;
 
-        // Floating chat triggers for Driver with automatic read reset
+        // Floating chat triggers for Driver
         function toggleDriverChat(open) {
             const chatBox = document.getElementById('driverChatBox');
             if (open) {
@@ -1574,7 +1736,7 @@
         }
         window.toggleDriverChat = toggleDriverChat;
 
-        // Real-time driver positioning combined with OSM Road Matching polyline drawing [1, 2]
+        // Real-time driver positioning combined with OSM Road Matching polyline drawing
         function trackDriverAndDrawRealRoute(order, mapInstance) {
             if (globalUnsubscribes.driverLocationTracker) {
                 globalUnsubscribes.driverLocationTracker();
@@ -1584,7 +1746,6 @@
                 if (driverSnap.exists()) {
                     const driver = driverSnap.data();
                     if (driver.lat && driver.lng) {
-                        // Draw driver marker on Customer map or update it
                         if (trackingDriverMarker) {
                             trackingDriverMarker.setLatLng([driver.lat, driver.lng]);
                         } else {
@@ -1593,17 +1754,15 @@
                                 .bindPopup(`عامل التوصيل الخاص بك: ${order.driverName}`);
                         }
 
-                        // Get customer coordinates
                         const customerCoords = [order.lat || currentGPSLocation.lat, order.lng || currentGPSLocation.lng];
 
-                        // Draw the true real-time road matching route [1]
                         await drawRealRoadRoute(mapInstance, [driver.lat, driver.lng], customerCoords, '#00C853');
                     }
                 }
             });
         }
 
-        // Open Source OSRM Router fetch engine to match real streets instead of simple line [1]
+        // Open Source OSRM Router fetch engine
         async function drawRealRoadRoute(mapInstance, startCoords, endCoords, color = '#FF7E00') {
             try {
                 const url = `https://router.project-osrm.org/route/v1/driving/${startCoords[1]},${startCoords[0]};${endCoords[1]},${endCoords[0]}?overview=full&geometries=geojson`;
@@ -1611,7 +1770,7 @@
                 const data = await response.json();
                 
                 if (data.routes && data.routes.length > 0) {
-                    const roadCoordinates = data.routes[0].geometry.coordinates; // array of [lng, lat]
+                    const roadCoordinates = data.routes[0].geometry.coordinates; 
                     const pathLatLngs = roadCoordinates.map(coord => [coord[1], coord[0]]);
                     
                     if (mapMarkers.routeLine) mapMarkers.routeLine.remove();
@@ -1625,12 +1784,12 @@
                     drawGeodesicFallback(mapInstance, startCoords, endCoords, color);
                 }
             } catch (error) {
-                console.warn("OSRM error, falling back to geodesic geodesic path.", error);
+                console.warn("OSRM error, falling back to geodesic path.", error);
                 drawGeodesicFallback(mapInstance, startCoords, endCoords, color);
             }
         }
 
-        // Draws real road-matched multi-point route on driver map covering: Driver -> Store -> Customer! [1]
+        // Draws real road-matched multi-point route on driver map
         async function drawMultiPointRoadRoute(mapInstance, coordsArray, color = '#FF7E00') {
             try {
                 const coordsString = coordsArray.map(c => `${c[1]},${c[0]}`).join(';');
@@ -1650,6 +1809,14 @@
                         opacity: 0.85
                     }).addTo(mapInstance);
                     
+                    const distanceMeters = data.routes[0].distance;
+                    const distanceKm = (distanceMeters / 1000).toFixed(2);
+                    const distanceEl = document.getElementById('driverRouteDistance');
+                    if (distanceEl) {
+                        distanceEl.innerText = `المسافة الإجمالية للمسار: ${distanceKm} كم`;
+                        distanceEl.classList.remove('hidden');
+                    }
+
                     mapInstance.fitBounds(mapMarkers.routeLine.getBounds(), { padding: [50, 50] });
                 } else {
                     drawMultiPointFallback(mapInstance, coordsArray, color);
@@ -1681,7 +1848,7 @@
             }).addTo(mapInstance);
         }
 
-        // Draw and track all active delivery driver locations with animated motorcycles
+        // Draw and track all active delivery driver locations
         function trackActiveDriversOnMap() {
             const q = query(collection(db, "users"), where("role", "==", "driver"), where("approved", "==", true));
             
@@ -1754,7 +1921,7 @@
                 showIncomingOverlay(latestOrder);
             });
 
-            // Tracking accepted order to show on driver's live map routing [1, 2]
+            // Tracking accepted order to show on driver's live map routing
             const activeQ = query(
                 collection(db, "orders"),
                 where("driverId", "==", currentUser.uid)
@@ -1764,15 +1931,13 @@
 
             globalUnsubscribes.driverActiveOrderTracker = onSnapshot(activeQ, (snapshot) => {
                 const box = document.getElementById('driverActiveOrderBox');
-                const statsBox = document.getElementById('driverStatsBox'); // Dynamic layout trigger reference
+                const statsBox = document.getElementById('driverStatsBox'); 
 
                 if (snapshot.empty) {
-                    // NEW DYNAMIC STATE: If NO active accepted job, hide panel, show Stats Dashboard!
                     box.classList.add('hidden');
                     statsBox.classList.remove('hidden');
                     document.getElementById('driverChatFAB').classList.add('hidden');
                     toggleDriverChat(false);
-                    // Clear driver map markers
                     if (driverRoutingMarker) { driverRoutingMarker.remove(); driverRoutingMarker = null; }
                     if (driverStoreMarker) { driverStoreMarker.remove(); driverStoreMarker = null; }
                     if (driverCustomerMarker) { driverCustomerMarker.remove(); driverCustomerMarker = null; }
@@ -1785,16 +1950,15 @@
                 let orderId = null;
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
-                    if (data.status === 'accepted' || data.status === 'to_store' || data.status === 'received') { // DO NOT include 'delivered'!
+                    if (data.status === 'accepted' || data.status === 'to_store' || data.status === 'received') { 
                         assignedOrder = data;
                         orderId = docSnap.id;
                     }
                 });
 
                 if (assignedOrder) {
-                    // NEW DYNAMIC STATE: Active accepted order is at the TOP [1]
                     box.classList.remove('hidden');
-                    statsBox.classList.add('hidden'); // Hide stats completely while delivering!
+                    statsBox.classList.add('hidden'); 
 
                     document.getElementById('driverChatFAB').classList.remove('hidden');
                     document.getElementById('driverCallClientBtn').href = `tel:${assignedOrder.customerPhone || '0555555555'}`;
@@ -1803,7 +1967,6 @@
 
                     initChatSession(orderId, 'driver');
 
-                    // Map for Driver accepted order displaying store + customer with custom animated icons! [1]
                     if (maps.driver) {
                         navigator.geolocation.getCurrentPosition(async (pos) => {
                             const dLat = pos.coords.latitude;
@@ -1833,7 +1996,6 @@
                                 driverLiveMarker = L.marker([dLat, dLng], { icon: makeDriverIcon() }).addTo(maps.driver).bindPopup("موقعي الحالي 🛵");
                             }
 
-                            // 4. Draw true matched road route: Driver -> Restaurant/Store -> Customer
                             await drawMultiPointRoadRoute(maps.driver, [[dLat, dLng], storeCoords, clientCoords], '#FF7E00');
                         }, null, highAccuracyGeoOptions);
                     }
@@ -1883,7 +2045,7 @@
         }
         window.updateDriverDeliveryStatus = updateDriverDeliveryStatus;
 
-        // Real Statistics calculation from Firestore Completed Orders database directly + Auto-Freeze mechanism
+        // Real Statistics calculation
         function initRealtimeDriverStats() {
             const q = query(
                 collection(db, "orders"),
@@ -1903,19 +2065,16 @@
                     totalEarnings += order.price;
                 });
 
-                // DYNAMIC AUTO-FREEZING COMPUTATION: 10 DZD per order, Auto-blocks if debt >= 1000 DZD [5]
                 const calculatedDebt = completedCount * 10;
 
                 document.getElementById('driverCompletedCount').innerText = completedCount;
                 document.getElementById('driverEarnings').innerText = `${totalEarnings} دج`;
                 document.getElementById('driverDebt').innerText = `${calculatedDebt} دج`;
 
-                // Update Firestore user document with calculated real debt
                 if (currentUser && currentUserRole === 'driver') {
                     const userRef = doc(db, "users", currentUser.uid);
                     
                     if (calculatedDebt >= 1000) {
-                        // Dynamically freeze the account automatically
                         await updateDoc(userRef, {
                             debt: calculatedDebt,
                             blocked: true
@@ -1938,10 +2097,8 @@
             document.getElementById('overlayDestLabel').innerText = order.customerAddress;
             document.getElementById('overlayPriceLabel').innerText = `${order.price} دج`;
             
-            // Note
             document.getElementById('overlayNoteLabel').innerText = order.note ? order.note : "لا توجد ملاحظة";
 
-            // List of products line by line
             const productsContainer = document.getElementById('overlayProductsContainer');
             productsContainer.innerHTML = '';
             
@@ -2006,7 +2163,7 @@
                 if (!snapshot.empty) {
                     const orderId = snapshot.docs[0].id;
                     await updateDoc(doc(db, "orders", orderId), {
-                        status: 'delivered' // Customer can now confirm and rate [1]
+                        status: 'delivered' 
                     });
                     showToast("تم تسليم الطلب للزبون بنجاح! بانتظار تأكيد الاستلام والتقييم.");
                 }
@@ -2014,7 +2171,7 @@
         }
         window.completeActiveOrder = completeActiveOrder;
 
-        // --- Live Chats Section (With Red unread notification badges) ---
+        // --- Live Chats Section ---
         function initChatSession(orderId, senderRole) {
             const chatRef = collection(db, "orders", orderId, "messages");
             const q = query(chatRef, orderBy("sentAt", "asc"));
@@ -2042,7 +2199,6 @@
                 });
                 container.scrollTop = container.scrollHeight;
 
-                // NEW LARGE RED BADGES [2]: Triggers dynamic neon bounce unread count
                 if (senderRole === 'customer') {
                     const chatBox = document.getElementById('customerChatBox');
                     if (chatBox.classList.contains('hidden') && snapshot.size > lastMessageCountCustomer) {
@@ -2165,7 +2321,6 @@
             let restaurantName = "";
             let restaurantAddr = "العفرون";
             
-            // Store coords
             let storeLat = elAffrounCenter[0];
             let storeLng = elAffrounCenter[1];
 
@@ -2217,7 +2372,6 @@
             const note = document.getElementById('orderNote').value.trim();
 
             try {
-                // SAVING STORE COORDS ALONGSIDE CUSTOMER COORDS FOR MATRIX ROAD ROUTING [1]
                 await addDoc(collection(db, "orders"), {
                     restaurant: restaurantName,
                     restaurantAddress: restaurantAddr,
@@ -2237,7 +2391,6 @@
                 });
                 showToast("تم إرسال طلبك بنجاح! جاري تنبيه عمال التوصيل.");
                 
-                // Clear state
                 dropdownLabel.innerText = "انقر لاختيار متجر...";
                 dropdownLabel.className = "text-gray-400";
                 document.getElementById('orderCustAddr').value = '';
@@ -2269,7 +2422,7 @@
         }
         window.cancelActiveOrder = cancelActiveOrder;
 
-        // Active customer order summaries modal (NEW & IMPROVED: "أرشيف التعاملات السابقة" مع التاريخ والوقت والحالة تفصيلياً) [2]
+        // Active customer order summaries modal
         async function showCustomerOrdersModal() {
             toggleOrdersModal(true);
             const list = document.getElementById('ordersModalList');
@@ -2287,7 +2440,6 @@
                     return;
                 }
 
-                // Sort orders locally by time
                 let ordersArray = [];
                 snapshot.forEach(docSnap => {
                     ordersArray.push({ id: docSnap.id, ...docSnap.data() });
@@ -2321,7 +2473,7 @@
         }
         window.showCustomerOrdersModal = showCustomerOrdersModal;
 
-        // NEW: Show/hide Past Transactions modal [2]
+        // Past Transactions Modal
         async function showPastTransactionsModal() {
             toggleTransactionsModal(true);
             const list = document.getElementById('transactionsModalList');
@@ -2340,7 +2492,6 @@
                     return;
                 }
 
-                // Sort orders locally by creation time
                 let ordersArray = [];
                 snapshot.forEach(docSnap => {
                     ordersArray.push({ id: docSnap.id, ...docSnap.data() });
@@ -2365,7 +2516,6 @@
                         statusHTML = `<span class="bg-gray-500/10 text-gray-500 font-bold px-2.5 py-1 rounded-lg text-[10px]">ملغاة</span>`;
                     }
 
-                    // Render list of items
                     let itemsSummary = '';
                     if (order.items && order.items.length > 0) {
                         itemsSummary = order.items.map(item => `${item.name} (x${item.qty})`).join('، ');
@@ -2419,7 +2569,7 @@
             });
         });
 
-        // Fixed Admin login credentials check [4, 5]
+        // Fixed Admin login credentials check
         async function handleAdminLoginSubmit() {
             const username = document.getElementById('adminUserField').value.trim();
             const password = document.getElementById('adminPassField').value.trim();
@@ -2440,7 +2590,7 @@
             } else {
                 showToast("اسم المستخدم أو كلمة المرور غير صحيحة.");
             }
-        };
+        }
 
         // Google Maps URL coordinate extractor logic
         function parseAdminMapsUrl() {
@@ -2571,7 +2721,7 @@
                 document.getElementById('adminTotalOrdersCount').innerText = completedCount;
             });
 
-            // Sync all Driver Profiles to Admin Table featuring Application Approval and dynamic Debt controls [5]
+            // Sync all Driver Profiles to Admin Table
             if (globalUnsubscribes.driversList) globalUnsubscribes.driversList();
             
             globalUnsubscribes.driversList = onSnapshot(collection(db, "users"), (snapshot) => {

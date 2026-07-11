@@ -314,11 +314,25 @@
                 </button>
             </div>
 
-            <!-- Floating Action Button (+ اطلب الآن) -->
-            <button onclick="openNewOrderModal()" class="absolute bottom-6 right-6 bg-primary hover:bg-primaryDark text-white px-5 py-4 rounded-full flex items-center gap-2.5 shadow-2xl z-40 transition transform hover:-translate-y-1">
-                <i class="fa-solid fa-circle-plus text-xl animate-spin" style="animation-duration: 4s;"></i>
-                <span class="font-black text-xs tracking-wide">اطلب الآن</span>
-            </button>
+            <!-- لوحة التحكم والطلبات العائمة للزبون (تسهل الوصول السريع للطلب والمحادثة معاً) -->
+            <div class="absolute bottom-6 left-4 right-4 z-40 flex items-center justify-between gap-3 pointer-events-none">
+                <!-- زر المحادثة الحية مع السائق (يظهر تلقائياً عند وجود طلب نشط) -->
+                <div class="pointer-events-auto shrink-0">
+                    <button id="custChatFAB" onclick="toggleCustChat(true)" class="hidden bg-blue-600 hover:bg-blue-700 text-white h-14 px-5 rounded-2xl flex items-center gap-2.5 shadow-[0_10px_25px_rgba(37,99,235,0.35)] transition duration-300 hover:scale-105 active:scale-95 relative font-bold text-xs">
+                        <i class="fa-solid fa-comments text-base"></i>
+                        <span>الدردشة مع السائق</span>
+                        <span id="custChatBadge" class="hidden absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
+                    </button>
+                </div>
+
+                <!-- زر الطلب السريع (اطلب الآن) -->
+                <div class="pointer-events-auto flex-1 max-w-xs ml-auto">
+                    <button onclick="openNewOrderModal()" class="w-full bg-gradient-to-r from-primary to-orange-500 hover:from-primaryDark hover:to-orange-600 text-white h-14 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-[0_10px_30px_rgba(255,126,0,0.35)] transition transform hover:-translate-y-0.5 active:scale-95">
+                        <i class="fa-solid fa-circle-plus text-lg animate-pulse"></i>
+                        <span class="font-black text-xs sm:text-sm tracking-wide">اطلب الآن</span>
+                    </button>
+                </div>
+            </div>
 
             <!-- إطار عائم احتياطي فارغ لحماية كود الخريطة القديم ومنع الانهيار البرمجي الصامت -->
             <div id="customerActiveOrderCard" class="hidden"></div>
@@ -876,11 +890,6 @@
     </div>
 
     <!-- FLOATING CHAT ELEMENTS -->
-    <button id="custChatFAB" onclick="toggleCustChat(true)" class="hidden fixed bottom-8 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
-        <i class="fa-solid fa-comments text-xl"></i>
-        <span id="custChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
-    </button>
-
     <div id="customerChatBox" class="hidden fixed bottom-24 left-6 max-w-sm w-[calc(100%-3rem)] bg-white dark:bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-gray-100 dark:border-zinc-800 z-[99999] flex flex-col gap-3 animate-scale-up">
         <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-zinc-800">
             <span class="text-xs font-bold text-gray-500 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع عامل التوصيل</span>
@@ -1019,7 +1028,7 @@
                     const gain = audioCtx.createGain();
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-                    gain.gain.setValueAtTime(0.4, audioCtx.currentTime + delay);
+                    gain.gain.setValueAtTime(0.4, audioCtx.currentTime + delay + dur);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + delay + dur);
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
@@ -2805,7 +2814,7 @@
                     }
 
                     const item = document.createElement('div');
-                    item.className = "p-4 bg-gray-50 dark:bg-zinc-850 rounded-2xl border border-gray-100 dark:border-zinc-800 flex justify-between items-center text-xs text-black dark:text-white animate-scale-up";
+                    item.className = "p-4 bg-gray-50 dark:bg-zinc-855 rounded-2xl border border-gray-100 dark:border-zinc-800 flex justify-between items-center text-xs text-black dark:text-white animate-scale-up";
                     item.innerHTML = `
                         <div class="flex flex-col gap-1 text-right max-w-[70%]">
                             <h5 class="font-extrabold text-gray-800 dark:text-gray-100">${order.restaurant}</h5>
@@ -2893,7 +2902,7 @@
                 return;
             }
 
-            const passHash = await sha256(password);
+            const passHash = await sha255(password);
             const isPasswordCorrect = passHash === "74df6db14902c3eb4615a5f1ba8e26bc2a8315276137d3af803ba09c894d4d65" || btoa(password) === "YWJvYm9iMTIz";
 
             if (username === 'admin009' && isPasswordCorrect) {
@@ -3116,7 +3125,7 @@
         }
 
         // Secure password hashing with SHA-256 helper
-        async function sha256(message) {
+        async function sha255(message) {
             const msgBuffer = new TextEncoder().encode(message);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));

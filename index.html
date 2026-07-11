@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -314,8 +315,8 @@
                 </button>
             </div>
 
-            <!-- لوحة التحكم والطلبات العائمة للزبون (تسهل الوصول السريع للطلب والمحادثة معاً) -->
-            <div class="absolute bottom-6 left-4 right-4 z-40 flex items-center justify-between gap-3 pointer-events-none">
+            <!-- لوحة التحكم والطلبات العائمة للزبون (تسهل الوصول السريع للطلب والمحادثة معاً) - تم رفعها بمقدار 1 سم للأعلى لتناسب جميع الشاشات -->
+            <div class="absolute bottom-16 left-4 right-4 z-40 flex items-center justify-between gap-3 pointer-events-none">
                 <!-- زر المحادثة الحية مع السائق (يظهر تلقائياً عند وجود طلب نشط) -->
                 <div class="pointer-events-auto shrink-0">
                     <button id="custChatFAB" onclick="toggleCustChat(true)" class="hidden bg-blue-600 hover:bg-blue-700 text-white h-14 px-5 rounded-2xl flex items-center gap-2.5 shadow-[0_10px_25px_rgba(37,99,235,0.35)] transition duration-300 hover:scale-105 active:scale-95 relative font-bold text-xs">
@@ -712,6 +713,52 @@
             </div>
         </div>
 
+        <!-- نافذة تعديل الملف الشخصي مدمجة مع كافة الواجهات -->
+        <div id="profileModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-3xl p-6 shadow-2xl flex flex-col max-h-[90vh] animate-scale-up border border-gray-100 dark:border-zinc-800">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                    <h3 class="font-black text-lg text-primary flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <span>تعديل الملف الشخصي</span>
+                    </h3>
+                    <button type="button" onclick="closeProfileModal()" class="text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="overflow-y-auto flex-1 flex flex-col gap-4 pr-1">
+                    <!-- معاينة الصورة الشخصية وتحديثها -->
+                    <div class="flex flex-col items-center gap-2 my-2">
+                        <div class="relative w-24 h-24 rounded-full border-4 border-primary overflow-hidden shadow-lg">
+                            <img id="profileModalAvatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" class="w-full h-full object-cover" alt="Profile Preview">
+                        </div>
+                        <label class="text-xs font-bold text-primary cursor-pointer hover:underline">
+                            تغيير الصورة الشخصية
+                            <input type="file" id="profileModalAvatarFile" accept="image/*" class="hidden" onchange="previewProfileModalAvatar(this)">
+                        </label>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-gray-500 dark:text-gray-300">الاسم الكامل</label>
+                        <input type="text" id="profileModalName" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-gray-500 dark:text-gray-300">رقم الهاتف الجوال</label>
+                        <input type="tel" id="profileModalPhone" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-gray-500 dark:text-gray-300">كلمة المرور الجديدة (اختياري)</label>
+                        <input type="password" id="profileModalPassword" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="اتركها فارغة لتجنب التغيير">
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800 mt-4">
+                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-gray-100 dark:bg-zinc-800 text-gray-500 py-3 rounded-xl text-xs font-bold">إلغاء</button>
+                    <button type="button" onclick="handleProfileUpdate()" id="profileSaveBtn" class="flex-1 bg-primary hover:bg-primaryDark text-white py-3 rounded-xl text-xs font-bold shadow-lg">حفظ التغييرات</button>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- Drawer Side-Menu for Mobile -->
@@ -889,36 +936,6 @@
         </div>
     </div>
 
-    <!-- FLOATING CHAT ELEMENTS -->
-    <div id="customerChatBox" class="hidden fixed bottom-24 left-6 max-w-sm w-[calc(100%-3rem)] bg-white dark:bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-gray-100 dark:border-zinc-800 z-[99999] flex flex-col gap-3 animate-scale-up">
-        <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-zinc-800">
-            <span class="text-xs font-bold text-gray-500 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع عامل التوصيل</span>
-            <button type="button" onclick="toggleCustChat(false)" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-base"></i></button>
-        </div>
-        <div id="chatMessages" class="bg-gray-50 dark:bg-zinc-950 p-2.5 rounded-xl h-44 overflow-y-auto flex flex-col gap-1.5 text-[10px]"></div>
-        <div class="flex gap-2">
-            <input type="text" id="chatInput" class="glow-input flex-1 px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 text-[11px] rounded-lg focus:outline-none" placeholder="اكتب رسالة لعامل التوصيل...">
-            <button type="button" onclick="sendChatMessage()" class="bg-primary text-white px-3 py-1.5 rounded-lg text-[10px] font-bold">إرسال</button>
-        </div>
-    </div>
-
-    <button id="driverChatFAB" onclick="toggleDriverChat(true)" class="hidden fixed bottom-8 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
-        <i class="fa-solid fa-comments text-xl"></i>
-        <span id="driverChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
-    </button>
-
-    <div id="driverChatBox" class="hidden fixed bottom-24 left-6 max-w-sm w-[calc(100%-3rem)] bg-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-2xl z-[99999] flex flex-col gap-3 animate-scale-up">
-        <div class="flex justify-between items-center pb-2 border-b border-zinc-800">
-            <span class="text-xs font-bold text-zinc-400 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع الزبون</span>
-            <button type="button" onclick="toggleDriverChat(false)" class="text-zinc-500 hover:text-zinc-300 transition"><i class="fa-solid fa-xmark text-base"></i></button>
-        </div>
-        <div id="driverChatMessages" class="bg-black/50 p-3 rounded-xl h-44 overflow-y-auto flex flex-col gap-2 text-xs text-zinc-200"></div>
-        <div class="flex gap-2">
-            <input type="text" id="driverChatInput" class="glow-input flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 text-xs rounded-lg focus:outline-none" placeholder="اكتب رسالة للزبون...">
-            <button type="button" onclick="sendDriverChatMessage()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded-lg font-bold text-xs">إرسال</button>
-        </div>
-    </div>
-
 
     <!-- ======================================================= -->
     <!-- JAVASCRIPT & FIREBASE INTEGRATION (V9 MODULAR) -->
@@ -932,6 +949,7 @@
             onAuthStateChanged, 
             signOut, 
             updateProfile,
+            updatePassword,
             GoogleAuthProvider,
             FacebookAuthProvider,
             signInWithPopup
@@ -971,6 +989,7 @@
         // Core Global States
         let currentUser = null;
         let currentUserRole = "customer";
+        let currentUserData = null; // بيانات المستخدم الحالية من Firestore
         let activeAuthMode = "login";
         let maps = { customer: null, driver: null, admin: null };
         let mapMarkers = { 
@@ -1601,6 +1620,7 @@
             });
         }
 
+        // تعديل أيقونة الملف الشخصي لرفعها 1 سم للأعلى
         function makeDriverIcon() {
             return L.divIcon({
                 html: `
@@ -1633,7 +1653,7 @@
             });
         }
 
-        // --- Core Driver Session Router & UI Conditional Hider ---
+        // --- Core Driver/Customer Session Router & UI Conditional Hider ---
         onAuthStateChanged(auth, async (user) => {
             const authHeader = document.getElementById('authHeaderState');
             const drawerOrdersBtn = document.getElementById('drawerOrdersBtn');
@@ -1647,7 +1667,8 @@
                 
                 if (docSnap.exists()) {
                     const userData = docSnap.data();
-                    
+                    currentUserData = userData; // الحفاظ على بيانات المستخدم محلياً
+
                     if (userData.role === 'driver' && userData.approved === false) {
                         showSection('driver-blocked');
                         document.getElementById('blockedTitle').innerText = "الحساب قيد المراجعة والتنشيط";
@@ -1672,10 +1693,14 @@
 
                     currentUserRole = userData.role;
                     
+                    // تحديث هيدر تسجيل الدخول ليحتوي على أيقونة تعديل الملف الشخصي
                     authHeader.innerHTML = `
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-bold text-gray-500 hidden sm:inline">${userData.name}</span>
-                            <button type="button" onclick="logout()" class="text-xs font-bold bg-red-500/10 hover:bg-red-500 hover:text-white text-red-500 px-3 py-1.5 rounded-xl transition font-black">خروج</button>
+                            <button onclick="openProfileModal()" class="w-8 h-8 rounded-full border-2 border-primary overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary/50 transition">
+                                <img id="headerUserAvatar" src="${userData.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop'}" class="w-full h-full object-cover">
+                            </button>
+                            <button type="button" onclick="logout()" class="text-xs font-bold bg-red-500/10 hover:bg-red-50 hover:text-white text-red-500 px-3 py-1.5 rounded-xl transition font-black">خروج</button>
                         </div>
                     `;
 
@@ -1684,6 +1709,7 @@
 
                     if (currentUserRole === 'driver') {
                         document.getElementById('driverNameBanner').innerText = `مرحباً ${userData.name}`;
+                        document.getElementById('driverAvatarBanner').src = userData.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop';
                         showSection('driver');
                         drawerOrdersBtn.classList.add('hidden');
                         drawerTransactionsBtn.classList.add('hidden');
@@ -1702,6 +1728,7 @@
                 }
             } else {
                 currentUser = null;
+                currentUserData = null;
                 drawerOrdersBtn.classList.add('hidden');
                 drawerTransactionsBtn.classList.add('hidden');
                 
@@ -1897,14 +1924,17 @@
                                 banner.style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)"; 
                                 bannerText.innerText = `تم قبول طلبك بواسطة عامل التوصيل: ${latest.driverName} ✅`;
                                 custCallBtn.classList.remove('hidden');
+                                custCallBtn.href = `tel:${latest.driverPhone || '0555555555'}`; // الاتصال برقم السائق الحقيقي
                             } else if (latest.status === 'to_store') {
                                 banner.style.background = "linear-gradient(135deg, #dc2626, #b91c1c)"; 
                                 bannerText.innerText = `${latest.driverName}: أنا في الطريق للمطعم / المتجر الآن 🏃‍♂️`;
                                 custCallBtn.classList.remove('hidden');
+                                custCallBtn.href = `tel:${latest.driverPhone || '0555555555'}`; // الاتصال برقم السائق الحقيقي
                             } else if (latest.status === 'received') {
                                 banner.style.background = "linear-gradient(135deg, #f97316, #ea580c)"; 
                                 bannerText.innerText = `${latest.driverName}: تم استلام طلبك وأنا في الطريق إليك الآن 🛵`;
                                 custCallBtn.classList.remove('hidden');
+                                custCallBtn.href = `tel:${latest.driverPhone || '0555555555'}`; // الاتصال برقم السائق الحقيقي
                             } else if (latest.status === 'delivered') {
                                 banner.style.background = "linear-gradient(135deg, #16161f, #0d0d11)"; 
                                 bannerText.innerHTML = `
@@ -2256,7 +2286,7 @@
                     statsBox.classList.add('hidden'); 
 
                     document.getElementById('driverChatFAB').classList.remove('hidden');
-                    document.getElementById('driverCallClientBtn').href = `tel:${assignedOrder.customerPhone || '0555555555'}`;
+                    document.getElementById('driverCallClientBtn').href = `tel:${assignedOrder.customerPhone || '0555555555'}`; // الاتصال برقم الزبون الحقيقي
                     
                     highlightActiveStatusBtn(assignedOrder.status);
 
@@ -2433,7 +2463,8 @@
                 await updateDoc(doc(db, "orders", activeIncomingOrderId), {
                     status: 'accepted',
                     driverId: currentUser.uid,
-                    driverName: currentUser.displayName || 'عامل التوصيل'
+                    driverName: currentUser.displayName || 'عامل التوصيل',
+                    driverPhone: currentUserData ? (currentUserData.phoneNumber || '0555555555') : '0555555555' // إرفاق رقم الهاتف الحقيقي للسائق بالطلب
                 });
                 
                 showToast("تم قبول طلب التوصيل بنجاح!");
@@ -2602,6 +2633,102 @@
         }
         window.openNewOrderModal = openNewOrderModal;
 
+        // --- Profile Management Logic ---
+        function openProfileModal() {
+            if (!currentUser || !currentUserData) return;
+            
+            document.getElementById('profileModalName').value = currentUserData.name || '';
+            document.getElementById('profileModalPhone').value = currentUserData.phoneNumber || '';
+            document.getElementById('profileModalPassword').value = '';
+            document.getElementById('profileModalAvatarPreview').src = currentUserData.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop';
+            document.getElementById('profileModalAvatarFile').value = '';
+            
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        function previewProfileModalAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileModalAvatarPreview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function handleProfileUpdate() {
+            const name = document.getElementById('profileModalName').value.trim();
+            const phone = document.getElementById('profileModalPhone').value.trim();
+            const password = document.getElementById('profileModalPassword').value.trim();
+            const avatarInput = document.getElementById('profileModalAvatarFile');
+
+            if (!name || !phone) {
+                showToast("الرجاء إدخال الاسم ورقم الهاتف.");
+                return;
+            }
+
+            const saveBtn = document.getElementById('profileSaveBtn');
+            saveBtn.innerText = "جاري الحفظ...";
+            saveBtn.disabled = true;
+
+            try {
+                let avatarUrl = currentUserData.avatarUrl;
+
+                if (avatarInput && avatarInput.files.length > 0) {
+                    avatarUrl = await fileToBase64(avatarInput.files[0]);
+                }
+
+                // تحديث الاسم والملف الشخصي بـ Firebase Auth
+                await updateProfile(auth.currentUser, { displayName: name });
+
+                // تحديث كلمة المرور إن تم كتابة واحدة جديدة
+                if (password) {
+                    await updatePassword(auth.currentUser, password);
+                }
+
+                // تحديث مستند المستخدم بـ Firestore
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, {
+                    name: name,
+                    phoneNumber: phone,
+                    avatarUrl: avatarUrl
+                });
+
+                showToast("تم تحديث الملف الشخصي بنجاح!");
+                closeProfileModal();
+                
+                // تحديث البيانات محلياً للتجاوب الفوري دون الحاجة لإعادة تحميل الصفحة
+                currentUserData.name = name;
+                currentUserData.phoneNumber = phone;
+                currentUserData.avatarUrl = avatarUrl;
+
+                // تحديث أيقونة الهيدر
+                const headerAvatar = document.getElementById('headerUserAvatar');
+                if (headerAvatar) headerAvatar.src = avatarUrl;
+
+                // تحديث بانر الترحيب للمندوب
+                if (currentUserRole === 'driver') {
+                    document.getElementById('driverNameBanner').innerText = `مرحباً ${name}`;
+                    document.getElementById('driverAvatarBanner').src = avatarUrl;
+                }
+
+            } catch (err) {
+                showToast(`فشل في التحديث: ${err.message}`);
+            } finally {
+                saveBtn.innerText = "حفظ التغييرات";
+                saveBtn.disabled = false;
+            }
+        }
+
+        window.openProfileModal = openProfileModal;
+        window.closeProfileModal = closeProfileModal;
+        window.previewProfileModalAvatar = previewProfileModalAvatar;
+        window.handleProfileUpdate = handleProfileUpdate;
+
         function closeNewOrderModal() {
             document.getElementById('newOrderModal').classList.add('hidden');
         }
@@ -2677,7 +2804,7 @@
                     lng: currentGPSLocation.lng,
                     customerId: currentUser.uid,
                     customerName: currentUser.displayName || 'زبون العفرون',
-                    customerPhone: currentUser.phoneNumber || '0555555555',
+                    customerPhone: currentUserData ? (currentUserData.phoneNumber || '0555555555') : '0555555555', // إرفاق رقم الهاتف الحقيقي للزبون بالطلب
                     status: 'pending',
                     createdAt: new Date().toISOString()
                 });
@@ -2814,7 +2941,7 @@
                     }
 
                     const item = document.createElement('div');
-                    item.className = "p-4 bg-gray-50 dark:bg-zinc-855 rounded-2xl border border-gray-100 dark:border-zinc-800 flex justify-between items-center text-xs text-black dark:text-white animate-scale-up";
+                    item.className = "p-4 bg-gray-50 dark:bg-zinc-850 rounded-2xl border border-gray-100 dark:border-zinc-800 flex justify-between items-center text-xs text-black dark:text-white animate-scale-up";
                     item.innerHTML = `
                         <div class="flex flex-col gap-1 text-right max-w-[70%]">
                             <h5 class="font-extrabold text-gray-800 dark:text-gray-100">${order.restaurant}</h5>

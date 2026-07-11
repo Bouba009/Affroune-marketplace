@@ -1,4 +1,3 @@
-تم
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -171,9 +170,12 @@
 
             <!-- أزرار الاختيارات السريعة وملف المستخدم -->
             <div class="flex items-center gap-3">
-                <button id="themeToggleBtn" class="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 p-2.5 rounded-xl transition border border-gray-200 dark:border-zinc-700">
-                    <i class="fa-solid fa-moon text-sm dark:hidden"></i>
-                    <i class="fa-solid fa-sun text-sm hidden dark:block text-yellow-400"></i>
+                <!-- زر تبديل الوضع الاحترافي والمزود بحركات سلسة وتصاميم مميزة -->
+                <button id="themeToggleBtn" class="relative bg-gray-50 hover:bg-gray-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-700/80 text-gray-700 dark:text-gray-200 w-11 h-11 rounded-2xl transition duration-300 border border-gray-100/60 dark:border-zinc-800/60 flex items-center justify-center overflow-hidden hover:scale-105 active:scale-95 shadow-xs focus:outline-none">
+                    <!-- أيقونة الهلال للوضع العادي (تنتقل بك للوضع المظلم) -->
+                    <i class="fa-solid fa-moon text-lg text-indigo-600 dark:hidden transform hover:rotate-12 transition-transform duration-300"></i>
+                    <!-- أيقونة الشمس الدوارة للوضع المظلم (تنتقل بك للوضع العادي) -->
+                    <i class="fa-solid fa-sun text-lg text-yellow-400 hidden dark:block transform hover:rotate-45 transition-all duration-300 animate-spin" style="animation-duration: 12s;"></i>
                 </button>
                 <div id="authHeaderState">
                     <button onclick="showAuthModal('login')" class="text-xs font-bold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primaryDark transition shadow-xs">دخول</button>
@@ -771,15 +773,16 @@
 
     </main>
 
-    <!-- Drawer Side-Menu for Mobile -->
-    <div id="sideDrawer" class="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none z-50">
-        <div id="drawerContent" class="absolute top-0 right-0 w-3/4 max-w-xs h-full bg-white dark:bg-zinc-900 shadow-2xl p-6 transition-transform duration-300 transform translate-x-full flex flex-col justify-between overflow-y-auto">
+    <!-- Drawer Side-Menu for Mobile (مع ميزة الإغلاق السلس عند النقر بالخارج أو على زر الإغلاق الجديد) -->
+    <div id="sideDrawer" onclick="toggleDrawer(false)" class="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none z-50">
+        <div id="drawerContent" onclick="event.stopPropagation()" class="absolute top-0 right-0 w-3/4 max-w-xs h-full bg-white dark:bg-zinc-900 shadow-2xl p-6 transition-transform duration-300 transform translate-x-full flex flex-col justify-between overflow-y-auto">
             <div>
-                <div class="flex justify-between items-center mb-6">
-                    <button type="button" onclick="toggleDrawer(false)" class="text-gray-500 text-lg">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                <!-- رأس القائمة: يتضمن الشعار وزر الإغلاق الاحترافي والواضح لتسهيل الرجوع -->
+                <div class="flex justify-between items-center mb-6 border-b border-gray-50 dark:border-zinc-800 pb-3">
                     <span class="text-sm font-extrabold text-primary">العفرون ديليفري</span>
+                    <button type="button" onclick="toggleDrawer(false)" class="p-2 bg-gray-50 hover:bg-gray-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-gray-500 dark:text-gray-400 rounded-xl transition flex items-center justify-center w-9 h-9 border border-gray-100 dark:border-zinc-800">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
                 </div>
                 <div class="flex flex-col gap-1.5 text-xs font-bold text-gray-700 dark:text-gray-300">
                     <button type="button" id="drawerHomeBtn" onclick="showSection('landing')" class="text-right p-3 hover:bg-gray-50 dark:hover:bg-zinc-800 rounded-xl flex items-center gap-2.5"><i class="fa-solid fa-house text-orange-500"></i> الصفحة الرئيسية</button>
@@ -931,34 +934,50 @@
             driverActiveOrderTracker: null
         };
 
-        // Synthesize loud phone ringtone alert using Web Audio API
+        // توليد رنين الأيفون الفاخر (sequenced marimba chimes) بشكل ديناميكي كامل عبر الـ Web Audio API
         let ringtoneInterval = null;
         function playRingtone() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const playBeep = (delay, freq, dur) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-                    gain.gain.setValueAtTime(0.4, audioCtx.currentTime + delay + dur);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + delay + dur);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(audioCtx.currentTime + delay);
-                    osc.stop(audioCtx.currentTime + delay + dur);
+                
+                const playPremiumChime = (delay, freq, duration) => {
+                    const osc1 = audioCtx.createOscillator();
+                    const osc2 = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    osc1.type = 'sine';
+                    osc2.type = 'triangle';
+                    
+                    osc1.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+                    osc2.frequency.setValueAtTime(freq * 2, audioCtx.currentTime + delay); // الأوكتاف التوافقي لثراء الصوت
+                    
+                    gainNode.gain.setValueAtTime(0.001, audioCtx.currentTime + delay);
+                    gainNode.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + delay + 0.02); // هجوم mallet سريع جداً
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration); // اضمحلال ناعم وسلس
+                    
+                    osc1.connect(gainNode);
+                    osc2.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    osc1.start(audioCtx.currentTime + delay);
+                    osc2.start(audioCtx.currentTime + delay);
+                    
+                    osc1.stop(audioCtx.currentTime + delay + duration);
+                    osc2.stop(audioCtx.currentTime + delay + duration);
                 };
 
                 const triggerRing = () => {
-                    playBeep(0, 950, 0.2);
-                    playBeep(0.15, 950, 0.2);
-                    playBeep(0.35, 1150, 0.4);
+                    // نغمات الماريمبا المتتابعة الأنيقة والراقية للأيفون (E6 -> G#6 -> B6 -> E7)
+                    playPremiumChime(0, 1318.51, 0.45);     // E6
+                    playPremiumChime(0.12, 1661.22, 0.45);   // G#6
+                    playPremiumChime(0.24, 1975.53, 0.55);   // B6
+                    playPremiumChime(0.44, 2637.02, 0.85);   // E7 اللمعة النهائية
                 };
 
                 triggerRing();
-                ringtoneInterval = setInterval(triggerRing, 1800);
+                ringtoneInterval = setInterval(triggerRing, 2500); // تكرار متناسق مع طول الرنين
             } catch (e) {
-                console.warn(e);
+                console.warn("فشل تهيئة سياق الصوت التفاعلي:", e);
             }
         }
 
@@ -2995,13 +3014,6 @@
         window.openDrawerModal = openDrawerModal;
         window.closeDrawerModal = closeDrawerModal;
         window.handleReportSubmit = handleReportSubmit;
-
-        function toggleOrdersModal(open) {
-            const m = document.getElementById('ordersModal');
-            if (open) m.classList.remove('hidden');
-            else m.classList.add('hidden');
-        }
-        window.toggleOrdersModal = toggleOrdersModal;
 
         // Sync Stores data dynamically
         globalUnsubscribes.stores = onSnapshot(collection(db, "stores"), (snapshot) => {

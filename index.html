@@ -61,7 +61,7 @@
             background-color: #1e1e24;
             color: #ffffff;
             border: 2px solid #3f3f46;
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.05) ;
         }
         .glow-input:focus {
             background-color: #ffffff !important;
@@ -82,7 +82,7 @@
             transition: opacity 0.35s ease, transform 0.35s ease;
         }
         .full-map-container {
-            height: calc(100vh - 120px);
+            height: calc(100vh - 72px);
             width: 100%;
             z-index: 5;
         }
@@ -154,33 +154,34 @@
 </head>
 <body class="bg-slate-50 text-gray-900 transition-colors duration-300 dark:bg-appDark dark:text-gray-100 min-h-screen flex flex-col font-sans">
 
-    <!-- شريط تحكم عائم زجاجي علوي (Floating Top Navigation Deck) - يمنح واجهة عصرية ومفتوحة ومثالية للخرائط -->
-    <div class="fixed top-4 left-4 right-4 z-[999] flex justify-between items-center pointer-events-none">
-        <!-- الجهة اليمنى: زر القائمة الجانبية والشعار -->
-        <div class="flex items-center gap-2.5 pointer-events-auto bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100/50 dark:border-zinc-800/50">
-            <button onclick="toggleDrawer(true)" class="p-1.5 text-gray-700 dark:text-gray-300 text-xl hover:text-primary transition">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="flex items-center gap-2 select-none cursor-pointer" id="headerLogoContainer" onclick="showSection('landing')">
-                <img src="https://st3.depositphotos.com/5572200/15094/v/450/depositphotos_150942812-stock-illustration-a-man-is-riding-a.jpg" alt="Logo" class="w-8 h-8 object-cover rounded-full border border-primary shadow-xs">
-                <span class="text-xs font-black text-primary tracking-wide hidden sm:inline">العفرون ديليفري</span>
+    <!-- الهيدر العلوي للموقع (شريط كامل ممتد ومستمر غير منقطع) -->
+    <header class="bg-white dark:bg-zinc-900 shadow-md border-b border-gray-100 dark:border-zinc-800 sticky top-0 z-[999] transition-colors w-full">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleDrawer(true)" class="p-2 text-gray-700 dark:text-gray-300 text-xl hover:text-primary transition">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="flex items-center gap-2 select-none cursor-pointer" id="headerLogoContainer" onclick="showSection('landing')">
+                    <img src="https://st3.depositphotos.com/5572200/15094/v/450/depositphotos_150942812-stock-illustration-a-man-is-riding-a.jpg" alt="Logo" class="w-10 h-10 object-cover rounded-full border-2 border-primary shadow-xs">
+                    <span class="text-sm lg:text-base font-black text-primary tracking-wide">العفرون اونلاين ديليفري</span>
+                </div>
             </div>
-        </div>
 
-        <!-- الجهة اليسرى: تبديل المظهر وحالة الحساب -->
-        <div class="flex items-center gap-2 pointer-events-auto bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-gray-100/50 dark:border-zinc-800/50">
-            <button id="themeToggleBtn" class="text-gray-700 dark:text-gray-200 p-2 rounded-xl transition">
-                <i class="fa-solid fa-moon text-sm dark:hidden"></i>
-                <i class="fa-solid fa-sun text-sm hidden dark:block text-yellow-400"></i>
-            </button>
-            <div id="authHeaderState">
-                <button onclick="showAuthModal('login')" class="text-xs font-bold px-4 py-2 rounded-xl bg-primary text-white hover:bg-primaryDark transition shadow-xs">دخول</button>
+            <!-- أزرار الاختيارات السريعة وملف المستخدم -->
+            <div class="flex items-center gap-3">
+                <button id="themeToggleBtn" class="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200 p-2.5 rounded-xl transition border border-gray-200 dark:border-zinc-700">
+                    <i class="fa-solid fa-moon text-sm dark:hidden"></i>
+                    <i class="fa-solid fa-sun text-sm hidden dark:block text-yellow-400"></i>
+                </button>
+                <div id="authHeaderState">
+                    <button onclick="showAuthModal('login')" class="text-xs font-bold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primaryDark transition shadow-xs">دخول</button>
+                </div>
             </div>
         </div>
-    </div>
+    </header>
 
     <!-- شريط حالة الطلب الملون أعلى الموقع تماماً تحت الهيدر مباشرة z-[99999] -->
-    <div id="globalOrderStatusBanner" class="hidden fixed top-[85px] left-4 right-4 text-white text-center py-3.5 px-5 rounded-2xl shadow-[0_15px_40px_rgba(255,126,0,0.25)] z-[99999] transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-white/20 backdrop-blur-md bg-zinc-950/95 animate-scale-up">
+    <div id="globalOrderStatusBanner" class="hidden fixed top-[68px] left-4 right-4 text-white text-center py-3.5 px-5 rounded-2xl shadow-[0_15px_40px_rgba(255,126,0,0.25)] z-[99999] transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-3 border border-white/20 backdrop-blur-md bg-zinc-950/95 animate-scale-up">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-truck-fast animate-bounce text-xl"></i>
             <span id="globalOrderStatusText" class="font-black text-xs leading-relaxed tracking-wide">جاري معالجة حالة الطلب...</span>
@@ -192,14 +193,8 @@
         </div>
     </div>
 
-    <!-- Global Alert Toast -->
-    <div id="toastNotification" class="fixed top-24 left-1/2 -translate-x-1/2 w-11/12 max-w-md bg-primary text-white text-center py-3.5 px-6 rounded-2xl shadow-2xl font-bold text-sm transform -translate-y-36 transition-all duration-300 z-[9999] flex items-center justify-center gap-3">
-        <i class="fa-solid fa-circle-info text-lg"></i>
-        <span id="toastText">تنبيه جديد</span>
-    </div>
-
     <!-- MAIN VIEWPORTS -->
-    <main class="flex-1 flex flex-col justify-stretch relative pt-20">
+    <main class="flex-1 flex flex-col justify-stretch relative">
 
         <!-- 1. LANDING/SPLASH SECTION -->
         <section id="view-landing" class="screen-view landing-bg-animated flex-1 flex items-center justify-center py-16 px-4 text-center">
@@ -316,12 +311,12 @@
         </section>
 
         <!-- 3. CUSTOMER DASHBOARD (MAP COVER) -->
-        <section id="view-customer" class="screen-view hidden flex-1 flex flex-col relative bg-gray-50 dark:bg-appDark -mt-20">
+        <section id="view-customer" class="screen-view hidden flex-1 flex flex-col relative bg-gray-50 dark:bg-appDark">
             <!-- Full Screen Map -->
-            <div id="customerMap" class="full-map-container h-screen w-full"></div>
+            <div id="customerMap" class="full-map-container"></div>
 
             <!-- أزرار خريطة الزبون العائمة للتتبع -->
-            <div class="absolute top-[105px] left-4 z-40 flex flex-col gap-2.5">
+            <div class="absolute top-[85px] left-4 z-40 flex flex-col gap-2.5">
                 <button id="btnCenterOnDriverCust" onclick="centerMapOnDriver('customer')" class="hidden bg-white/90 dark:bg-zinc-900/90 hover:bg-primary hover:text-white text-gray-800 dark:text-gray-100 px-3.5 py-2.5 rounded-2xl shadow-xl border border-gray-100 dark:border-zinc-800/80 text-xs font-black flex items-center gap-1.5 transition transform hover:scale-105 active:scale-95 duration-200">
                     <i class="fa-solid fa-location-arrow text-primary"></i>
                     <span>تتبع المندوب 2D</span>
@@ -803,149 +798,33 @@
         </div>
     </div>
 
-    <!-- Active Orders Modal -->
-    <div id="ordersModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary">سجل طلباتي</h3>
-                <button type="button" onclick="toggleOrdersModal(false)" class="text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="ordersModalList" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1"></div>
+    <!-- FLOATING CHAT ELEMENTS -->
+    <div id="customerChatBox" class="hidden fixed bottom-24 left-6 max-w-sm w-[calc(100%-3rem)] bg-white dark:bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-gray-100 dark:border-zinc-800 z-[99999] flex flex-col gap-3 animate-scale-up">
+        <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-zinc-800">
+            <span class="text-xs font-bold text-gray-500 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع عامل التوصيل</span>
+            <button type="button" onclick="toggleCustChat(false)" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-base"></i></button>
+        </div>
+        <div id="chatMessages" class="bg-gray-50 dark:bg-zinc-950 p-2.5 rounded-xl h-44 overflow-y-auto flex flex-col gap-1.5 text-[10px]"></div>
+        <div class="flex gap-2">
+            <input type="text" id="chatInput" class="glow-input flex-1 px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 text-[11px] rounded-lg focus:outline-none" placeholder="اكتب رسالة لعامل التوصيل...">
+            <button type="button" onclick="sendChatMessage()" class="bg-primary text-white px-3 py-1.5 rounded-lg text-[10px] font-bold">إرسال</button>
         </div>
     </div>
 
-    <!-- Past Transactions Modal -->
-    <div id="transactionsModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl p-6 shadow-2xl animate-scale-up">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary">أرشيف التعاملات السابقة</h3>
-                <button type="button" onclick="toggleTransactionsModal(false)" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div id="transactionsModalList" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1"></div>
-        </div>
-    </div>
+    <button id="driverChatFAB" onclick="toggleDriverChat(true)" class="hidden fixed bottom-8 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
+        <i class="fa-solid fa-comments text-xl"></i>
+        <span id="driverChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
+    </button>
 
-    <!-- Nearby Arrival Alert Modal -->
-    <div id="nearbyArrivalAlert" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-[999999] flex items-center justify-center p-4 hidden">
-        <div class="bg-white dark:bg-zinc-900 max-w-sm w-full p-6 rounded-3xl shadow-2xl border border-primary/20 text-center flex flex-col items-center gap-4 animate-scale-up">
-            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary text-2xl animate-bounce">
-                <i class="fa-solid fa-motorcycle"></i>
-            </div>
-            <div>
-                <h4 class="font-black text-base text-gray-800 dark:text-white">هل أنت هنا ! عامل التوصيل قد وصل</h4>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">عامل التوصيل الخاص بك أصبح قريباً جداً منك ومسافته أقل من 200 متر.</p>
-            </div>
-            <button onclick="closeNearbyArrivalAlert()" type="button" class="w-full bg-primary hover:bg-primaryDark text-white py-2.5 rounded-xl text-xs font-bold transition">حسناً، فهمت</button>
+    <div id="driverChatBox" class="hidden fixed bottom-24 left-6 max-w-sm w-[calc(100%-3rem)] bg-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-2xl z-[99999] flex flex-col gap-3 animate-scale-up">
+        <div class="flex justify-between items-center pb-2 border-b border-zinc-800">
+            <span class="text-xs font-bold text-zinc-400 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع الزبون</span>
+            <button type="button" onclick="toggleDriverChat(false)" class="text-zinc-500 hover:text-zinc-300 transition"><i class="fa-solid fa-xmark text-base"></i></button>
         </div>
-    </div>
-
-    <!-- Privacy Policy Modal -->
-    <div id="privacyModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-3xl p-6 shadow-2xl animate-scale-up border border-gray-100 dark:border-zinc-800">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> سياسة الخصوصية</h3>
-                <button type="button" onclick="closeDrawerModal('privacy')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-h-80 overflow-y-auto pr-1 space-y-3">
-                <p>نحن في العفرون ديليفري نولي اهتماماً كبيراً لحماية بياناتك الشخصية وتأمين خصوصيتك الرقمية.</p>
-                <p><strong>1. البيانات التي نجمعها:</strong> نقوم بحفظ معلومات التسجيل مثل الاسم الكامل، البريد الإلكتروني، ورقم الهاتف لتسهيل التواصل الجغرافي السريع.</p>
-                <p><strong>2. نظام التموضع والموقع (GPS):</strong> يتم مشاركة إحداثيات موقعك الجغرافي فقط عند إنشاء طلب نشط وتوصيله للتنسيق الدقيق مع عامل التوصيل.</p>
-                <p><strong>3. حماية وتشفير البيانات:</strong> نقوم باستخدام منصة آمنة وقواعد بيانات مشفرة لضمان عدم تسريب أو استخدام معلوماتك الشخصية لأي أغراض غير مصرح بها.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Shipping Policy Modal -->
-    <div id="shippingPolicyModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-3xl p-6 shadow-2xl animate-scale-up border border-gray-100 dark:border-zinc-800">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary flex items-center gap-2"><i class="fa-solid fa-truck-fast"></i> سياسة الشحن والأسعار</h3>
-                <button type="button" onclick="closeDrawerModal('shipping')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-h-80 overflow-y-auto pr-1 space-y-3">
-                <p>يتم احتساب تسعيرة التوصيل لدينا تلقائياً بناءً على أقصر مسار حقيقي على الخارطة يربط بين موقع المتجر وموقع الزبون كالتالي:</p>
-                <ul class="space-y-2 border-t border-b border-gray-100 dark:border-zinc-800 py-3 font-semibold text-gray-800 dark:text-zinc-200">
-                    <li class="flex justify-between"><span>من 0 إلى 1 كلم:</span> <span class="text-primary font-black">100 دج</span></li>
-                    <li class="flex justify-between"><span>أكثر من 1 إلى 3 كلم:</span> <span class="text-primary font-black">150 دج</span></li>
-                    <li class="flex justify-between"><span>أكثر من 3 إلى 4 كلم:</span> <span class="text-primary font-black">200 دج</span></li>
-                    <li class="flex justify-between"><span>من 5 إلى 7 كلم:</span> <span class="text-primary font-black">300 دج</span></li>
-                    <li class="flex justify-between"><span>من 8 إلى 10 كلم:</span> <span class="text-primary font-black">400 دج</span></li>
-                    <li class="flex justify-between"><span>أكثر من 10 كلم:</span> <span class="text-primary font-black">500 دج (توصيل خاص)</span></li>
-                </ul>
-                <p>نهدف دوماً إلى إيصال طلباتك ساخنة وبأمان كامل في مدة قياسية تتراوح بين 15 و 35 دقيقة كحد أقصى.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- About Us Modal -->
-    <div id="aboutUsModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-3xl p-6 shadow-2xl animate-scale-up border border-gray-100 dark:border-zinc-800">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary flex items-center gap-2"><i class="fa-solid fa-circle-info"></i> من نحن</h3>
-                <button type="button" onclick="closeDrawerModal('about')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-h-80 overflow-y-auto pr-1 space-y-3">
-                <p><strong>العفرون اونلاين ديليفري</strong> هي منصة رقمية رائدة ومحلية، تهدف إلى تسهيل تسوق وتوصيل الطعام والمنتجات المتنوعة لسكان مدينة العفرون وضواحيها المجاورة.</p>
-                <p>لقد قمنا بتطوير نظام متكامل يدعم تتبع عمال التوصيل بشكل حي ومباشر على الخارطة الثنائية الأبعاد، لتوفير الشفافية المطلقة والسرعة القصوى.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contact Us Modal -->
-    <div id="contactUsModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-3xl p-6 shadow-2xl animate-scale-up border border-gray-100 dark:border-zinc-800">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary flex items-center gap-2"><i class="fa-solid fa-envelope"></i> اتصل بنا</h3>
-                <button type="button" onclick="closeDrawerModal('contact')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed flex flex-col gap-3">
-                <p>يسعدنا جداً تلقي اقتراحاتكم واستفساراتكم حول المنصة للتطوير المستمر:</p>
-                <div class="flex flex-col gap-2.5 bg-gray-50 dark:bg-zinc-800/50 p-4 rounded-2xl border border-gray-100 dark:border-zinc-800">
-                    <div class="flex items-center gap-2.5 font-bold text-gray-800 dark:text-zinc-100">
-                        <i class="fa-solid fa-phone text-primary"></i>
-                        <span>هاتف الدعم الفني: 0555-555-555</span>
-                    </div>
-                    <div class="flex items-center gap-2.5 font-bold text-gray-800 dark:text-zinc-100">
-                        <i class="fa-solid fa-envelope text-primary"></i>
-                        <span>البريد الإلكتروني: support@elaffroun-delivery.com</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Report a Problem Modal -->
-    <div id="reportProblemModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-3xl p-6 shadow-2xl animate-scale-up border border-gray-100 dark:border-zinc-800">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-extrabold text-base text-primary flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> الإبلاغ عن مشكلة</h3>
-                <button type="button" onclick="closeDrawerModal('report')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form onsubmit="handleReportSubmit(event)" class="flex flex-col gap-3.5">
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] font-bold text-gray-500">عنوان البلاغ</label>
-                    <input type="text" id="reportTitle" class="glow-input w-full px-3 py-2.5 text-xs rounded-xl bg-gray-50 dark:bg-zinc-800 border border-transparent focus:outline-none" placeholder="مثال: تعطل الخارطة أو التتبع" required>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] font-bold text-gray-500">تفاصيل المشكلة والوصف</label>
-                    <textarea id="reportDesc" rows="3" class="glow-input w-full px-3 py-2.5 text-xs rounded-xl bg-gray-50 dark:bg-zinc-800 border border-transparent focus:outline-none resize-none" placeholder="يرجى كتابة ما يواجهك بوضوح لمساعدتنا على الإصلاح الفوري..." required></textarea>
-                </div>
-                <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white py-3 rounded-xl text-xs font-bold transition shadow-md">إرسال تقرير المشكلة</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Feature Coming Soon Modal -->
-    <div id="soonModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-[999999] flex items-center justify-center p-4 hidden">
-        <div class="bg-white dark:bg-zinc-900 max-w-sm w-full p-6 rounded-3xl shadow-2xl border border-primary/20 text-center flex flex-col items-center gap-4 animate-scale-up">
-            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary text-2xl animate-bounce">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-            </div>
-            <div>
-                <h4 class="font-black text-lg text-gray-800 dark:text-white">ستتوفر قريباً !</h4>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">نعمل حالياً على تطوير ميزة التسجيل السريع لنوفر لك تجربة سلسة وآمنة تماماً.</p>
-            </div>
-            <button onclick="closeSoonModal()" type="button" class="w-full bg-primary hover:bg-primaryDark text-white py-2.5 rounded-xl text-xs font-bold transition">حسناً، فهمت</button>
+        <div id="driverChatMessages" class="bg-black/50 p-3 rounded-xl h-44 overflow-y-auto flex flex-col gap-2 text-xs text-zinc-200"></div>
+        <div class="flex gap-2">
+            <input type="text" id="driverChatInput" class="glow-input flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 text-xs rounded-lg focus:outline-none" placeholder="اكتب رسالة للزبون...">
+            <button type="button" onclick="sendDriverChatMessage()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded-lg font-bold text-xs">إرسال</button>
         </div>
     </div>
 
@@ -1230,15 +1109,9 @@
             document.body.classList.remove('dark');
         }
 
-        // Global Alert Notifications
+        // إظهار التنبيه المنبثق للمتصفح بعد حذف شريط التنبيهات العلوي
         window.showToast = function(message) {
-            const toast = document.getElementById('toastNotification');
-            const text = document.getElementById('toastText');
-            text.innerText = message;
-            toast.classList.remove('-translate-y-36');
-            setTimeout(() => {
-                toast.classList.add('-translate-y-36');
-            }, 4500);
+            alert(message);
         };
 
         // Navigation switcher
@@ -1793,7 +1666,7 @@
                 drawerJoinWorkBtn.classList.remove('hidden');
 
                 authHeader.innerHTML = `
-                    <button type="button" onclick="showAuthModal('login')" class="text-xs font-bold px-4 py-2 rounded-xl bg-primary text-white hover:bg-primaryDark transition shadow-xs">دخول</button>
+                    <button type="button" onclick="showAuthModal('login')" class="text-xs font-bold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primaryDark transition shadow-xs">دخول</button>
                 `;
                 showSection('landing');
                 stopLiveTracking();

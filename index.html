@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>العفرون أونلاين - منصة توصيل الذكية</title>
+    <title>العفرون أونلاين - منصة Tوصيل الذكية</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -279,13 +279,9 @@
             background: var(--orange);
         }
 
-        /* CUSTOM MODERN MODAL ANIMATION */
-        @keyframes modalScaleIn {
-            0% { transform: scale(0.92) translateY(15px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-        .modal-animated {
-            animation: modalScaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        /* TRANSITION FOR MODERN DRAWERS */
+        .drawer-transition {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
         }
     </style>
 </head>
@@ -307,52 +303,9 @@
         <p id="loadingStatusText" class="text-neutral-400 text-xs mt-3 px-6 text-center font-semibold tracking-wider">جاري تجهيز طلبك اللذيذ بنمط فاخر...</p>
     </div>
 
-    <!-- Info Pages / Policies Modal -->
-    <div id="infoPagesModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[9988] flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="w-full max-w-lg glass-panel rounded-4xl p-6 md:p-8 text-right space-y-6 relative border border-white/10 shadow-2xl bg-dark-900 modal-animated">
-            <button onclick="closeInfoPagesModal()" class="absolute top-5 left-5 text-neutral-400 hover:text-white transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/5">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <div class="flex items-center gap-3 border-b border-white/5 pb-4 mt-2">
-                <div id="infoModalIcon" class="w-11 h-11 bg-brand-500/15 rounded-2xl flex items-center justify-center text-brand-400 text-lg">
-                    <i class="fa-solid fa-circle-info"></i>
-                </div>
-                <div>
-                    <h3 id="infoModalTitle" class="text-xl font-black text-white">العنوان</h3>
-                    <p class="text-[10px] text-neutral-400 font-bold tracking-wider">منصة العفرون أونلاين</p>
-                </div>
-            </div>
-            <div id="infoModalContent" class="text-sm text-neutral-300 leading-relaxed font-semibold max-h-[60vh] overflow-y-auto pr-1">
-                <!-- Content injected here -->
-            </div>
-            <div class="pt-2">
-                <button onclick="closeInfoPagesModal()" class="w-full btn-brand-gradient py-3.5 rounded-2xl text-sm font-bold text-white shadow-lg">
-                    حسناً، فهمت
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Feature Soon Alert Modal -->
-    <div id="soonModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[9997] flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="w-full max-w-sm glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative border border-brand-500/30 shadow-2xl bg-dark-900 modal-animated">
-            <div class="w-20 h-20 bg-brand-500/10 rounded-full flex items-center justify-center mx-auto text-brand-500 text-4xl border border-brand-500/20 animate-pulse">
-                <i class="fa-solid fa-bolt"></i>
-            </div>
-            <div class="space-y-2">
-                <span class="bg-brand-500/15 text-brand-400 px-3.5 py-1.5 rounded-full text-[10px] font-black tracking-wider uppercase inline-block">تنويه من المنصة</span>
-                <h3 class="text-xl font-black text-white">هذه الميزة ستتوفر قريباً!</h3>
-                <p class="text-xs text-neutral-400 font-semibold leading-relaxed">نحن نعمل جاهدين على تفعيل ميزة التسجيل المباشر والسريع لراحتك في التحديث القادم.</p>
-            </div>
-            <button onclick="closeSoonModal()" class="w-full btn-brand-gradient py-3.5 rounded-2xl text-sm font-bold text-white shadow-lg">
-                رائع، في الانتظار
-            </button>
-        </div>
-    </div>
-
     <!-- Rating Modal -->
     <div id="ratingModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[9985] flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="w-full max-w-md glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative border border-white/5 shadow-2xl bg-dark-900 modal-animated">
+        <div class="w-full max-w-md glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative border border-white/5 shadow-2xl bg-dark-900">
             <button onclick="closeRatingModal()" class="absolute top-5 left-5 text-neutral-400 hover:text-white transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/5">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
@@ -396,7 +349,7 @@
 
     <!-- Restaurant Fullscreen Request Overlay -->
     <div id="restaurantRequestOverlay" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[9990] flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="w-full max-w-lg glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative overflow-hidden border border-white/5 bg-dark-900 modal-animated">
+        <div class="w-full max-w-lg glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative overflow-hidden border border-white/5 bg-dark-900">
             <div class="relative flex items-center justify-center mx-auto w-20 h-20 bg-brand-500/10 rounded-full border border-brand-500/10">
                 <i class="fa-solid fa-store text-3xl text-brand-500"></i>
             </div>
@@ -426,7 +379,7 @@
 
     <!-- Driver Request Overlay -->
     <div id="driverRequestOverlay" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[9995] flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="w-full max-w-lg glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative overflow-hidden border border-white/5 bg-dark-900 modal-animated">
+        <div class="w-full max-w-lg glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative overflow-hidden border border-white/5 bg-dark-900">
             <div class="relative flex items-center justify-center mx-auto w-20 h-20 bg-brand-500/10 rounded-full border border-brand-500/10">
                 <i class="fa-solid fa-bell text-3xl text-brand-500 animate-bounce"></i>
             </div>
@@ -512,48 +465,9 @@
         </div>
     </div>
 
-    <!-- Slide-Out Sidebar Navigation (Drawer) -->
-    <div id="appSidebar" class="fixed top-0 bottom-0 right-0 w-72 bg-dark-900/98 backdrop-blur-lg border-l border-white/10 z-[9950] translate-x-full transition-transform duration-300 flex flex-col justify-between shadow-2xl">
-        <div class="p-6 space-y-6 text-right">
-            <div class="flex items-center justify-between border-b border-white/5 pb-5">
-                <div class="flex items-center gap-2">
-                    <div class="bg-brand-500 text-white w-9 h-9 rounded-xl flex items-center justify-center shadow-lg">
-                        <i class="fa-solid fa-motorcycle text-sm"></i>
-                    </div>
-                    <span class="font-black text-white text-base">القائمة</span>
-                </div>
-                <button onclick="toggleSidebarMenu()" class="text-neutral-400 hover:text-white text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <nav class="flex flex-col gap-2">
-                <button onclick="showSidebarPage('about')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-right text-xs font-bold text-neutral-200">
-                    <i class="fa-solid fa-users text-brand-500 w-5"></i> من نحن
-                </button>
-                <button onclick="showSidebarPage('shipping_info')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-right text-xs font-bold text-neutral-200">
-                    <i class="fa-solid fa-truck-fast text-brand-500 w-5"></i> سياسة الشحن والتوصيل
-                </button>
-                <button onclick="showSidebarPage('privacy')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-right text-xs font-bold text-neutral-200">
-                    <i class="fa-solid fa-user-shield text-brand-500 w-5"></i> سياسة الخصوصية
-                </button>
-                <button onclick="showSidebarPage('contact')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-right text-xs font-bold text-neutral-200">
-                    <i class="fa-solid fa-headset text-brand-500 w-5"></i> اتصل بنا
-                </button>
-                <button onclick="showSidebarPage('report_bug')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-right text-xs font-bold text-neutral-200">
-                    <i class="fa-solid fa-bug-slash text-brand-500 w-5"></i> الإبلاغ عن مشكلة
-                </button>
-            </nav>
-        </div>
-        <div class="p-6 border-t border-white/5 text-center text-[10px] text-neutral-500 font-bold">
-            إصدار المنصة v2.4.0
-        </div>
-    </div>
-    <div id="sidebarOverlay" onclick="toggleSidebarMenu()" class="fixed inset-0 bg-black/60 z-[9940] hidden backdrop-blur-sm transition-opacity duration-300 opacity-0"></div>
-
     <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-black/70 z-[9980] flex items-center justify-center hidden p-4 transition-all duration-300 backdrop-blur-md">
-        <div class="glass-panel rounded-4xl max-w-md w-full p-6 md:p-8 shadow-2xl relative overflow-hidden border border-white/5 bg-dark-900 modal-animated">
+        <div class="glass-panel rounded-4xl max-w-md w-full p-6 md:p-8 shadow-2xl relative overflow-hidden border border-white/5 bg-dark-900">
             <button onclick="closeAuthModal()" class="absolute top-5 left-5 text-neutral-450 hover:text-white transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/5">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -593,6 +507,23 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Confirm Password input field -->
+                    <div>
+                        <label class="block text-xs font-bold text-neutral-350 mb-1.5 text-right">تأكيد كلمة المرور</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-neutral-500"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" id="regConfirmPassword" class="w-full pr-11 pl-4 py-3.5 rounded-2xl focus:outline-none focus:border-brand-500 text-sm font-semibold bg-white/5 text-white" placeholder="أعد كتابة كلمة المرور">
+                        </div>
+                    </div>
+
+                    <!-- Agree to Terms checkbox layout -->
+                    <div class="flex items-center justify-start gap-2.5 pt-2">
+                        <input type="checkbox" id="regTerms" class="w-4 h-4 rounded accent-brand-500 border-white/10 bg-white/5 cursor-pointer">
+                        <label for="regTerms" class="text-xs text-neutral-350 font-bold select-none cursor-pointer">
+                            أوافق على كافة شروط الاستخدام وسياسة الخصوصية بالمنصة
+                        </label>
+                    </div>
                 </div>
 
                 <div>
@@ -610,36 +541,18 @@
                     </div>
                 </div>
 
-                <!-- Registration Confirms & Terms Form Elements -->
-                <div id="registerExtraFields" class="hidden space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-neutral-350 mb-1.5 text-right">تأكيد كلمة المرور</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-neutral-500"><i class="fa-solid fa-lock"></i></span>
-                            <input type="password" id="regConfirmPassword" class="w-full pr-11 pl-4 py-3.5 rounded-2xl focus:outline-none focus:border-brand-500 text-sm font-semibold bg-white/5 text-white" placeholder="••••••••">
-                        </div>
-                    </div>
-                    <!-- User Terms checkbox layout -->
-                    <div class="flex items-start justify-start gap-2.5 pt-1">
-                        <input type="checkbox" id="regTerms" class="w-4.5 h-4.5 mt-0.5 accent-brand-500 bg-white/5 border-white/10 rounded cursor-pointer">
-                        <label for="regTerms" class="text-[11px] text-neutral-300 font-bold leading-normal text-right select-none cursor-pointer">
-                            أوافق بالكامل على <span class="text-brand-500 underline" onclick="showSidebarPage('privacy'); event.stopPropagation();">سياسة الخصوصية</span> و <span class="text-brand-500 underline" onclick="showSidebarPage('terms'); event.stopPropagation();">شروط الاستخدام</span> الخاصة بالمنصة.
-                        </label>
-                    </div>
-                </div>
-
                 <button type="submit" id="authSubmitBtn" class="w-full btn-brand-gradient py-4 rounded-2xl transition shadow-xl text-sm mt-3 text-white">
                     تسجيل الدخول
                 </button>
 
-                <!-- Social Fast Logins -->
+                <!-- Google / Facebook Registration Fast buttons inside auth modal -->
                 <div class="border-t border-white/5 pt-5 mt-4 space-y-3">
-                    <span class="text-center block text-[10px] text-neutral-450 font-extrabold uppercase tracking-widest">أو تسجيل سريع وآمن عبر</span>
+                    <span class="text-center block text-[10px] text-neutral-450 font-extrabold uppercase tracking-widest">أو تسجيل سريع عبر</span>
                     <div class="grid grid-cols-2 gap-3">
-                        <button type="button" onclick="triggerSoonSocial()" class="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-extrabold py-3.5 rounded-2xl text-xs transition active:scale-95">
+                        <button type="button" onclick="showSoonModal()" class="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-extrabold py-3.5 rounded-2xl text-xs transition active:scale-95 shadow-sm">
                             <i class="fa-brands fa-google text-red-500 text-sm"></i> جوجل
                         </button>
-                        <button type="button" onclick="triggerSoonSocial()" class="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-extrabold py-3.5 rounded-2xl text-xs transition active:scale-95">
+                        <button type="button" onclick="showSoonModal()" class="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-extrabold py-3.5 rounded-2xl text-xs transition active:scale-95 shadow-sm">
                             <i class="fa-brands fa-facebook text-blue-500 text-sm"></i> فيسبوك
                         </button>
                     </div>
@@ -651,17 +564,19 @@
     <!-- Header -->
     <header class="glass-header sticky top-0 z-50">
         <div class="container mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3.5 cursor-pointer animate-fade-in" onclick="navigateHome()">
-                <!-- Hamburger menu trigger button -->
-                <button onclick="toggleSidebarMenu(); event.stopPropagation();" class="text-neutral-300 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-xl ml-0.5">
+            <div class="flex items-center gap-3.5 cursor-pointer">
+                <!-- Hamburger Menu Toggle Button -->
+                <button onclick="toggleSidebarMenu(); event.stopPropagation();" class="text-neutral-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-2xl flex items-center justify-center ml-1">
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
-                <div class="bg-gradient-to-tr from-brand-400 to-brand-500 text-white w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg">
-                    <i class="fa-solid fa-motorcycle text-xl"></i>
-                </div>
-                <div class="text-right">
-                    <span class="text-xl font-black text-white block leading-tight">العفرون <span class="text-brand-500">أونلاين</span></span>
-                    <span class="text-[10px] text-neutral-450 font-bold block uppercase tracking-wider">منصة التوصيل الذكية الأولى</span>
+                <div class="flex items-center gap-3.5" onclick="navigateHome()">
+                    <div class="bg-gradient-to-tr from-brand-400 to-brand-500 text-white w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-motorcycle text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xl font-black text-white block leading-tight">العفرون <span class="text-brand-500">أونلاين</span></span>
+                        <span class="text-[10px] text-neutral-450 font-bold block uppercase tracking-wider">منصة التوصيل الذكية الأولى</span>
+                    </div>
                 </div>
             </div>
 
@@ -814,7 +729,7 @@
                             <p class="text-xs text-neutral-400 text-center py-5 font-semibold">السلة فارغة، أضف بعض الأطباق</p>
                         </div>
 
-                        <!-- Location & Written Details -->
+                        <!-- Location & Written Details [3] -->
                         <div class="bg-white/5 p-4 rounded-2xl space-y-3.5 border border-white/5">
                             <span class="block text-xs font-black text-white"><i class="fa-solid fa-map-pin text-brand-500 ml-1"></i> حدد موقع التوصيل المطلوب:</span>
                             <button type="button" onclick="getCustomerLocation()" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-brand-500/10 active:scale-95">
@@ -836,25 +751,10 @@
                             </div>
                         </div>
 
-                        <!-- Distance, Subtotal and Grand Total Details -->
-                        <div class="space-y-2 border-t border-white/10 pt-4 text-xs font-semibold text-neutral-300">
-                            <div class="flex justify-between">
-                                <span>مجموع الوجبات:</span>
-                                <span id="cartSubtotal" class="text-white">0 د.ج</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-1">
-                                    <span>تكلفة التوصيل:</span>
-                                    <span id="shippingDistanceLabel" class="text-[9px] bg-white/5 text-brand-400 px-1.5 py-0.5 rounded border border-white/5">0 كم</span>
-                                </div>
-                                <span id="cartShippingCost" class="text-white">0 د.ج</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm font-black text-white pt-2 border-t border-white/5">
-                                <span>المجموع الكلي:</span>
-                                <span id="cartTotalPrice" class="text-2xl text-brand-500 font-black">0 د.ج</span>
-                            </div>
+                        <div class="border-t border-white/10 pt-4 flex justify-between items-center font-black text-white">
+                            <span class="text-sm">المجموع الكلي:</span>
+                            <span id="cartTotalPrice" class="text-2xl text-brand-500">0 د.ج</span>
                         </div>
-
                         <button onclick="submitOrder()" class="w-full btn-brand-gradient py-4 rounded-xl text-sm transition shadow-lg active:scale-95 text-white">
                             إرسال الطلب للمطعم <i class="fa-solid fa-paper-plane mr-1.5 text-xs"></i>
                         </button>
@@ -1257,6 +1157,69 @@
         </button>
     </div>
 
+    <!-- Slide-Out Sidebar Drawer -->
+    <div id="sidebarDrawer" class="fixed top-0 bottom-0 right-0 w-72 bg-dark-900 border-l border-white/5 z-[9990] translate-x-full drawer-transition flex flex-col justify-between shadow-2xl">
+        <div class="p-6 space-y-6 text-right">
+            <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                <span class="font-black text-white text-base">القائمة الجانبية</span>
+                <button onclick="toggleSidebarMenu()" class="text-neutral-400 hover:text-white text-lg p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <nav class="flex flex-col gap-2">
+                <button onclick="showSidebarPage('privacy')" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 text-right text-xs font-bold text-neutral-200 transition">
+                    <i class="fa-solid fa-shield-halved text-brand-500"></i> سياسة الخصوصية
+                </button>
+                <button onclick="showSidebarPage('shipping')" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 text-right text-xs font-bold text-neutral-200 transition">
+                    <i class="fa-solid fa-truck-fast text-brand-500"></i> سياسة الشحن
+                </button>
+                <button onclick="showSidebarPage('about')" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 text-right text-xs font-bold text-neutral-200 transition">
+                    <i class="fa-solid fa-circle-info text-brand-500"></i> من نحن
+                </button>
+                <button onclick="showSidebarPage('contact')" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 text-right text-xs font-bold text-neutral-200 transition">
+                    <i class="fa-solid fa-paper-plane text-brand-500"></i> اتصل بنا
+                </button>
+                <button onclick="showSidebarPage('bug')" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-white/5 text-right text-xs font-bold text-neutral-200 transition">
+                    <i class="fa-solid fa-triangle-exclamation text-brand-500"></i> الإبلاغ عن مشكلة
+                </button>
+            </nav>
+        </div>
+        <div class="p-6 border-t border-white/5 text-center text-[10px] text-neutral-500 font-bold">
+            العفرون أونلاين © 2026
+        </div>
+    </div>
+    <!-- Sidebar Backdrop -->
+    <div id="sidebarBackdrop" onclick="toggleSidebarMenu()" class="fixed inset-0 bg-black/60 z-[9989] hidden backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Professional Sidebar Pages Custom Modal -->
+    <div id="sidebarPageModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[9995] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="w-full max-w-lg glass-panel rounded-4xl p-6 md:p-8 text-right space-y-6 relative border border-white/5 bg-dark-900 shadow-2xl scale-95 opacity-0 transition-all duration-300" id="sidebarPageModalCard">
+            <button onclick="closeSidebarPageModal()" class="absolute top-5 left-5 text-neutral-400 hover:text-white transition-colors w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/5">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="sidebarPageTitle" class="text-xl font-black text-white mt-2">عنوان الصفحة</h3>
+            <div id="sidebarPageContent" class="text-sm text-neutral-300 leading-relaxed font-semibold max-h-[50vh] overflow-y-auto pr-1">
+                <!-- Content injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Soon Announcement Popup -->
+    <div id="soonFeatureModal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-[9999] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="w-full max-w-sm glass-panel rounded-4xl p-6 md:p-8 text-center space-y-6 relative border border-brand-500/30 bg-dark-900 shadow-2xl scale-95 opacity-0 transition-all duration-300" id="soonFeatureModalCard">
+            <div class="w-20 h-20 bg-brand-500/10 rounded-full flex items-center justify-center mx-auto text-brand-500 text-3xl border border-brand-500/10 animate-bounce">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-lg font-black text-white">هذه الميزة ستتوفر قريباً!</h3>
+                <p class="text-xs text-neutral-400 font-semibold leading-relaxed">نحن نعمل حالياً على تفعيل الدخول السريع وسنقوم بإطلاق هذه الميزة في التحديث القادم للمنصة.</p>
+            </div>
+            <button onclick="closeSoonModal()" class="w-full btn-brand-gradient py-3.5 rounded-2xl text-xs font-bold text-white shadow-lg active:scale-95 transition-all">
+                حسناً، بانتظارها!
+            </button>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-dark-950/70 border-t border-white/5 text-neutral-500 py-8 text-center text-xs hidden md:block z-10 relative">
         <div class="container mx-auto px-6 space-y-2">
@@ -1264,20 +1227,6 @@
             <p>© <span id="currentYear">2026</span> منصة العفرون أونلاين. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
-
-    <!-- Service Worker Registration for background performance -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    self.addEventListener('install', (e) => self.skipWaiting());
-                    self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => {});
-            });
-        }
-    </script>
 
     <!-- Firebase & Application Logic -->
     <script type="module">
@@ -1364,6 +1313,132 @@
                 console.warn("Audio Alert Context Error: ", e);
             }
         }
+
+        // Haversine Distance Calculator
+        function getDistanceKm(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's Radius
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Dynamic shipping cost structure
+        function calculateShippingCost(distance) {
+            if (distance <= 1.0) return 100;
+            if (distance <= 3.0) return 150;
+            if (distance <= 4.0) return 200;
+            if (distance <= 7.0) return 300;
+            if (distance <= 10.0) return 400;
+            return 500;
+        }
+
+        /* Sidebar Functions */
+        window.toggleSidebarMenu = function() {
+            const drawer = document.getElementById('sidebarDrawer');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            const isOpen = drawer.classList.contains('translate-x-0');
+            if (isOpen) {
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            } else {
+                backdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    drawer.classList.remove('translate-x-full');
+                    drawer.classList.add('translate-x-0');
+                    backdrop.classList.remove('opacity-0');
+                }, 10);
+            }
+        };
+
+        window.showSidebarPage = function(page) {
+            toggleSidebarMenu();
+            const modal = document.getElementById('sidebarPageModal');
+            const card = document.getElementById('sidebarPageModalCard');
+            const title = document.getElementById('sidebarPageTitle');
+            const content = document.getElementById('sidebarPageContent');
+
+            if (page === 'privacy') {
+                title.innerText = 'سياسة الخصوصية';
+                content.innerHTML = '<p class="space-y-4">نحن في منصة العفرون أونلاين نولي خصوصية بياناتكم أهمية بالغة. نجمع معلومات الاسم ورقم الهاتف والموقع الجغرافي فقط لتسليم طلبياتكم ولا نشاركها مع أي جهة خارجية.</p>';
+            } else if (page === 'shipping') {
+                title.innerText = 'سياسة الشحن والتوصيل';
+                content.innerHTML = `<p class="space-y-4">يتم احتساب سعر التوصيل بناءً على المسافة الدقيقة بين موقع المطعم وموقع الزبون:</p>
+                <ul class="mt-4 space-y-2 text-xs font-bold text-neutral-400">
+                    <li>• من 0 إلى 1 كم: 100 د.ج</li>
+                    <li>• من 1 إلى 3 كم: 150 د.ج</li>
+                    <li>• من 3 إلى 4 كم: 200 د.ج</li>
+                    <li>• من 5 إلى 7 كم: 300 د.ج</li>
+                    <li>• من 8 إلى 10 كم: 400 د.ج</li>
+                    <li>• أكثر من 10 كم: 500 د.ج</li>
+                </ul>`;
+            } else if (page === 'about') {
+                title.innerText = 'من نحن';
+                content.innerHTML = '<p class="space-y-4">منصة العفرون أونلاين هي المبادرة التقنية الأولى لتوصيل الطعام والطلبات بشكل ذكي في مدينة العفرون وضواحيها، نعمل بالتعاون مع أفضل المطاعم لتسهيل حياتكم اليومية.</p>';
+            } else if (page === 'contact') {
+                title.innerText = 'اتصل بنا';
+                content.innerHTML = '<p class="space-y-4">يمكنكم الاتصال بنا مباشرة لأي استفسار أو دعم:<br><br>رقم الهاتف: 0550XXXXXX<br>البريد الإلكتروني: contact@elaffroun-online.com</p>';
+            } else if (page === 'bug') {
+                title.innerText = 'الإبلاغ عن مشكلة';
+                content.innerHTML = `
+                <div class="space-y-4">
+                    <p>هل واجهت مشكلة تقنية؟ اكتب لنا التفاصيل لمراجعتها وإصلاحها فوراً:</p>
+                    <textarea id="bugText" rows="4" class="w-full px-4 py-3 rounded-2xl border text-xs font-semibold bg-white/5 text-white" placeholder="اكتب المشكلة هنا..."></textarea>
+                    <button onclick="submitBugReport()" class="w-full btn-brand-gradient py-3.5 rounded-xl text-xs font-bold text-white shadow-lg active:scale-95 transition-all">إرسال البلاغ</button>
+                </div>`;
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 50);
+        };
+
+        window.closeSidebarPageModal = function() {
+            const modal = document.getElementById('sidebarPageModal');
+            const card = document.getElementById('sidebarPageModalCard');
+            card.classList.add('scale-95', 'opacity-0');
+            card.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        };
+
+        window.submitBugReport = function() {
+            const bug = document.getElementById('bugText').value.trim();
+            if(!bug) {
+                Swal.fire('خطأ', 'يرجى ملء تفاصيل البلاغ أولاً.', 'warning');
+                return;
+            }
+            closeSidebarPageModal();
+            Swal.fire('تم الإرسال', 'شكراً لمساهمتكم، جاري معالجة المشكلة من قبل فريقنا الفني.', 'success');
+        };
+
+        /* Soon Modal Logic */
+        window.showSoonModal = function() {
+            const modal = document.getElementById('soonFeatureModal');
+            const card = document.getElementById('soonFeatureModalCard');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 50);
+        };
+        window.closeSoonModal = function() {
+            const modal = document.getElementById('soonFeatureModal');
+            const card = document.getElementById('soonFeatureModalCard');
+            card.classList.add('scale-95', 'opacity-0');
+            card.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        };
 
         function showLoading(show) {
             const loader = document.getElementById('loadingOverlay');
@@ -1503,20 +1578,17 @@
             const tabLogin = document.getElementById('tabLogin');
             const tabRegister = document.getElementById('tabRegister');
             const regFields = document.getElementById('registerFields');
-            const regExtraFields = document.getElementById('registerExtraFields');
             const submitBtn = document.getElementById('authSubmitBtn');
 
             if (tab === 'login') {
                 tabLogin.className = "flex-1 py-4 text-center border-b-[3px] border-brand-500 font-black text-white text-sm transition-all";
                 tabRegister.className = "flex-1 py-4 text-center border-b-[3px] border-transparent text-neutral-400 font-black hover:text-white text-sm transition-all";
                 regFields.classList.add('hidden');
-                regExtraFields.classList.add('hidden');
                 submitBtn.innerText = "تسجيل الدخول";
             } else {
                 tabRegister.className = "flex-1 py-4 text-center border-b-[3px] border-brand-500 font-black text-white text-sm transition-all";
                 tabLogin.className = "flex-1 py-4 text-center border-b-[3px] border-transparent text-neutral-400 font-black hover:text-white text-sm transition-all";
                 regFields.classList.remove('hidden');
-                regExtraFields.classList.remove('hidden');
                 submitBtn.innerText = "إنشاء حساب";
             }
         };
@@ -1535,21 +1607,21 @@
                 } else {
                     const name = document.getElementById('regName').value.trim();
                     const phone = document.getElementById('regPhone').value.trim();
-                    const confirmPassword = document.getElementById('regConfirmPassword').value;
-                    const termsCheck = document.getElementById('regTerms').checked;
                     const city = document.getElementById('regCity').value;
                     const role = document.getElementById('regRole').value;
+                    const confirmPassword = document.getElementById('regConfirmPassword').value;
+                    const termsChecked = document.getElementById('regTerms').checked;
 
                     if(!name || !phone) {
-                        Swal.fire('حقول ناقصة', 'يرجى إدخال الاسم الكامل ورقم الهاتف.', 'warning');
+                        Swal.fire('حقول غير مكتملة', 'يرجى إدخال الاسم ورقم الهاتف.', 'warning');
                         return;
                     }
-                    if (password !== confirmPassword) {
-                        Swal.fire('خطأ في المطابقة', 'كلمة المرور غير متطابقة مع حقل التأكيد.', 'error');
+                    if(password !== confirmPassword) {
+                        Swal.fire('تنبيه', 'كلمتا المرور غير متطابقتين.', 'warning');
                         return;
                     }
-                    if (!termsCheck) {
-                        Swal.fire('اتفاقية الاستخدام', 'يرجى الموافقة على شروط الاستخدام وسياسة الخصوصية.', 'warning');
+                    if(!termsChecked) {
+                        Swal.fire('تنبيه', 'يجب الموافقة على شروط الاستخدام للمتابعة.', 'warning');
                         return;
                     }
 
@@ -1579,7 +1651,7 @@
                             phone: phone,
                             image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600",
                             isOpen: false,
-                            location: { lat: 36.4690, lng: 2.6280 }, // Default center coordinate
+                            location: { lat: 36.4690, lng: 2.6280 }, // Default coordinate centered
                             rating: 0,
                             ratingCount: 0,
                             totalRatingSum: 0
@@ -1590,7 +1662,7 @@
                     Swal.fire('نجاح', 'تم إنشاء الحساب بنجاح!', 'success');
                 }
             } catch (err) {
-                Swal.fire('خطأ', 'البريد مستخدم بالفعل أو كلمة المرور ضعيفة.', 'error');
+                Swal.fire('خطأ', 'تحقق من البريد وكلمة المرور.', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1620,149 +1692,6 @@
             }
         };
 
-        /* ================= HAVERSINE DISTANCE & SHIPPING FEE CALCULATION ================= */
-        function getDistanceKm(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth radius in KM
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; 
-        }
-
-        function calculateShippingFee(distance) {
-            if (distance <= 1.0) return 100;
-            if (distance <= 3.0) return 150;
-            if (distance <= 4.0) return 200;
-            if (distance <= 7.0) return 300;
-            if (distance <= 10.0) return 400;
-            return 500; // Above 10 km
-        }
-
-        /* ================= SIDEBAR NAVIGATION DRAWER ================= */
-        window.toggleSidebarMenu = function() {
-            const sidebar = document.getElementById('appSidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const isOpen = !sidebar.classList.contains('translate-x-full');
-
-            if (isOpen) {
-                sidebar.classList.add('translate-x-full');
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-            } else {
-                overlay.classList.remove('hidden');
-                setTimeout(() => {
-                    sidebar.classList.remove('translate-x-full');
-                    overlay.classList.remove('opacity-0');
-                }, 10);
-            }
-        };
-
-        window.showSidebarPage = function(pageId) {
-            const modal = document.getElementById('infoPagesModal');
-            const iconContainer = document.getElementById('infoModalIcon');
-            const titleEl = document.getElementById('infoModalTitle');
-            const contentEl = document.getElementById('infoModalContent');
-
-            toggleSidebarMenu(); // Close Sidebar
-
-            let title = "";
-            let iconHtml = '<i class="fa-solid fa-circle-info"></i>';
-            let contentHtml = "";
-
-            if (pageId === 'about') {
-                title = "من نحن";
-                iconHtml = '<i class="fa-solid fa-users"></i>';
-                contentHtml = `
-                    <div class="space-y-4">
-                        <p>العفرون أونلاين هي المنصة التقنية الرائدة والأولى من نوعها في مدينة العفرون لتسهيل وتسريع عمليات توصيل الوجبات الغذائية والأطباق الطازجة من مطابخ ومطاعم المدينة مباشرة إلى عتبة منزلك.</p>
-                        <p>تعتمد منصتنا على أحدث تقنيات تتبع المواقع والبث الجغرافي المباشر لضمان وصول طلبك حاراً وبأقصى سرعة ممكنة، مع توفير تجربة مستخدم عصرية وفاخرة تليق بأهالي العفرون الكرام.</p>
-                    </div>`;
-            } else if (pageId === 'shipping_info') {
-                title = "سياسة الشحن والتوصيل";
-                iconHtml = '<i class="fa-solid fa-truck-fast"></i>';
-                contentHtml = `
-                    <div class="space-y-4">
-                        <p>يتم احتساب تكلفة التوصيل في منصتنا تلقائياً وبأقصى درجات العدالة والشفافية بناءً على المسافة الجغرافية المستقيمة بين موقع المطعم وموقعك المحدد على الخريطة، وفق جدول التسعير التالي:</p>
-                        <div class="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2 font-mono text-xs">
-                            <div class="flex justify-between border-b border-white/5 pb-1.5"><span>من 0 إلى 1 كم</span><span class="text-brand-450 font-bold">100 د.ج</span></div>
-                            <div class="flex justify-between border-b border-white/5 pb-1.5"><span>من 1.1 إلى 3 كم</span><span class="text-brand-450 font-bold">150 د.ج</span></div>
-                            <div class="flex justify-between border-b border-white/5 pb-1.5"><span>من 3.1 إلى 4 كم</span><span class="text-brand-450 font-bold">200 د.ج</span></div>
-                            <div class="flex justify-between border-b border-white/5 pb-1.5"><span>من 4.1 إلى 7 كم</span><span class="text-brand-450 font-bold">300 د.ج</span></div>
-                            <div class="flex justify-between border-b border-white/5 pb-1.5"><span>من 7.1 إلى 10 كم</span><span class="text-brand-450 font-bold">400 د.ج</span></div>
-                            <div class="flex justify-between"><span>أكثر من 10 كم</span><span class="text-brand-450 font-bold">500 د.ج</span></div>
-                        </div>
-                        <p class="text-xs text-neutral-400">يسعى مناديب التوصيل لدينا لتسليم وجباتكم في مدة لا تتجاوز 25 إلى 45 دقيقة من لحظة تجهيز المطعم للطلب.</p>
-                    </div>`;
-            } else if (pageId === 'privacy') {
-                title = "سياسة الخصوصية";
-                iconHtml = '<i class="fa-solid fa-user-shield"></i>';
-                contentHtml = `
-                    <div class="space-y-4">
-                        <p>تلتزم منصة العفرون أونلاين بحماية بياناتك الشخصية ومعلوماتك الجغرافية بأقصى درجات الأمان السرية الرقمية.</p>
-                        <p>نحن نقوم بجمع واستخدام اسمك ورقم هاتفك وموقعك الجغرافي فقط لغرض إتمام طلبك بنجاح، وتقديم الخدمة وتأمين مسار المندوب للوصول إليك. لا يتم بيع أو مشاركة بياناتك مع أي طرف خارجي تحت أي ظرف.</p>
-                    </div>`;
-            } else if (pageId === 'terms') {
-                title = "شروط الاستخدام";
-                iconHtml = '<i class="fa-solid fa-file-contract"></i>';
-                contentHtml = `
-                    <div class="space-y-4">
-                        <p>باستخدامك لمنصة العفرون أونلاين، فإنك توافق على الالتزام بشروطنا المتمثلة في تقديم معلومات صحيحة ودقيقة (الاسم، الهاتف، وموقع التوصيل على الخريطة)، والالتزام باستلام وجبتك فور وصول المندوب.</p>
-                        <p>تحتفظ الإدارة بالحق الكامل في تقييد أو حظر أي حساب يسيء استخدام خدمات المنصة أو يتخلف عن استلام الطلبات دون عذر مبرر.</p>
-                    </div>`;
-            } else if (pageId === 'contact') {
-                title = "اتصل بنا";
-                iconHtml = '<i class="fa-solid fa-headset"></i>';
-                contentHtml = `
-                    <div class="space-y-4">
-                        <p>يسعدنا دائماً الاستماع إلى استفساراتكم أو اقتراحاتكم لتطوير الخدمة في العفرون:</p>
-                        <div class="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-3">
-                            <p class="flex items-center gap-2"><i class="fa-solid fa-phone text-brand-500 w-5"></i> الرقم الأخضر: <span class="font-bold font-mono">0550 00 00 00</span></p>
-                            <p class="flex items-center gap-2"><i class="fa-solid fa-envelope text-brand-500 w-5"></i> البريد: <span class="font-bold font-mono">support@elaffroun.online</span></p>
-                            <p class="flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-brand-500 w-5"></i> المقر الرئيسي: العفرون، ولاية البليدة</p>
-                        </div>
-                    </div>`;
-            } else if (pageId === 'report_bug') {
-                title = "الإبلاغ عن مشكلة";
-                iconHtml = '<i class="fa-solid fa-bug-slash"></i>';
-                contentHtml = `
-                    <div class="space-y-4">
-                        <p>هل واجهت عطلاً تقنياً أو مشكلة في التطبيق؟ يرجى كتابة تفاصيلها لمساعدتنا في إصلاحها فوراً:</p>
-                        <textarea id="bugDetails" rows="4" class="w-full px-4 py-3 rounded-2xl border text-xs bg-white/5 text-white" placeholder="يرجى وصف المشكلة هنا بالتفصيل..."></textarea>
-                        <button onclick="submitBugReport()" class="w-full btn-brand-gradient py-3 rounded-2xl text-xs text-white">إرسال التقرير للدعم الفني</button>
-                    </div>`;
-            }
-
-            iconContainer.innerHTML = iconHtml;
-            titleEl.innerText = title;
-            contentEl.innerHTML = contentHtml;
-
-            modal.classList.remove('hidden');
-        };
-
-        window.closeInfoPagesModal = function() {
-            document.getElementById('infoPagesModal').classList.add('hidden');
-        };
-
-        window.submitBugReport = function() {
-            const bug = document.getElementById('bugDetails').value.trim();
-            if (!bug) {
-                Swal.fire('خطأ', 'يرجى كتابة تفاصيل المشكلة أولاً.', 'warning');
-                return;
-            }
-            closeInfoPagesModal();
-            Swal.fire('تم الاستلام', 'نشكرك على الإبلاغ، تم إرسال تقرير المشكلة بنجاح لمهندسينا للتعامل معها.', 'success');
-        };
-
-        window.triggerSoonSocial = function() {
-            document.getElementById('soonModal').classList.remove('hidden');
-        };
-        window.closeSoonModal = function() {
-            document.getElementById('soonModal').classList.add('hidden');
-        };
-
         /* ================= CUSTOMER ================= */
         function loadCustomerDashboard() {
             document.getElementById('customerHome').classList.remove('hidden');
@@ -1775,7 +1704,7 @@
 
                 if (snapshot.empty) {
                     grid.innerHTML = `
-                        <div class="col-span-full text-center py-16 bg-white/5 border border-white/5 rounded-3xl text-neutral-400 font-semibold animate-pulse">
+                        <div class="col-span-full text-center py-16 bg-white/5 border border-white/5 rounded-3xl text-neutral-400 font-semibold">
                             <i class="fa-solid fa-store-slash text-5xl mb-4 block text-neutral-500"></i>
                             لا تتوفر حالياً مطاعم مفتوحة بمدينة العفرون.
                         </div>`;
@@ -2056,15 +1985,13 @@
         function initInteractiveLocationMap() {
             const defaultLat = 36.4694;
             const defaultLng = 2.6247;
-            if (!customerCoordinates) {
-                customerCoordinates = { lat: defaultLat, lng: defaultLng };
-            }
+            customerCoordinates = { lat: defaultLat, lng: defaultLng };
 
             if (!interactiveSelectMap) {
-                interactiveSelectMap = L.map('interactiveLocationMap').setView([customerCoordinates.lat, customerCoordinates.lng], 14);
+                interactiveSelectMap = L.map('interactiveLocationMap').setView([defaultLat, defaultLng], 14);
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(interactiveSelectMap);
 
-                interactiveLocationMarker = L.marker([customerCoordinates.lat, customerCoordinates.lng], { draggable: true }).addTo(interactiveSelectMap)
+                interactiveLocationMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(interactiveSelectMap)
                     .bindPopup("<strong class='text-brand-500 font-bold'>اسحبني فوق موقعك بدقة</strong>").openPopup();
 
                 interactiveLocationMarker.on('dragend', function (event) {
@@ -2072,11 +1999,11 @@
                     const position = marker.getLatLng();
                     customerCoordinates = { lat: position.lat, lng: position.lng };
                     document.getElementById('coordinatesText').innerText = `الموقع المحدد: ${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}`;
-                    updateCartUI(); // Recalculate shipping instantly on coordinates drag change
+                    updateCartUI(); // Trigger UI recalculation for delivery distance
                 });
             } else {
-                interactiveLocationMarker.setLatLng([customerCoordinates.lat, customerCoordinates.lng]);
-                interactiveSelectMap.setView([customerCoordinates.lat, customerCoordinates.lng], 14);
+                interactiveLocationMarker.setLatLng([defaultLat, defaultLng]);
+                interactiveSelectMap.setView([defaultLat, defaultLng], 14);
                 interactiveSelectMap.invalidateSize();
             }
         }
@@ -2108,26 +2035,20 @@
 
         function updateCartUI() {
             const list = document.getElementById('cartItemsList');
-            const subtotalText = document.getElementById('cartSubtotal');
-            const shippingText = document.getElementById('cartShippingCost');
-            const distanceLabel = document.getElementById('shippingDistanceLabel');
-            const grandTotalText = document.getElementById('cartTotalPrice');
+            const totalText = document.getElementById('cartTotalPrice');
             list.innerHTML = "";
 
             if (customerCart.length === 0) {
                 list.innerHTML = `<p class="text-xs text-neutral-400 text-center py-5 font-semibold">السلة فارغة، أضف بعض الأطباق</p>`;
-                subtotalText.innerText = "0 د.ج";
-                shippingText.innerText = "0 د.ج";
-                distanceLabel.innerText = "0 كم";
-                grandTotalText.innerText = "0 د.ج";
+                totalText.innerText = "0 د.ج";
                 updateMobileCartBar(0, 0);
                 return;
             }
 
-            let subtotal = 0;
+            let total = 0;
             let totalQty = 0;
             customerCart.forEach((item, index) => {
-                subtotal += (item.price * item.quantity);
+                total += (item.price * item.quantity);
                 totalQty += item.quantity;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = "flex items-center justify-between text-xs border-b border-white/5 pb-2.5";
@@ -2149,24 +2070,32 @@
                 list.appendChild(itemDiv);
             });
 
-            // Dynamic Shipping Fee Calculation
+            // Calculate Shipping dynamically based on selected address & restaurant coordinates
             let shippingFee = 150; // Fallback
-            let distance = 0;
-            const clientLoc = customerCoordinates || { lat: 36.4694, lng: 2.6247 };
-            const shopLoc = (selectedRestaurantData && selectedRestaurantData.location) ? selectedRestaurantData.location : { lat: 36.4690, lng: 2.6280 };
+            let distanceStr = "";
+            if (selectedRestaurantData && selectedRestaurantData.location && customerCoordinates) {
+                const dist = getDistanceKm(
+                    selectedRestaurantData.location.lat,
+                    selectedRestaurantData.location.lng,
+                    customerCoordinates.lat,
+                    customerCoordinates.lng
+                );
+                shippingFee = calculateShippingCost(dist);
+                distanceStr = ` (${dist.toFixed(1)} كم)`;
+            }
 
-            distance = getDistanceKm(shopLoc.lat, shopLoc.lng, clientLoc.lat, clientLoc.lng);
-            shippingFee = calculateShippingFee(distance);
+            // Beautifully append dynamic shipping details row inside checkout UI
+            const shippingDiv = document.createElement('div');
+            shippingDiv.className = "flex items-center justify-between text-xs text-neutral-400 pt-2 border-t border-dashed border-white/5";
+            shippingDiv.innerHTML = `
+                <span>سعر التوصيل${distanceStr}:</span>
+                <span class="font-bold text-white">${shippingFee} د.ج</span>
+            `;
+            list.appendChild(shippingDiv);
 
-            // UI Render Updates
-            subtotalText.innerText = `${subtotal} د.ج`;
-            shippingText.innerText = `${shippingFee} د.ج`;
-            distanceLabel.innerText = `${distance.toFixed(1)} كم`;
-
-            const grandTotal = subtotal + shippingFee;
-            grandTotalText.innerText = `${grandTotal} د.ج`;
-
-            updateMobileCartBar(grandTotal, totalQty);
+            const finalTotal = total + shippingFee;
+            totalText.innerText = `${finalTotal} د.ج`;
+            updateMobileCartBar(finalTotal, totalQty);
         }
 
         function updateMobileCartBar(total, qty) {
@@ -2236,7 +2165,7 @@
                 interactiveSelectMap.setView([lat, lng], 16);
                 setTimeout(() => interactiveSelectMap.invalidateSize(), 200);
             }
-            updateCartUI(); // Recalculate distance price immediately after GPS updates
+            updateCartUI(); // Trigger UI shipping update
         }
 
         window.submitOrder = async function() {
@@ -2260,10 +2189,10 @@
                 localStorage.removeItem('hasReportedCurrent');
                 updateReportingButtonsState();
 
-                // Shipping fee logic
-                const shopLoc = (selectedRestaurantData && selectedRestaurantData.location) ? selectedRestaurantData.location : { lat: 36.4690, lng: 2.6280 };
+                // Dynamic shipping fee logic
+                const shopLoc = selectedRestaurantData.location || { lat: 36.4690, lng: 2.6280 };
                 const distanceVal = getDistanceKm(shopLoc.lat, shopLoc.lng, finalLoc.lat, finalLoc.lng);
-                const finalShippingCost = calculateShippingFee(distanceVal);
+                const finalShippingCost = calculateShippingCost(distanceVal);
 
                 const orderId = "ORD-" + Math.floor(Math.random() * 900000 + 100000);
                 const orderData = {
@@ -2278,8 +2207,7 @@
                     restaurantName: selectedRestaurantData.name,
                     restaurantLoc: shopLoc,
                     items: customerCart,
-                    shippingCost: finalShippingCost,
-                    distance: distanceVal,
+                    shippingCost: finalShippingCost, // Store dynamic calculated fee inside database
                     status: 'pending',
                     isRated: false,
                     createdAt: new Date().toISOString()
@@ -2790,7 +2718,6 @@
                                 <p><strong>الزبون:</strong> ${order.customerName}</p>
                                 <p><strong>الهاتف:</strong> <a href="tel:${order.customerPhone}" class="text-blue-400 font-black underline">${order.customerPhone}</a></p>
                                 <p><strong>العنوان كتابةً:</strong> ${order.customerAddress || 'غير مدرج'}</p>
-                                <p><strong>سعر الشحن للمندوب:</strong> <span class="text-emerald-400 font-bold text-sm">${order.shippingCost || 0} د.ج</span> (${(order.distance || 0).toFixed(1)} كم)</p>
                                 <p><strong>المصدر:</strong> ${order.restaurantName}</p>
                             </div>
                             <button onclick="completeDeliveryTask('${order.id}')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3.5 rounded-2xl text-xs transition active:scale-95">

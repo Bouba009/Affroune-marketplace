@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -258,7 +259,7 @@
                     <!-- رقم الهاتف المطلوب للزبون والمندوب في التسجيل -->
                     <div id="regPhoneField" class="hidden flex flex-col gap-1">
                         <label class="text-xs font-bold text-gray-500 dark:text-gray-300">رقم الهاتف</label>
-                        <input type="tel" id="authPhone" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="0555-555-555">
+                        <input type="tel" id="authPhone" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="0550123456">
                     </div>
 
                     <div class="flex flex-col gap-1">
@@ -429,7 +430,7 @@
                         <div class="flex justify-between items-center">
                             <h4 class="font-bold text-sm text-primary flex items-center gap-1"><i class="fa-solid fa-truck-ramp-box"></i> الطلب النشط الذي تقوم بتوصيله حالياً</h4>
                             <div class="flex gap-2">
-                                <a id="driverCallClientBtn" href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-phone"></i> اتصل للتأكيد</a>
+                                <a id="driverCallClientBtn" href="#" class="hidden bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-phone"></i> اتصل للتأكيد</a>
                             </div>
                         </div>
                         
@@ -1110,7 +1111,7 @@
             document.body.classList.remove('dark');
         }
 
-        // إظهار التنبيه المنبثق للمتصفح بعد حذف شريط التنبيهات العلوي
+        // إظهار التنبيه التنبيهي للمتصفح بعد حذف شريط التنبيهات العلوي
         window.showToast = function(message) {
             alert(message);
         };
@@ -1277,7 +1278,7 @@
                         return;
                     }
                     if (!phone) {
-                        showToast("الرجاء إدخال رقم الهاتف الجوال.");
+                        showToast("الرجاء إدخال رقم الهاتف الجوال الحقيقي.");
                         return;
                     }
                     if (password !== passwordConfirm) {
@@ -1771,6 +1772,7 @@
             L.tileLayer(getMapTiles(isDark)).addTo(map);
         }
 
+        // إرجاع خريطة ممتدة لكامل الطول المتاح تحت الهيدر
         function setupMapInstance(id, isDark) {
             const map = L.map(id, { zoomControl: false, attributionControl: false }).setView(elAffrounCenter, 14);
             L.tileLayer(getMapTiles(isDark)).addTo(map);
@@ -1849,23 +1851,40 @@
                             }
                         } else {
                             document.getElementById('custChatFAB').classList.remove('hidden');
-                            document.getElementById('custCallDriverBtn').classList.remove('hidden');
                             
                             if (latest.status === 'accepted') {
                                 banner.style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)"; 
                                 bannerText.innerText = `تم قبول طلبك بواسطة عامل التوصيل: ${latest.driverName} ✅`;
-                                custCallBtn.classList.remove('hidden');
-                                custCallBtn.href = `tel:${latest.driverPhone || '0555555555'}`; // الاتصال برقم السائق الحقيقي
+                                
+                                // الاتصال الهاتفي الفعلي برقم السائق الحقيقي المسجل في الطلب
+                                if (latest.driverPhone) {
+                                    custCallBtn.classList.remove('hidden');
+                                    custCallBtn.href = `tel:${latest.driverPhone}`;
+                                } else {
+                                    custCallBtn.classList.add('hidden');
+                                }
                             } else if (latest.status === 'to_store') {
                                 banner.style.background = "linear-gradient(135deg, #dc2626, #b91c1c)"; 
                                 bannerText.innerText = `${latest.driverName}: أنا في الطريق للمطعم / المتجر الآن 🏃‍♂️`;
-                                custCallBtn.classList.remove('hidden');
-                                custCallBtn.href = `tel:${latest.driverPhone || '0555555555'}`; // الاتصال برقم السائق الحقيقي
+                                
+                                // الاتصال الهاتفي الفعلي برقم السائق الحقيقي المسجل في الطلب
+                                if (latest.driverPhone) {
+                                    custCallBtn.classList.remove('hidden');
+                                    custCallBtn.href = `tel:${latest.driverPhone}`;
+                                } else {
+                                    custCallBtn.classList.add('hidden');
+                                }
                             } else if (latest.status === 'received') {
                                 banner.style.background = "linear-gradient(135deg, #f97316, #ea580c)"; 
                                 bannerText.innerText = `${latest.driverName}: تم استلام طلبك وأنا في الطريق إليك الآن 🛵`;
-                                custCallBtn.classList.remove('hidden');
-                                custCallBtn.href = `tel:${latest.driverPhone || '0555555555'}`; // الاتصال برقم السائق الحقيقي
+                                
+                                // الاتصال الهاتفي الفعلي برقم السائق الحقيقي المسجل في الطلب
+                                if (latest.driverPhone) {
+                                    custCallBtn.classList.remove('hidden');
+                                    custCallBtn.href = `tel:${latest.driverPhone}`;
+                                } else {
+                                    custCallBtn.classList.add('hidden');
+                                }
                             } else if (latest.status === 'delivered') {
                                 banner.style.background = "linear-gradient(135deg, #16161f, #0d0d11)"; 
                                 bannerText.innerHTML = `
@@ -2217,7 +2236,14 @@
                     statsBox.classList.add('hidden'); 
 
                     document.getElementById('driverChatFAB').classList.remove('hidden');
-                    document.getElementById('driverCallClientBtn').href = `tel:${assignedOrder.customerPhone || '0555555555'}`; // الاتصال برقم الزبون الحقيقي
+                    
+                    // الاتصال الهاتفي الفعلي برقم الزبون الحقيقي المسجل في الطلب
+                    if (assignedOrder.customerPhone) {
+                        document.getElementById('driverCallClientBtn').classList.remove('hidden');
+                        document.getElementById('driverCallClientBtn').href = `tel:${assignedOrder.customerPhone}`;
+                    } else {
+                        document.getElementById('driverCallClientBtn').classList.add('hidden');
+                    }
                     
                     highlightActiveStatusBtn(assignedOrder.status);
 
@@ -2391,11 +2417,18 @@
         async function acceptOverlayOrder() {
             if (!activeIncomingOrderId) return;
             try {
+                // التحقق الصارم من وجود رقم هاتف حقيقي للمندوب قبل قبول الطلبية
+                const driverPhone = currentUserData && currentUserData.phoneNumber ? currentUserData.phoneNumber.trim() : "";
+                if (!driverPhone) {
+                    showToast("خطأ: لم يتم العثور على رقم هاتفك الفعلي والمسجل كمندوب. يرجى تعديله وحفظه من الملف الشخصي أولاً لتتمكن من التواصل الهاتفي بالزبون.");
+                    return;
+                }
+
                 await updateDoc(doc(db, "orders", activeIncomingOrderId), {
                     status: 'accepted',
                     driverId: currentUser.uid,
                     driverName: currentUser.displayName || 'عامل التوصيل',
-                    driverPhone: currentUserData ? (currentUserData.phoneNumber || '0555555555') : '0555555555' // إرفاق رقم الهاتف الحقيقي للسائق بالطلب
+                    driverPhone: driverPhone // إرفاق رقم الهاتف الحقيقي والفعلي للسائق بالطلب للتواصل المباشر
                 });
                 
                 showToast("تم قبول طلب التوصيل بنجاح!");
@@ -2598,7 +2631,7 @@
             const avatarInput = document.getElementById('profileModalAvatarFile');
 
             if (!name || !phone) {
-                showToast("الرجاء إدخال الاسم ورقم الهاتف.");
+                showToast("الرجاء إدخال الاسم ورقم الهاتف الفعلي.");
                 return;
             }
 
@@ -2717,6 +2750,13 @@
                 return;
             }
 
+            // التحقق الصارم من وجود رقم هاتف حقيقي للزبون قبل إتمام الطلب ومنع استخدام أرقام افتراضية
+            const customerPhone = currentUserData && currentUserData.phoneNumber ? currentUserData.phoneNumber.trim() : "";
+            if (!customerPhone) {
+                showToast("خطأ: لم يتم العثور على رقم هاتفك الفعلي في حسابك. يرجى تحديث رقم هاتفك الفعلي وحفظه من خلال نافذة تعديل الملف الشخصي (بالضغط على صورتك بالهيدر) لتتمكن من إجراء طلبات التوصيل وتأكيدها هاتفياً.");
+                return;
+            }
+
             const calculatedPriceText = document.getElementById('calculatedPrice').innerText;
             const price = parseInt(calculatedPriceText);
             const note = document.getElementById('orderNote').value.trim();
@@ -2735,7 +2775,7 @@
                     lng: currentGPSLocation.lng,
                     customerId: currentUser.uid,
                     customerName: currentUser.displayName || 'زبون العفرون',
-                    customerPhone: currentUserData ? (currentUserData.phoneNumber || '0555555555') : '0555555555', // إرفاق رقم الهاتف الحقيقي للزبون بالطلب
+                    customerPhone: customerPhone, // استخدام رقم الهاتف الحقيقي المسجل والمتحقق منه
                     status: 'pending',
                     createdAt: new Date().toISOString()
                 });

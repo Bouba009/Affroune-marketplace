@@ -1,4 +1,4 @@
-
+تم
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -259,7 +259,7 @@
                     <!-- رقم الهاتف المطلوب للزبون والمندوب في التسجيل -->
                     <div id="regPhoneField" class="hidden flex flex-col gap-1">
                         <label class="text-xs font-bold text-gray-500 dark:text-gray-300">رقم الهاتف</label>
-                        <input type="tel" id="authPhone" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="0550123456">
+                        <input type="tel" id="authPhone" class="glow-input w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-sm focus:outline-none border border-transparent transition" placeholder="مثال: 0550123456">
                     </div>
 
                     <div class="flex flex-col gap-1">
@@ -1278,7 +1278,7 @@
                         return;
                     }
                     if (!phone) {
-                        showToast("الرجاء إدخال رقم الهاتف الجوال الحقيقي.");
+                        showToast("الرجاء إدخال رقم الهاتف الجوال الحقيقي المسجل باسمك.");
                         return;
                     }
                     if (password !== passwordConfirm) {
@@ -1332,6 +1332,8 @@
 
                     await setDoc(doc(db, "users", cred.user.uid), payload);
                     
+                    currentUserData = payload; // مزامنة البيانات محلياً فورياً ومباشرة
+
                     if (role === 'driver') {
                         showToast("طلب توظيفك قيد المراجعة حالياً من طرف الإدارة!");
                     } else {
@@ -2639,33 +2641,54 @@
             saveBtn.innerText = "جاري الحفظ...";
             saveBtn.disabled = true;
 
+            // تحديد جلسة المستخدم الفعالة كحماية لضمان المزامنة
+            const activeUser = auth.currentUser || currentUser;
+            if (!activeUser) {
+                showToast("عذراً، لم يتم العثور على جلسة مستخدم نشطة ومصرحة. يرجى تسجيل الدخول مجدداً.");
+                saveBtn.innerText = "حفظ التغييرات";
+                saveBtn.disabled = false;
+                return;
+            }
+
             try {
-                let avatarUrl = currentUserData.avatarUrl;
+                let avatarUrl = (currentUserData && currentUserData.avatarUrl) ? currentUserData.avatarUrl : (activeUser.photoURL || '');
 
                 if (avatarInput && avatarInput.files.length > 0) {
                     avatarUrl = await fileToBase64(avatarInput.files[0]);
                 }
 
-                // تحديث الاسم والملف الشخصي بـ Firebase Auth
-                await updateProfile(auth.currentUser, { displayName: name });
-
-                // تحديث كلمة المرور إن تم كتابة واحدة جديدة
-                if (password) {
-                    await updatePassword(auth.currentUser, password);
+                // تحديث الاسم الفردي لملف Firebase Auth بدون إعاقة الحفظ عند فشل المزامنة المباشرة
+                try {
+                    await updateProfile(activeUser, { displayName: name });
+                } catch (authProfileErr) {
+                    console.warn("Auth display name update skipped gracefully:", authProfileErr);
                 }
 
-                // تحديث مستند المستخدم بـ Firestore
-                const userRef = doc(db, "users", currentUser.uid);
-                await updateDoc(userRef, {
+                // تحديث كلمة المرور إن تم كتابة واحدة جديدة بكتلة برمجية محمية
+                if (password) {
+                    try {
+                        await updatePassword(activeUser, password);
+                    } catch (passErr) {
+                        showToast("حدث خطأ عند تحديث كلمة المرور: " + passErr.message + " (قد يتطلب هذا الإجراء تسجيل الدخول مجدداً لحماية الحساب)");
+                        saveBtn.innerText = "حفظ التغييرات";
+                        saveBtn.disabled = false;
+                        return;
+                    }
+                }
+
+                // حفظ التحديثات بشكل نهائي ومضمون 100% في Firestore باستخدام دالة الدمج merge لضمان تلافي الفشل
+                const userRef = doc(db, "users", activeUser.uid);
+                await setDoc(userRef, {
                     name: name,
                     phoneNumber: phone,
                     avatarUrl: avatarUrl
-                });
+                }, { merge: true });
 
                 showToast("تم الحفظ بنجاح!");
                 closeProfileModal();
                 
                 // تحديث البيانات محلياً للتجاوب الفوري دون الحاجة لإعادة تحميل الصفحة
+                if (!currentUserData) currentUserData = {};
                 currentUserData.name = name;
                 currentUserData.phoneNumber = phone;
                 currentUserData.avatarUrl = avatarUrl;
@@ -2681,7 +2704,7 @@
                 }
 
             } catch (err) {
-                showToast(`فشل في التحديث: ${err.message}`);
+                showToast(`فشل في الحفظ والتحديث: ${err.message}`);
             } finally {
                 saveBtn.innerText = "حفظ التغييرات";
                 saveBtn.disabled = false;

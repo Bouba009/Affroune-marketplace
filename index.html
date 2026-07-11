@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -315,8 +314,8 @@
                 </button>
             </div>
 
-            <!-- Floating Action Button (+ اطلب الآن) -->
-            <button onclick="openNewOrderModal()" class="absolute bottom-6 right-6 bg-primary hover:bg-primaryDark text-white px-5 py-4 rounded-full flex items-center gap-2.5 shadow-2xl z-40 transition transform hover:-translate-y-1">
+            <!-- Floating Action Button (+ اطلب الآن) - تمت إزاحته للأعلى لتجنب الاختفاء تحت إطار ويب الهاتف -->
+            <button onclick="openNewOrderModal()" class="absolute bottom-24 right-6 bg-primary hover:bg-primaryDark text-white px-5 py-4 rounded-full flex items-center gap-2.5 shadow-2xl z-40 transition transform hover:-translate-y-1">
                 <i class="fa-solid fa-circle-plus text-xl animate-spin" style="animation-duration: 4s;"></i>
                 <span class="font-black text-xs tracking-wide">اطلب الآن</span>
             </button>
@@ -762,14 +761,14 @@
     <!-- FLOATING CHAT ELEMENTS (المحادثة الحية المثبتة بشكل مطلق خارج حاويات التحويل) -->
     <!-- ======================================================= -->
 
-    <!-- Floating Action Chat Toggle Button on the LEFT (For Customer) -->
-    <button id="custChatFAB" onclick="toggleCustChat(true)" class="hidden fixed bottom-8 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
+    <!-- Floating Action Chat Toggle Button on the LEFT (For Customer) - تمت إزاحته للأعلى لتجنب الاختفاء تحت إطار ويب الهاتف -->
+    <button id="custChatFAB" onclick="toggleCustChat(true)" class="hidden fixed bottom-24 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
         <i class="fa-solid fa-comments text-xl"></i>
         <span id="custChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
     </button>
 
-    <!-- Floating Modal Chat Box for Client -->
-    <div id="customerChatBox" class="hidden fixed bottom-24 left-6 max-w-sm w-[calc(100%-3rem)] bg-white dark:bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-gray-100 dark:border-zinc-800 z-[99999] flex flex-col gap-3 animate-scale-up">
+    <!-- Floating Modal Chat Box for Client - تمت إزاحته للأعلى ليتناسق مع موضع زر FAB الجديد -->
+    <div id="customerChatBox" class="hidden fixed bottom-40 left-6 max-w-sm w-[calc(100%-3rem)] bg-white dark:bg-zinc-900 rounded-3xl p-5 shadow-2xl border border-gray-100 dark:border-zinc-800 z-[99999] flex flex-col gap-3 animate-scale-up">
         <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-zinc-800">
             <span class="text-xs font-bold text-gray-500 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع عامل التوصيل</span>
             <button type="button" onclick="toggleCustChat(false)" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-base"></i></button>
@@ -781,14 +780,14 @@
         </div>
     </div>
 
-    <!-- زر المحادثة العائم باللون الأزرق على اليسار لعامل التوصيل -->
-    <button id="driverChatFAB" onclick="toggleDriverChat(true)" class="hidden fixed bottom-8 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
+    <!-- زر المحادثة العائم باللون الأزرق على اليسار لعامل التوصيل - تمت إزاحته للأعلى لتجنب الاختفاء تحت إطار ويب الهاتف -->
+    <button id="driverChatFAB" onclick="toggleDriverChat(true)" class="hidden fixed bottom-24 left-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] z-[99999] transition duration-300 hover:scale-105">
         <i class="fa-solid fa-comments text-xl"></i>
         <span id="driverChatBadge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-md">1</span>
     </button>
 
-    <!-- صندوق المحادثة العائم لعامل التوصيل القابل للإغلاق بالكامل -->
-    <div id="driverChatBox" class="hidden fixed bottom-24 left-6 max-w-sm w-[calc(100%-3rem)] bg-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-2xl z-[99999] flex flex-col gap-3 animate-scale-up">
+    <!-- صندوق المحادثة العائم لعامل التوصيل القابل للإغلاق بالكامل - تمت إزاحته للأعلى ليتناسق مع موضع زر FAB الجديد -->
+    <div id="driverChatBox" class="hidden fixed bottom-40 left-6 max-w-sm w-[calc(100%-3rem)] bg-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-2xl z-[99999] flex flex-col gap-3 animate-scale-up">
         <div class="flex justify-between items-center pb-2 border-b border-zinc-800">
             <span class="text-xs font-bold text-zinc-400 flex items-center gap-1.5"><i class="fa-solid fa-comments text-primary"></i> محادثة حية مع الزبون</span>
             <button type="button" onclick="toggleDriverChat(false)" class="text-zinc-500 hover:text-zinc-300 transition"><i class="fa-solid fa-xmark text-base"></i></button>
@@ -2020,16 +2019,6 @@
             }).addTo(mapInstance);
         }
 
-        function drawGeodesicFallback(mapInstance, start, end, color) {
-            if (mapMarkers.customerRouteLine) mapMarkers.customerRouteLine.remove();
-            mapMarkers.customerRouteLine = L.polyline([start, end], {
-                color: color,
-                weight: 5,
-                opacity: 0.8,
-                dashArray: '8, 8'
-            }).addTo(mapInstance);
-        }
-
         // Draw and track all active delivery driver locations
         function trackActiveDriversOnMap() {
             const q = query(collection(db, "users"), where("role", "==", "driver"), where("approved", "==", true));
@@ -2737,13 +2726,6 @@
             else m.classList.add('hidden');
         }
         window.toggleTransactionsModal = toggleTransactionsModal;
-
-        function toggleOrdersModal(open) {
-            const m = document.getElementById('ordersModal');
-            if (open) m.classList.remove('hidden');
-            else m.classList.add('hidden');
-        }
-        window.toggleOrdersModal = toggleOrdersModal;
 
         // Sync Stores data dynamically
         globalUnsubscribes.stores = onSnapshot(collection(db, "stores"), (snapshot) => {
